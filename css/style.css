@@ -216,9 +216,9 @@ body {
     z-index: 1;
 }
 
-.hero-section h1 span {
+/* .hero-section h1 span {
     color: var(--primary);
-}
+} */
 
 .hero-section p span {
     color: var(--primary);

@@ -60,13 +60,36 @@ body {
 }
 
 
+.navbar .nav-link {
+    position: relative;
+    display: inline-block; /* penting agar underline sesuai panjang teks */
+    color: #fff !important;
+    font-size: 1.1rem;
+    margin: 0 0.5rem;
+    margin-top: 0.3rem;
+    transition: color 0.3s ease;
+}
+
+/* Garis bawah animasi */
 .navbar .nav-link::after {
     content: '';
-    display: block;
-    padding-bottom: 0.3 rem;
-    border-bottom: 0.15rem solid rgba(40, 167, 70, 0.589);
-    transform: scaleX(0);
-    transition: transform 0.1s ease;
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    height: 2px;
+    width: 0;
+    background-color: rgba(40, 167, 70, 0.8);
+    transition: width 0.3s ease;
+}
+
+/* Saat hover atau aktif */
+.navbar .nav-link:hover::after,
+.navbar .nav-link.active::after {
+    width: 100%;
+}
+
+.navbar .nav-link:hover {
+    color: var(--primary) !important;
 }
 
 .navbar .nav-link:hover::after {
@@ -142,17 +165,18 @@ body {
 }
 
 
-/* Responsive */
 @media (max-width: 991px) {
     .navbar {
         padding: 1rem 5%;
+        background-color: rgba(0, 0, 0, 0.938);
+        transition: background-color 0.3s ease;
     }
 
-    .navbar-extra {
-        display: flex;
-        align-items: center;
+    .navbar a {
+        display: inline-block;
+        width: auto; /* penting biar garis sesuai teks */
     }
-}
+
 
 /* font hubungi kami */
 #hubungi-kami h2 {

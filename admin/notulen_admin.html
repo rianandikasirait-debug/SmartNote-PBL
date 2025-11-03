@@ -126,7 +126,7 @@
                 </div>
 
                 <div class="text-center mt-4">
-                    <button id="logoutBtnMobile" class="btn logout-btn px-4 py-2" data-bs-dismiss="offcanvas">
+                    <button id="logoutBtnMobile" class="btn logout-btn px-4 py-2" >
                         <i class="bi bi-box-arrow-right me-2"></i>Logout
                     </button>
                 </div>
@@ -266,6 +266,17 @@
                 window.location.href = "../login.html";
             }
         });
+        // logout mobile
+        const logoutBtnMobile = document.getElementById("logoutBtnMobile");
+    if (logoutBtnMobile) {
+        logoutBtnMobile.addEventListener("click", function () {
+            const konfirmasiLogout = confirm("Apakah kamu yakin ingin logout?");
+            if (konfirmasiLogout) {
+                localStorage.removeItem("adminData");
+                window.location.href = "../login.html";
+            }
+        });
+    }
         });
     </script>
 

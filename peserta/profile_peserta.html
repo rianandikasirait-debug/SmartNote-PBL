@@ -187,10 +187,12 @@
         console.log("Data di localStorage:", pesertaData);
 
         if (pesertaData) {
-            document.getElementById("nama").textContent = pesertaData.nama;
+            document.getElementById("nama").textContent = pesertaData.name;
             document.getElementById("email").textContent = pesertaData.email
+            document.getElementById("role").textContent = pesertaData.role || "peserta";
         } else {
-            console.warn("Tidak ada data peserta di localStorage!");
+            alert("Data peserta tidak ditemukan, silakan login kembali.");
+            window.location.href = "../login.html";
         }
         document.getElementById("editprofile").addEventListener("click", function () {
             window.location.href = "edit_profile_peserta.html";

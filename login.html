@@ -160,7 +160,7 @@
 
                 if (userData.role === "admin") {
                     const adminData = {
-                        nama: userData.nama,
+                        name: userData.name,
                         email: userData.email,
                         role: "admin"
                     }
@@ -169,11 +169,11 @@
                     window.location.href = "admin/dashboard_admin.html";
                 } else if (userData.role === "peserta") {
                     const pesertaData = {
-                        nama: userData.nama,
+                        name: userData.name,
                         email: userData.email,
                         role: "peserta"
                     }
-                    localStorage.setItem("adminData", JSON.stringify(pesertaData));
+                    localStorage.setItem("pesertaData", JSON.stringify(pesertaData));
                     
                     window.location.href = "peserta/dashboard_peserta.html";
                 } else {

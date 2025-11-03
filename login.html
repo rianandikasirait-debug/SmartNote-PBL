@@ -131,6 +131,28 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
     <script>
+        (function() {
+            const savedData = localStorage.getItem("userData");
+            
+            // Cek jika 'userData' BELUM ADA (masih kosong)
+            if (!savedData) {
+                console.log("LocalStorage kosong. Membuat admin default...");
+                
+                // 1. Tentukan akun admin default Anda
+                const adminDefault = {
+                    name: "Admin",
+                    email: "admin@gmail.com",
+                    password: "admin123",
+                    role: "admin"
+                };
+                
+                // 2. Buat array baru dengan admin default di dalamnya
+                let users = [adminDefault];
+                
+                // 3. Simpan array ini ke localStorage
+                localStorage.setItem("userData", JSON.stringify(users));
+            }
+        })();
         const loginform = document.getElementById("loginform");
 
         loginform.addEventListener("submit", function (event) {

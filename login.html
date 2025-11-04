@@ -186,7 +186,7 @@
                         role: "admin"
                     }
                     localStorage.setItem("adminData", JSON.stringify(adminData));
-                    window.location.href = "admin/dashboard_admin.html"; // Pastikan path ini benar
+                    window.location.href = "admin/dashboard_admin.html"; 
 
                 } else if (userData.role === "peserta") {
                     const pesertaData = {
@@ -195,7 +195,7 @@
                         role: "peserta"
                     }
                     localStorage.setItem("pesertaData", JSON.stringify(pesertaData));
-                    window.location.href = "peserta/dashboard_peserta.html"; // Pastikan path ini benar
+                    window.location.href = "peserta/dashboard_peserta.html"; 
 
                 } else {
                     alert("Role pengguna tidak dikenali!");

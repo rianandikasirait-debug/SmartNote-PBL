@@ -310,7 +310,7 @@ section {
 /* Mobile */
 @media (max-width: 576px) {
     #hero h1 {
-        padding-top: 10px;
+        padding-top: 200px;
         font-size: 25px;
     }
 

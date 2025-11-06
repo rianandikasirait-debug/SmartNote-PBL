@@ -101,14 +101,21 @@
             display: none;
         }
 
+        /* Breadcrumb */
         .breadcrumb {
-            background-color: transparent;
+            background: transparent;
+            padding: 0;
             margin-bottom: 1rem;
-            font-size: 0.95rem;
         }
 
-        .breadcrumb-item + .breadcrumb-item::before {
-            content: "›";
+        .breadcrumb-item a {
+            text-decoration: none;
+            color: #00b050;
+            font-weight: 500;
+        }
+
+        .breadcrumb-item.active {
+            color: #555;
         }
     </style>
 </head>
@@ -177,9 +184,8 @@
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="dashboard_admin.html" class="text-decoration-none text-success">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="notulen.html" class="text-decoration-none text-success">Notulen</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Tambah Notulen</li>
+                <li class="breadcrumb-item"><a href="notulen.html">Notulen</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Tambah notulen</li>
             </ol>
         </nav>
 

@@ -136,7 +136,7 @@ body {
 .hero-section {
     position: relative;
     height: 100vh;
-    background-image: url('../file/bg-web.jpg');
+    background-image: url('../file/bg-web.webp');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

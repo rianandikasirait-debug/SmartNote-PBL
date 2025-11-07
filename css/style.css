@@ -125,13 +125,18 @@ body {
     }
 }
 
+.navbar-collapse {
+    transition: all 0.3s ease;
+}
+
+
 /* =========================================
     HERO SECTION
    ========================================= */
 .hero-section {
     position: relative;
     height: 100vh;
-    background-image: url('../file/bg-web.jpg');
+    background-image: url('../file/bg-web.webp');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

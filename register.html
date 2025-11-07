@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>register Page</title>
+    <title>Register Page</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -12,72 +12,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            background-color: #fdf9f4;
-            font-family: "Poppins", sans-serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
 
-        .text-custom-green {
-            color: #00b050;
-        }
-
-        .btn-custom-green {
-            background-color: #00b050;
-            color: #fff;
-            border: none;
-            transition: 0.2s;
-        }
-
-        .btn-custom-green:hover {
-            background-color: #009044;
-            color: #fff;
-        }
-
-        .link-custom-green {
-            color: #00b050;
-            text-decoration: none;
-        }
-
-        .link-custom-green:hover {
-            text-decoration: underline;
-        }
-
-        .login-frame .card {
-            border-radius: 1rem;
-            border: 1px solid #00b050;
-            box-shadow: 8px 8px 0px 0px #00b050;
-            transition: 0.2s;
-        }
-
-        .login-frame .card:hover {
-            box-shadow: 14px 14px 0px 0px #00b050;
-        }
-
-        .login-text h2 {
-            font-weight: 700;
-        }
-
-        .login-text p {
-            color: #555;
-            font-size: 0.95rem;
-        }
-
-        .form-control,
-        .form-select {
-            border: 1px solid #ccc;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #00b050;
-            box-shadow: 0 0 0 0.2rem rgba(0, 176, 80, 0.25);
-        }
-    </style>
+    <link rel="stylesheet" href="css/register.css">
 
 </head>
 
@@ -139,49 +75,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-    </script>
-    <script>
-        const registerform = document.getElementById('registerform');
-
-        registerform.addEventListener('submit', function (event) {
-            event.preventDefault();
-
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const role = "peserta";
-
-            if (!name || !email || !password) {
-                alert('Mohon isi semua kolom sebelum mendaftar!');
-                return;
-            }
-
-            let users = JSON.parse(localStorage.getItem("userData") || "[]");
-
-            const emailExists = users.find(user => user.email === email);
-            if (emailExists) {
-                alert("Email ini sudah terdaftar. Silakan gunakan email lain atau login.");
-                return;
-            }
-
-            const newUser = {
-                name,
-                email,
-                password,
-                role
-            };
-            users.push(newUser);
-
-
-            localStorage.setItem('userData', JSON.stringify(users));
-
-
-            alert("Registrasi sebagai peserta berhasil! Silakan login.");
-            window.location.href = "login.html";
-        });
-    </script>
+    <script src="js/register.js"></script>
 </body>
 
 </html>

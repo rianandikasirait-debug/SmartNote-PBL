@@ -12,71 +12,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet"/>
-    <style>
-        body {
-            background-color: #fdf9f4;
-            font-family: "Poppins", sans-serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
 
-        .text-custom-green {
-            color: #00b050;
-        }
-
-        .btn-custom-green {
-            background-color: #00b050;
-            color: #fff;
-            border: none;
-            transition: 0.2s;
-        }
-
-        .btn-custom-green:hover {
-            background-color: #009044;
-            color: #fff;
-        }
-
-        .link-custom-green {
-            color: #00b050;
-            text-decoration: none;
-        }
-
-        .link-custom-green:hover {
-            text-decoration: underline;
-        }
-
-        .login-frame .card {
-            border-radius: 1rem;
-            border: 1px solid #00b050;
-            box-shadow: 8px 8px 0px 0px #00b050;
-            transition: 0.2s;
-        }
-
-        .login-frame .card:hover {
-            box-shadow: 14px 14px 0px 0px #00b050;
-        }
-
-        .login-text h2 {
-            font-weight: 700;
-        }
-
-        .login-text p {
-            color: #555;
-            font-size: 0.95rem;
-        }
-
-        .form-control {
-            border: 1px solid #ccc;
-        }
-
-        .form-control:focus {
-            border-color: #00b050;
-            box-shadow: 0 0 0 0.2rem rgba(0, 176, 80, 0.25);
-        }
-    </style>
+    <link rel="stylesheet" href="css/login.css" />
 </head>
 
 <body>
@@ -130,82 +67,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
-    <script>
-        (function() {
-            const savedData = localStorage.getItem("userData");
-            
-            if (!savedData) {
-                console.log("LocalStorage kosong. Membuat admin default...");
-
-                const adminDefault = {
-                    name: "Admin",
-                    email: "admin@gmail.com",
-                    password: "admin123",
-                    role: "admin"
-                };
-                let users = [adminDefault];
-
-                localStorage.setItem("userData", JSON.stringify(users));
-            }
-        })();
-        const loginform = document.getElementById("loginform");
-
-        loginform.addEventListener("submit", function (event) {
-            event.preventDefault();
-
-            const email = document.getElementById("email").value.trim();
-            const password = document.getElementById("password").value.trim();
-
-
-            if (!email || !password) {
-                alert("Mohon isi semua kolom sebelum login!");
-                return;
-            }
-
-            const savedData = localStorage.getItem("userData");
-
-            if (!savedData) {
-                alert("Belum ada akun terdaftar! Silakan daftar terlebih dahulu.");
-                window.location.href = "register.html";
-                return;
-            }
-
-            const users = JSON.parse(savedData);
-
-            const userData = users.find(user => user.email === email && user.password === password);
-
-            // 3. Cek apakah pengguna ditemukan
-            if (userData) {
-                // Jika 'userData' ditemukan (bukan null/undefined)
-                alert("Login berhasil!");
-
-                if (userData.role === "admin") {
-                    const adminData = {
-                        name: userData.name,
-                        email: userData.email,
-                        role: "admin"
-                    }
-                    localStorage.setItem("adminData", JSON.stringify(adminData));
-                    window.location.href = "admin/dashboard_admin.html"; 
-
-                } else if (userData.role === "peserta") {
-                    const pesertaData = {
-                        name: userData.name,
-                        email: userData.email,
-                        role: "peserta"
-                    }
-                    localStorage.setItem("pesertaData", JSON.stringify(pesertaData));
-                    window.location.href = "peserta/dashboard_peserta.html"; 
-
-                } else {
-                    alert("Role pengguna tidak dikenali!");
-                }
-            } else {
-                // Jika tidak ditemukan di dalam array
-                alert("Email atau password salah!");
-            }
-        }); 
-    </script>
+    <script src="js/login.js"></script>
 </body>
 
 </html>

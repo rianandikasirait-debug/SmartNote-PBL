@@ -177,6 +177,129 @@
             /* Hijau sedikit lebih gelap */
             transform: scale(1.05);
         }
+
+        /* tambahan baru */
+        .table-header {
+            width: 100%;
+        }
+
+        .table-header .controls {
+            display: flex;
+            align-items: center;
+            /* rata tengah vertikal */
+            gap: 8px;
+            /* jarak antar elemen */
+            flex-wrap: wrap;
+        }
+
+        /* --- Seragamkan ukuran --- */
+        .table-header .controls select,
+        .table-header .controls input,
+        .table-header .btn-tambah {
+            height: 42px;
+            /* semua sama tinggi */
+            border-radius: 8px;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+        }
+
+        /* --- Tombol Tambah Notulen --- */
+        .btn-tambah {
+            background-color: #00b050;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 14px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .btn-tambah i {
+            font-size: 1.1rem;
+            margin-right: 6px;
+        }
+
+        .btn-tambah:hover {
+            background-color: #02913f;
+        }
+
+        /* --- Form control hijau --- */
+        .table-header .controls select.form-select,
+        .table-header .controls input.form-control {
+            border: 1.5px solid #00b050;
+            color: #333;
+        }
+
+        /* --- Atur lebar elemen --- */
+        .table-header #filterPembuat {
+            width: 170px;
+        }
+
+        .table-header #rowsPerPage {
+            width: 120px;
+        }
+
+        .table-header .search-table {
+            flex: 1;
+            /* biar input search menyesuaikan ruang */
+            min-width: 180px;
+        }
+
+        /* --- Responsif: stack ke bawah di layar kecil --- */
+        @media (max-width: 768px) {
+            .table-header .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .table-header .controls>* {
+                width: 100% !important;
+            }
+        }
+
+        /* Samakan tombol tambah dengan form-control */
+        .btn-tambah {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 38px;
+            /* sama dengan .form-select-sm */
+            padding: 0 12px;
+            font-size: 0.875rem;
+            /* sama seperti select/input kecil */
+            font-weight: 600;
+            border-radius: 0.25rem;
+            /* seragam dengan form kecil */
+            border: 1px solid #00b050;
+            background-color: #00b050;
+            color: #fff;
+            line-height: 1;
+            /* supaya ikon & teks sejajar */
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .btn-tambah i {
+            font-size: 1rem;
+            margin-right: 6px;
+        }
+
+        .btn-tambah:hover {
+            background-color: #02913f;
+            border-color: #02913f;
+            color: #fff;
+        }
+
+        /* Pastikan semua kontrol lain tingginya sama */
+        .table-header .controls select,
+        .table-header .controls input {
+            height: 38px !important;
+            font-size: 0.875rem;
+            border-radius: 0.25rem;
+        }
     </style>
 </head>
 
@@ -255,7 +378,7 @@
                 <span class="fw-medium">Halo, Admin 👋</span>
             </div>
         </div>
-        
+
         <div class="row g-3 mb-4">
             <div class="col-md-4">
                 <div class="highlight-card">
@@ -279,20 +402,20 @@
                 </div>
             </div>
         </div>
-        <!-- Tombol Tambah Notulen Peserta -->
-        <div class="tambah-container">
-            <a href="notulen_admin.html" class="btn-tambah">
-                <i class="bi bi-plus-circle"></i> Tambah Notulen
-            </a>
-        </div>
-        
         <!-- TABLE AREA -->
         <div class="table-wrapper">
+
             <!-- Header: Title + Controls -->
             <div class="table-header d-flex justify-content-between align-items-center mb-3 flex-wrap">
                 <h5 class="fw-semibold mb-2 mb-sm-0">Daftar Notulen</h5>
 
-                <div class="d-flex gap-2 flex-wrap">
+                <div class="d-flex gap-2 flex-wrap controls">
+                    <!-- Tombol Tambah Notulen Peserta -->
+                    <div class="tambah-container">
+                        <a href="notulen_admin.html" class="btn-tambah">
+                            <i class="bi bi-plus-circle"></i>Tambah notulen
+                        </a>
+                    </div>
                     <!-- Filter Pembuat -->
                     <select id="filterPembuat" class="form-select form-select-sm border-success" style="width: 180px;">
                         <option value="">Semua Pembuat</option>
@@ -313,45 +436,46 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Table -->
-            <div class="table-responsive">
-                <table class="table align-middle table-hover">
-                    <thead class="table-light border-0" style="background-color: #e8f6ee;">
-                        <tr class="text-success">
-                            <th>No</th>
-                            <th>Judul Rapat</th>
-                            <th>Tanggal</th>
-                            <th>Pembuat</th>
-                            <th class="text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody"></tbody>
-                </table>
-            </div>
-
-            <!-- Pagination -->
-            <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
-                <small class="text-muted" id="dataInfo"></small>
-                <nav>
-                    <ul class="pagination pagination-sm mb-0" id="pagination"></ul>
-                </nav>
-            </div>
         </div>
 
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const tableBody = document.getElementById("tableBody");
-                const searchInput = document.getElementById("searchInput");
-                const filterPembuat = document.getElementById("filterPembuat");
-                const pagination = document.getElementById("pagination");
-                const dataInfo = document.getElementById("dataInfo");
-                const rowsPerPageSelect = document.getElementById("rowsPerPage");
+        <!-- Table -->
+        <div class="table-responsive">
+            <table class="table align-middle table-hover">
+                <thead class="table-light border-0" style="background-color: #e8f6ee;">
+                    <tr class="text-success">
+                        <th>No</th>
+                        <th>Judul Rapat</th>
+                        <th>Tanggal</th>
+                        <th>Pembuat</th>
+                        <th class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
 
-                // =============================
-                // Data simulasi (TETAP)
-                // =============================
-                const notulenData = [{
+        <!-- Pagination -->
+        <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
+            <small class="text-muted" id="dataInfo"></small>
+            <nav>
+                <ul class="pagination pagination-sm mb-0" id="pagination"></ul>
+            </nav>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tableBody = document.getElementById("tableBody");
+            const searchInput = document.getElementById("searchInput");
+            const filterPembuat = document.getElementById("filterPembuat");
+            const pagination = document.getElementById("pagination");
+            const dataInfo = document.getElementById("dataInfo");
+            const rowsPerPageSelect = document.getElementById("rowsPerPage");
+
+            // =============================
+            // Data simulasi (TETAP)
+            // =============================
+            const notulenData = [{
                     judul: "Rapat Akhir Tahun",
                     tanggal: "31/12/2025",
                     pembuat: "Rian"
@@ -431,21 +555,21 @@
                     tanggal: "09/04/2025",
                     pembuat: "Hana"
                 },
-                ];
+            ];
 
-                let currentPage = 1;
-                let rowsPerPage = 10;
+            let currentPage = 1;
+            let rowsPerPage = 10;
 
-                // =============================
-                // FUNGSI renderTable (PERUBAHAN UTAMA DI SINI)
-                // =============================
-                function renderTable(data, startIndex = 0) {
-                    tableBody.innerHTML = "";
-                    data.forEach((item, index) => {
-                        // MENGHITUNG NOMOR URUT BERKELANJUTAN
-                        const nomorUrut = startIndex + index + 1;
+            // =============================
+            // FUNGSI renderTable (PERUBAHAN UTAMA DI SINI)
+            // =============================
+            function renderTable(data, startIndex = 0) {
+                tableBody.innerHTML = "";
+                data.forEach((item, index) => {
+                    // MENGHITUNG NOMOR URUT BERKELANJUTAN
+                    const nomorUrut = startIndex + index + 1;
 
-                        const row = `
+                    const row = `
             <tr>
               <td>${nomorUrut}</td>
               <td>${item.judul}</td>
@@ -458,155 +582,156 @@
               </td>
             </tr>
           `;
-                        tableBody.insertAdjacentHTML("beforeend", row);
-                    });
-                }
-
-                // =============================
-                // Isi filter pembuat (TETAP)
-                // =============================
-                const pembuatUnik = [...new Set(notulenData.map((d) => d.pembuat))];
-                pembuatUnik.forEach((nama) => {
-                    const opt = document.createElement("option");
-                    opt.value = nama;
-                    opt.textContent = nama;
-                    filterPembuat.appendChild(opt);
+                    tableBody.insertAdjacentHTML("beforeend", row);
                 });
+            }
 
-                // =============================
-                // Filtering, Pagination, Rendering
-                // =============================
-                function getFilteredData() {
-                    const keyword = searchInput.value.toLowerCase();
-                    const selectedPembuat = filterPembuat.value;
+            // =============================
+            // Isi filter pembuat (TETAP)
+            // =============================
+            const pembuatUnik = [...new Set(notulenData.map((d) => d.pembuat))];
+            pembuatUnik.forEach((nama) => {
+                const opt = document.createElement("option");
+                opt.value = nama;
+                opt.textContent = nama;
+                filterPembuat.appendChild(opt);
+            });
 
-                    return notulenData.filter((item) => {
-                        const cocokKeyword =
-                            item.judul.toLowerCase().includes(keyword) ||
-                            item.tanggal.toLowerCase().includes(keyword) ||
-                            item.pembuat.toLowerCase().includes(keyword);
+            // =============================
+            // Filtering, Pagination, Rendering
+            // =============================
+            function getFilteredData() {
+                const keyword = searchInput.value.toLowerCase();
+                const selectedPembuat = filterPembuat.value;
 
-                        const cocokPembuat =
-                            selectedPembuat === "" || item.pembuat === selectedPembuat;
+                return notulenData.filter((item) => {
+                    const cocokKeyword =
+                        item.judul.toLowerCase().includes(keyword) ||
+                        item.tanggal.toLowerCase().includes(keyword) ||
+                        item.pembuat.toLowerCase().includes(keyword);
 
-                        return cocokKeyword && cocokPembuat;
-                    });
-                }
+                    const cocokPembuat =
+                        selectedPembuat === "" || item.pembuat === selectedPembuat;
 
-                function paginate(data) {
-                    if (rowsPerPage === "all") return data;
-
-                    const start = (currentPage - 1) * rowsPerPage;
-                    const end = start + rowsPerPage;
-                    return data.slice(start, end);
-                }
-
-                function renderPagination(totalRows) {
-                    pagination.innerHTML = "";
-                    if (rowsPerPage === "all") return;
-
-                    const totalPages = Math.ceil(totalRows / rowsPerPage);
-
-                    for (let i = 1; i <= totalPages; i++) {
-                        const li = document.createElement("li");
-                        li.className = `page-item ${i === currentPage ? "active" : ""}`;
-                        li.innerHTML = `<a class="page-link border-success text-success" href="#">${i}</a>`;
-                        li.addEventListener("click", (e) => {
-                            e.preventDefault();
-                            currentPage = i;
-                            updateTable();
-                        });
-                        pagination.appendChild(li);
-                    }
-                }
-
-                // =============================
-                // FUNGSI updateTable (PERUBAHAN UTAMA DI SINI)
-                // =============================
-                function updateTable() {
-                    const filteredData = getFilteredData();
-                    const totalRows = filteredData.length;
-
-                    // HITUNG NOMOR URUT AWAL: (Nomor Halaman - 1) * Jumlah Baris per Halaman
-                    const startIndex = (rowsPerPage === "all" || totalRows === 0) ? 0 : (currentPage - 1) * rowsPerPage;
-
-                    const paginatedData = paginate(filteredData);
-
-                    // MEMANGGIL renderTable dengan startIndex
-                    renderTable(paginatedData, startIndex);
-                    renderPagination(totalRows);
-
-                    // Update info data (Menampilkan X-Y dari Z data)
-                    const start = totalRows === 0 ? 0 : startIndex + 1;
-                    const end = start + paginatedData.length - 1;
-
-                    dataInfo.textContent = `Menampilkan ${start}-${end} dari ${totalRows} data`;
-                }
-
-                // =============================
-                // Event listeners (TETAP)
-                // =============================
-                searchInput.addEventListener("input", () => {
-                    currentPage = 1;
-                    updateTable();
+                    return cocokKeyword && cocokPembuat;
                 });
-                filterPembuat.addEventListener("change", () => {
-                    currentPage = 1;
-                    updateTable();
-                });
-                rowsPerPageSelect.addEventListener("change", () => {
-                    rowsPerPage =
-                        rowsPerPageSelect.value === "all" ?
-                            "all" :
-                            parseInt(rowsPerPageSelect.value);
-                    currentPage = 1;
-                    updateTable();
-                });
+            }
 
-                // =============================
-                // Hapus data (TETAP)
-                // =============================
-                document.addEventListener("click", function (e) {
-                    const btn = e.target.closest(".btn-delete");
-                    if (!btn) return;
+            function paginate(data) {
+                if (rowsPerPage === "all") return data;
 
-                    // Dapatkan index global dari data-index 
-                    const globalIndex = parseInt(btn.dataset.index);
+                const start = (currentPage - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                return data.slice(start, end);
+            }
 
-                    if (confirm("Yakin mau hapus data ini?")) {
-                        notulenData.splice(globalIndex, 1);
+            function renderPagination(totalRows) {
+                pagination.innerHTML = "";
+                if (rowsPerPage === "all") return;
+
+                const totalPages = Math.ceil(totalRows / rowsPerPage);
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const li = document.createElement("li");
+                    li.className = `page-item ${i === currentPage ? "active" : ""}`;
+                    li.innerHTML = `<a class="page-link border-success text-success" href="#">${i}</a>`;
+                    li.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        currentPage = i;
                         updateTable();
-                    }
-                });
+                    });
+                    pagination.appendChild(li);
+                }
+            }
 
-                // =============================
-                // Render awal (TETAP)
-                // =============================
+            // =============================
+            // FUNGSI updateTable (PERUBAHAN UTAMA DI SINI)
+            // =============================
+            function updateTable() {
+                const filteredData = getFilteredData();
+                const totalRows = filteredData.length;
+
+                // HITUNG NOMOR URUT AWAL: (Nomor Halaman - 1) * Jumlah Baris per Halaman
+                const startIndex = (rowsPerPage === "all" || totalRows === 0) ? 0 : (currentPage - 1) *
+                    rowsPerPage;
+
+                const paginatedData = paginate(filteredData);
+
+                // MEMANGGIL renderTable dengan startIndex
+                renderTable(paginatedData, startIndex);
+                renderPagination(totalRows);
+
+                // Update info data (Menampilkan X-Y dari Z data)
+                const start = totalRows === 0 ? 0 : startIndex + 1;
+                const end = start + paginatedData.length - 1;
+
+                dataInfo.textContent = `Menampilkan ${start}-${end} dari ${totalRows} data`;
+            }
+
+            // =============================
+            // Event listeners (TETAP)
+            // =============================
+            searchInput.addEventListener("input", () => {
+                currentPage = 1;
+                updateTable();
+            });
+            filterPembuat.addEventListener("change", () => {
+                currentPage = 1;
+                updateTable();
+            });
+            rowsPerPageSelect.addEventListener("change", () => {
+                rowsPerPage =
+                    rowsPerPageSelect.value === "all" ?
+                    "all" :
+                    parseInt(rowsPerPageSelect.value);
+                currentPage = 1;
                 updateTable();
             });
 
             // =============================
-            // Tombol logout (TETAP)
+            // Hapus data (TETAP)
             // =============================
-            document.getElementById("logoutBtn").addEventListener("click", function () {
-                const confirmLogout = confirm("Apakah kamu yakin ingin logout?");
-                if (confirmLogout) {
-                    // Menggunakan kunci 'adminData' yang sudah disepakati konsisten
+            document.addEventListener("click", function (e) {
+                const btn = e.target.closest(".btn-delete");
+                if (!btn) return;
+
+                // Dapatkan index global dari data-index 
+                const globalIndex = parseInt(btn.dataset.index);
+
+                if (confirm("Yakin mau hapus data ini?")) {
+                    notulenData.splice(globalIndex, 1);
+                    updateTable();
+                }
+            });
+
+            // =============================
+            // Render awal (TETAP)
+            // =============================
+            updateTable();
+        });
+
+        // =============================
+        // Tombol logout (TETAP)
+        // =============================
+        document.getElementById("logoutBtn").addEventListener("click", function () {
+            const confirmLogout = confirm("Apakah kamu yakin ingin logout?");
+            if (confirmLogout) {
+                // Menggunakan kunci 'adminData' yang sudah disepakati konsisten
+                localStorage.removeItem("adminData");
+                window.location.href = "../login.html";
+            }
+        });
+        // logout mobile
+        const logoutBtnMobile = document.getElementById("logoutBtnMobile");
+        if (logoutBtnMobile) {
+            logoutBtnMobile.addEventListener("click", function () {
+                const konfirmasiLogout = confirm("Apakah kamu yakin ingin logout?");
+                if (konfirmasiLogout) {
                     localStorage.removeItem("adminData");
                     window.location.href = "../login.html";
                 }
             });
-            // logout mobile
-            const logoutBtnMobile = document.getElementById("logoutBtnMobile");
-            if (logoutBtnMobile) {
-                logoutBtnMobile.addEventListener("click", function () {
-                    const konfirmasiLogout = confirm("Apakah kamu yakin ingin logout?");
-                    if (konfirmasiLogout) {
-                        localStorage.removeItem("adminData");
-                        window.location.href = "../login.html";
-                    }
-                });
-            }
-        </script>
+        }
+    </script>
 
 </html>

@@ -269,10 +269,28 @@
             <td>${escapeHtml(item.tanggal)}</td>
             <td>${escapeHtml(item.pembuat)}</td>
             <td class="text-center">
-              <a href="detail_rapat_admin.html?id=${nomorUrut - 1}" class="btn btn-sm text-primary" title="Lihat"><i class="bi bi-eye"></i></a>
-              <a href="edit_rapat_admin.html?id=${nomorUrut - 1}" class="btn btn-sm text-success" title="Edit"><i class="bi bi-pencil"></i></a>
-              <button class="btn btn-sm text-danger btn-delete" data-index="${nomorUrut - 1}" title="Hapus"><i class="bi bi-trash"></i></button>
-            </td>
+  <!-- Tombol Lihat -->
+  <a href="detail_rapat_admin.php?id=${nomorUrut - 1}" 
+     class="btn btn-sm text-primary" 
+     title="Lihat">
+     <i class="bi bi-eye"></i>
+  </a>
+
+  <!-- Tombol Edit -->
+  <a href="edit_rapat_admin.php?id=${nomorUrut - 1}" 
+     class="btn btn-sm text-success" 
+     title="Edit">
+     <i class="bi bi-pencil"></i>
+  </a>
+
+  <!-- Tombol Hapus -->
+  <button class="btn btn-sm text-danger btn-delete" 
+          data-index="${nomorUrut - 1}" 
+          title="Hapus">
+      <i class="bi bi-trash"></i>
+  </button>
+</td>
+
           `;
                     tableBody.appendChild(tr);
                 });

@@ -37,8 +37,7 @@
                     <li class="nav-item"><a class="nav-link" href="#cara-kerja">Cara Kerja</a></li>
                     <li class="nav-item"><a class="nav-link" href="#testimoni">Testimoni</a></li>
                     <li class="nav-item"><a class="nav-link" href="#hubungi-kami">Kontak</a></li>
-                    <li class="nav-item1"><a class="nav-link1" href="login.html">Masuk</a></li>
-                    <li class="nav-item2"><a class="nav-link2" href="register.html">Daftar</a></li>
+                    <li class="nav-item1"><a class="nav-link1" href="login.php">Masuk</a></li>
                 </ul>
             </div>
         </div>

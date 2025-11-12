@@ -159,12 +159,12 @@
                     <h5 class="fw-bold mb-4 ms-3">Menu</h5>
                     <ul class="nav flex-column">
                         <li>
-                            <a class="nav-link" href="dashboard_admin.html"><i class="bi bi-grid me-2"></i>Dashboard</a>
+                            <a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
                         </li>
-                        <a class="nav-link" href="kelola_rapat_admin.html"><i class="bi bi-people me-2"></i>Kelola
+                        <a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola
                             Pengguna</a></li>
                         <li>
-                            <a class="nav-link" href="profile.html"><i class="bi bi-person-circle me-2"></i>Profile</a>
+                            <a class="nav-link" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
                         </li>
                     </ul>
                 </div>
@@ -186,14 +186,14 @@
             <h5 class="fw-bold mb-4 ms-3">Menu</h5>
             <ul class="nav flex-column">
                 <li>
-                    <a class="nav-link active" href="dashboard_admin.html"><i class="bi bi-grid me-2"></i>Dashboard</a>
+                    <a class="nav-link active" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
                 </li>
                 <li>
-                    <a class="nav-link" href="kelola_rapat_admin.html"><i class="bi bi-people me-2"></i>Kelola
+                    <a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola
                         Pengguna</a>
                 </li>
                 <li>
-                    <a class="nav-link" href="profile.html"><i class="bi bi-person-circle me-2"></i>Profile</a>
+                    <a class="nav-link" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
                 </li>
             </ul>
         </div>
@@ -299,7 +299,7 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-between align-items-center mt-4">
-                    <a href="dashboard_admin.html" class="btn btn-back">Kembali</a>
+                    <a href="dashboard_admin.php" class="btn btn-back">Kembali</a>
                     <button id="simpan_perubahan" type="submit" class="btn btn-save px-4 py-2">Simpan Perubahan</button>
                 </div>
             </form>
@@ -310,7 +310,7 @@
     <script>
         document.getElementById("simpan_perubahan").addEventListener("click", () => {
             if (confirm("simpan perubahan?"))
-                window.location.href = "dashboard_admin.html";
+                window.location.href = "dashboard_admin.php";
             // =======================
             // Logout function
             // =======================
@@ -320,7 +320,7 @@
                     // Hapus data login dari localStorage
                     localStorage.removeItem("userData");
                     // Arahkan ke halaman login
-                    window.location.href = "../login.html";
+                    window.location.href = "../login.php";
                 }
             });
 
@@ -331,7 +331,7 @@
                     const konfirmasiLogout = confirm("Apakah kamu yakin ingin logout?");
                     if (konfirmasiLogout) {
                         localStorage.removeItem("adminData");
-                        window.location.href = "../login.html";
+                        window.location.href = "../login.php";
                     }
                 });
             }

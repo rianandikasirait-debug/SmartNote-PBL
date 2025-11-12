@@ -26,13 +26,13 @@
                 <div>
                     <h5 class="fw-bold mb-4 ms-3">Menu</h5>
                     <ul class="nav flex-column">
-                        <li><a class="nav-link" href="dashboard_admin.html"><i class="bi bi-grid me-2"></i>Dashboard</a>
+                        <li><a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
                         </li>
-                        <li><a class="nav-link active" href="notulen.html"><i
+                        <li><a class="nav-link active" href="notulen.php"><i
                                     class="bi bi-journal-text me-2"></i>Notulen</a></li>
-                        <li><a class="nav-link" href="kelola_rapat_admin.html"><i class="bi bi-people me-2"></i>Kelola
+                        <li><a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola
                                 Pengguna</a></li>
-                        <li><a class="nav-link" href="profile.html"><i class="bi bi-person-circle me-2"></i>Profile</a>
+                        <li><a class="nav-link" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
                         </li>
                     </ul>
                 </div>
@@ -48,12 +48,12 @@
         <div>
             <h5 class="fw-bold mb-4 ms-3">Menu</h5>
             <ul class="nav flex-column">
-                <li><a class="nav-link" href="dashboard_admin.html"><i class="bi bi-grid me-2"></i>Dashboard</a></li>
-                <li><a class="nav-link active" href="notulen.html"><i class="bi bi-journal-text me-2"></i>Notulen</a>
+                <li><a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a></li>
+                <li><a class="nav-link active" href="notulen.php"><i class="bi bi-journal-text me-2"></i>Notulen</a>
                 </li>
-                <li><a class="nav-link" href="kelola_rapat_admin.html"><i class="bi bi-people me-2"></i>Kelola
+                <li><a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola
                         Pengguna</a></li>
-                <li><a class="nav-link" href="profile.html"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
+                <li><a class="nav-link" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
             </ul>
         </div>
         <div class="text-center">
@@ -263,7 +263,7 @@
             });
 
             document.getElementById("btnTambah").addEventListener("click", function () {
-                window.location.href = "notulen_admin.html";
+                window.location.href = "notulen_admin.php";
             });
 
             updateTable();

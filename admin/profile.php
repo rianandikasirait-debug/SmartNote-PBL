@@ -27,13 +27,13 @@
                 <div>
                     <h5 class="fw-bold mb-4 ms-3">Menu</h5>
                     <ul class="nav flex-column">
-                        <li><a class="nav-link" href="dashboard_admin.html"><i class="bi bi-grid me-2"></i>Dashboard</a>
+                        <li><a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
                         </li>
-                        <li><a class="nav-link" href="kelola_rapat_admin.html"><i class="bi bi-people me-2"></i>Kelola
+                        <li><a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola
                                 Pengguna</a></li>
-                        <li><a class="nav-link" href="tambah_peserta_admin.html"><i
+                        <li><a class="nav-link" href="tambah_peserta_admin.php"><i
                                     class="bi bi-person-plus me-2"></i>Tambah Pengguna</a></li>
-                        <li><a class="nav-link" href="profile.html"><i class="bi bi-person-circle me-2"></i>Profile</a>
+                        <li><a class="nav-link" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
                         </li>
                     </ul>
                 </div>
@@ -55,12 +55,12 @@
             <h5 class="fw-bold mb-4 ms-3">Menu</h5>
             <ul class="nav flex-column">
                 <li>
-                    <a class="nav-link" href="dashboard_admin.html"><i class="bi bi-grid me-2"></i>Dashboard</a></li>
+                    <a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a></li>
                 <li>
-                    <a class="nav-link" href="kelola_rapat_admin.html"><i class="bi bi-people me-2"></i>Kelola
+                    <a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola
                         Pengguna</a></li>
                 <li>
-                    <a class="nav-link active" href="profile.html"><i class="bi bi-person-circle me-2"></i>Profile</a>
+                    <a class="nav-link active" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
                 </li>
             </ul>
         </div>
@@ -122,12 +122,12 @@
         } else {
             // Tambahan: Pengaman jika data admin tidak ada (belum login)
             alert("Data admin tidak ditemukan, silakan login kembali.");
-            window.location.href = "../login.html";
+            window.location.href = "../login.php";
         }
 
         // 2. Tombol Edit Profile
         document.getElementById("editprofile").addEventListener("click", function () {
-            window.location.href = "edit_profile_admin.html";
+            window.location.href = "edit_profile_admin.php";
         });
 
         // 3. Fungsi Logout (Desktop)
@@ -135,7 +135,7 @@
             const confirmLogout = confirm("Apakah kamu yakin ingin logout?");
             if (confirmLogout) {
                 localStorage.removeItem("adminData");
-                window.location.href = "../login.html";
+                window.location.href = "../login.php";
             }
         });
 
@@ -144,7 +144,7 @@
             const confirmLogout = confirm("Apakah kamu yakin ingin logout?");
             if (confirmLogout) {
                 localStorage.removeItem("adminData");
-                window.location.href = "../login.html";
+                window.location.href = "../login.php";
             }
         });
     </script>

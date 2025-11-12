@@ -26,9 +26,9 @@
                 <div>
                     <h5 class="fw-bold mb-4 ms-3">Menu</h5>
                     <ul class="nav flex-column">
-                        <li><a class="nav-link active" href="dashboard_admin.html"><i class="bi bi-grid me-2"></i>Dashboard</a></li>
-                        <li><a class="nav-link" href="kelola_rapat_admin.html"><i class="bi bi-people me-2"></i>Kelola Pengguna</a></li>
-                        <li><a class="nav-link" href="profile.html"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
+                        <li><a class="nav-link active" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a></li>
+                        <li><a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola Pengguna</a></li>
+                        <li><a class="nav-link" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
                     </ul>
                 </div>
 
@@ -45,9 +45,9 @@
         <div>
             <h5 class="fw-bold mb-4 ms-3">Menu</h5>
             <ul class="nav flex-column">
-                <li><a class="nav-link" href="dashboard_admin.html"><i class="bi bi-grid me-2"></i>Dashboard</a></li>
-                <li><a class="nav-link" href="kelola_rapat_admin.html"><i class="bi bi-people me-2"></i>Kelola Pengguna</a></li>
-                <li><a class="nav-link" href="profile.html"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
+                <li><a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a></li>
+                <li><a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola Pengguna</a></li>
+                <li><a class="nav-link" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
             </ul>
         </div>
 
@@ -98,7 +98,7 @@
             </button>
 
             <div class="text-end mt-4">
-                <a href="dashboard_admin.html" class="btn-back"><i class="bi bi-arrow-left me-1"></i> Kembali</a>
+                <a href="dashboard_admin.php" class="btn-back"><i class="bi bi-arrow-left me-1"></i> Kembali</a>
             </div>
         </div>
     </div>
@@ -118,7 +118,7 @@
                 // Hapus data login dari localStorage
                 localStorage.removeItem("userData");
                 // Arahkan ke halaman login
-                window.location.href = "../login.html";
+                window.location.href = "../login.php";
             }
         });
         // logout mobile
@@ -128,7 +128,7 @@
             const konfirmasiLogout = confirm("Apakah kamu yakin ingin logout?");
             if (konfirmasiLogout) {
                 localStorage.removeItem("adminData");
-                window.location.href = "../login.html";
+                window.location.href = "../login.php";
             }
         });
     }

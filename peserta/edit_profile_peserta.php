@@ -115,9 +115,9 @@
                 <div>
                     <h5 class="fw-bold mb-4 ms-3">Menu</h5>
                     <ul class="nav flex-column">
-                        <li><a class="nav-link" href="dashboard_peserta.html"><i
+                        <li><a class="nav-link" href="dashboard_peserta.php"><i
                                     class="bi bi-grid me-2"></i>Dashboard</a></li>
-                        <li><a class="nav-link" href="profile_peserta.html"><i
+                        <li><a class="nav-link" href="profile_peserta.php"><i
                                     class="bi bi-person-circle me-2"></i>Profile</a></li>
                     </ul>
                 </div>
@@ -138,8 +138,8 @@
         <div>
             <h5 class="fw-bold mb-4 ms-3">Menu</h5>
             <ul class="nav flex-column">
-                <li><a class="nav-link" href="dashboard_peserta.html"><i class="bi bi-grid me-2"></i>Dashboard</a></li>
-                <li><a class="nav-link active" href="profile_peserta.html"><i class="bi bi-person me-2"></i>Profile</a></li>
+                <li><a class="nav-link" href="dashboard_peserta.php"><i class="bi bi-grid me-2"></i>Dashboard</a></li>
+                <li><a class="nav-link active" href="profile_peserta.php"><i class="bi bi-person me-2"></i>Profile</a></li>
             </ul>
         </div>
 
@@ -207,7 +207,7 @@
                 </div>
 
                 <div class="d-flex justify-content-end gap-2">
-                    <a href="profile_peserta.html" class="btn btn-cancel">Batal</a>
+                    <a href="profile_peserta.php" class="btn btn-cancel">Batal</a>
                     <button id="simpan_perubahan" type="submit" class="btn btn-save"><i
                             class="bi bi-check2-circle me-1"></i>Simpan
                         Perubahan Profil</button>
@@ -229,7 +229,7 @@
                 inputEmail.value = pesertaData.email;
             } else {
                 alert("Data peserta tidak ditemukan. Silakan login kembali.");
-                window.location.href = "../login.html";
+                window.location.href = "../login.php";
                 return;
             }
 
@@ -258,7 +258,7 @@
                 }
 
                 alert("Profil berhasil diperbarui!");
-                window.location.href = "profile_peserta.html";
+                window.location.href = "profile_peserta.php";
             });
 
             // === Logout Desktop ===
@@ -266,7 +266,7 @@
                 const confirmLogout = confirm("Apakah kamu yakin ingin logout?");
                 if (confirmLogout) {
                     localStorage.removeItem("pesertaData");
-                    window.location.href = "../login.html";
+                    window.location.href = "../login.php";
                 }
             });
 
@@ -277,7 +277,7 @@
                     const konfirmasiLogout = confirm("Apakah kamu yakin ingin logout?");
                     if (konfirmasiLogout) {
                         localStorage.removeItem("pesertaData");
-                        window.location.href = "../login.html";
+                        window.location.href = "../login.php";
                     }
                 });
             }

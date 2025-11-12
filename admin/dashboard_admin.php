@@ -29,11 +29,11 @@
                 <div>
                     <h5 class="fw-bold mb-4 ms-3">Menu</h5>
                     <ul class="nav flex-column">
-                        <li><a class="nav-link" href="dashboard_admin.html"><i class="bi bi-grid me-2"></i>Dashboard</a>
+                        <li><a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
                         </li>
-                        <li><a class="nav-link" href="kelola_rapat_admin.html"><i class="bi bi-people me-2"></i>Kelola
+                        <li><a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola
                                 Pengguna</a></li>
-                        <li><a class="nav-link" href="profile.html"><i class="bi bi-person-circle me-2"></i>Profile</a>
+                        <li><a class="nav-link" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
                         </li>
                     </ul>
                 </div>
@@ -51,11 +51,11 @@
         <div>
             <h5 class="fw-bold mb-4 ms-3">Menu</h5>
             <ul class="nav flex-column">
-                <li><a class="nav-link active" href="dashboard_admin.html"><i class="bi bi-grid me-2"></i>Dashboard</a>
+                <li><a class="nav-link active" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
                 </li>
-                <li><a class="nav-link" href="kelola_rapat_admin.html"><i class="bi bi-people me-2"></i>Kelola
+                <li><a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola
                         Pengguna</a></li>
-                <li><a class="nav-link" href="profile.html"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
+                <li><a class="nav-link" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
             </ul>
         </div>
 
@@ -106,7 +106,7 @@
                 <!-- Controls -->
                 <div class="d-flex gap-2 flex-wrap controls align-items-center">
                     <div class="tambah-container">
-                        <a href="notulen_admin.html" class="btn-tambah" role="button"><i
+                        <a href="notulen_admin.php" class="btn-tambah" role="button"><i
                                 class="bi bi-plus-circle"></i>Tambah notulen</a>
                     </div>
 
@@ -404,7 +404,7 @@
                     logoutBtn.addEventListener("click", function () {
                         if (confirm("Apakah kamu yakin ingin logout?")) {
                             localStorage.removeItem("adminData");
-                            window.location.href = "../login.html";
+                            window.location.href = "../login.php";
                         }
                     });
                 }
@@ -412,7 +412,7 @@
                     logoutBtnMobile.addEventListener("click", function () {
                         if (confirm("Apakah kamu yakin ingin logout?")) {
                             localStorage.removeItem("adminData");
-                            window.location.href = "../login.html";
+                            window.location.href = "../login.php";
                         }
                     });
                 }

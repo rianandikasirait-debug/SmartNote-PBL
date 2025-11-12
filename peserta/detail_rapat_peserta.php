@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Pengguna</title>
+    <title>Lihat Rapat</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
@@ -15,7 +15,7 @@
         }
 
         /* Sidebar */
-.sidebar-content {
+        .sidebar-content {
             min-width: 250px;
             background: #fff;
             height: 100%;
@@ -41,6 +41,11 @@
             color: #dc3545;
             border-radius: .5rem;
             margin-top: 2rem;
+            transition: 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #f8d7da;
         }
 
         /* Main content */
@@ -54,39 +59,84 @@
             }
         }
 
-        .profile-box {
-            background-color: #fff;
-            border-radius: 1rem;
-            padding: 1.5rem;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
         }
 
-        .badge-role {
-            background-color: #00b050;
-            color: white;
-            font-size: 0.8rem;
-            border-radius: 0.5rem;
-            padding: 0.3rem 0.7rem;
+        .search-box {
+            width: 280px;
         }
 
-        .btn-edit {
-            background-color: #00b050;
-            color: white;
-            border: none;
-            border-radius: .5rem;
-            font-weight: 500;
-            transition: 0.2s;
-        }
-
-        .btn-edit:hover {
-            background-color: #02913f;
+        .search-box input {
+            border-radius: 12px;
         }
 
         .profile {
-            display: flex;
-            align-items: center;
-            gap: .5rem;
             font-weight: 500;
+        }
+
+        .content-card {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .content-card h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .content-card p {
+            margin-bottom: 0.25rem;
+        }
+
+        .content-card hr {
+            margin: 1rem 0;
+            color: #ddd;
+        }
+
+        .participant-badge {
+            background-color: #d1f3e0;
+            color: #15623d;
+            border-radius: 20px;
+            padding: 6px 15px;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            margin-right: 8px;
+        }
+
+        .participant-badge i {
+            margin-right: 5px;
+        }
+
+        .btn-back {
+            color: #00b050;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .btn-back:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsif */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 100%;
+                min-height: auto;
+                border-right: none;
+                border-bottom: 1px solid #eee;
+                position: relative;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
         }
     </style>
 </head>
@@ -107,9 +157,9 @@
                 <div>
                     <h5 class="fw-bold mb-4 ms-3">Menu</h5>
                     <ul class="nav flex-column">
-                        <li><a class="nav-link" href="dashboard_peserta.html"><i
+                        <li><a class="nav-link" href="dashboard_pesertaa.php"><i
                                     class="bi bi-grid me-2"></i>Dashboard</a></li>
-                        <li><a class="nav-link" href="profile_peserta.html"><i
+                        <li><a class="nav-link" href="profile_peserta.php"><i
                                     class="bi bi-person-circle me-2"></i>Profile</a></li>
                     </ul>
                 </div>
@@ -130,72 +180,57 @@
         <div>
             <h5 class="fw-bold mb-4 ms-3">Menu</h5>
             <ul class="nav flex-column">
-                <li><a class="nav-link" href="dashboard_peserta.html"><i class="bi bi-grid me-2"></i>Dashboard</a></li>
-                <li><a class="nav-link active" href="profile_peserta.html"><i class="bi bi-person me-2"></i>Profile</a>
-                </li>
+                <li><a class="nav-link" href="dashboard_peserta.php"><i class="bi bi-grid me-2"></i>Dashboard</a></li>
+                <li><a class="nav-link" href="profile_peserta.php"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
             </ul>
         </div>
 
         <div class="text-center">
-            <button id="logoutBtn" class="btn logout-btn px-4 py-2"><i
-                    class="bi bi-box-arrow-right me-2"></i>Logout</button>
+            <button id="logoutBtn" class="btn logout-btn px-4 py-2"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
         </div>
     </div>
 
     <!-- Main -->
-    <div class="main-content">
+        <div class="main-content">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <div>
-            </div>
+            <div></div>
             <div class="profile">
-                <span>Halo, Peserta 👋</span>
+                <span>Halo, Peserta👋</span>
             </div>
         </div>
+        <!-- Detail Rapat -->
+        <div class="content-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h4>Rapat Animasi Hari Ini </h4>
+                    <p class="text-muted">Oleh: Didit</p>
+                </div>
+                <div class="text-end">
+                    <p class="fw-semibold mb-0">Tanggal Rapat:</p>
+                    <p class="mb-0">31/12/2025</p>
+                </div>
+            </div>
 
-        <div class="profile-box">
-            <h5 class="fw-semibold mb-3"><i class="bi bi-person-fill me-2"></i>Profil Pengguna</h5>
+            <hr>
 
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <th style="width: 20%;">Nama:</th>
-                        <td id="nama"></td>
-                    </tr>
-                    <tr>
-                        <th>Email:</th>
-                        <td id="email">didit25@gmail.com</td>
-                    </tr>
-                    <tr>
-                        <th>Role:</th>
-                        <td><span class="badge-role" id="role">Peserta</span></td>
-                    </tr>
-                </tbody>
-            </table>
+            <p>Pembahasan dan review final konsep visual, timeline produksi, dan pembagian tugas untuk proyek animasi "Seri Petualangan Bintang" Fokus utama pada keyframe dan blocking adegan pertama.</p>
 
-            <div class="d-flex justify-content-end">
-                <button id="editprofile" class="btn btn-edit" onclick="editProfile()"><i
-                        class="bi bi-pencil me-2"></i>Edit
-                    Profil</button>
+            <h6 class="fw-semibold mt-3 mb-2">Peserta Rapat:</h6>
+            <div class="mb-3">
+                <span class="participant-badge"><i class="bi bi-person-fill"></i> didit</span>
+                <span class="participant-badge"><i class="bi bi-person-fill"></i> rian12</span>
+                <span class="participant-badge"><i class="bi bi-person-fill"></i> ella</span>
+                <span class="participant-badge"><i class="bi bi-person-fill"></i> yohana</span>
+            </div>
+
+            <div class="text-end mt-4">
+                <a href="dashboard_peserta.php" class="btn-back"><i class="bi bi-arrow-left me-1"></i>Kembali</a>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // edit profile
-        const pesertaData = JSON.parse(localStorage.getItem("pesertaData"))
-        console.log("Data di localStorage:", pesertaData);
-
-        if (pesertaData) {
-            document.getElementById("nama").textContent = pesertaData.name;
-            document.getElementById("email").textContent = pesertaData.email
-            document.getElementById("role").textContent = pesertaData.role || "peserta";
-        } else {
-            alert("Data peserta tidak ditemukan, silakan login kembali.");
-            window.location.href = "../login.html";
-        }
-        document.getElementById("editprofile").addEventListener("click", function () {
-            window.location.href = "edit_profile_peserta.html";
-        });
         // =======================
         // 1. Logout function
         // =======================
@@ -203,9 +238,9 @@
             const confirmLogout = confirm("Apakah kamu yakin ingin logout?");
             if (confirmLogout) {
                 // Hapus data login dari localStorage
-                localStorage.removeItem("pesertaData");
+                localStorage.removeItem("userData");
                 // Arahkan ke halaman login
-                window.location.href = "../login.html";
+                window.location.href = "../login.php";
             }
                 // logout mobile
         const logoutBtnMobile = document.getElementById("logoutBtnMobile");
@@ -214,14 +249,12 @@
             const konfirmasiLogout = confirm("Apakah kamu yakin ingin logout?");
             if (konfirmasiLogout) {
                 localStorage.removeItem("pesertaData");
-                window.location.href = "../login.html";
+                window.location.href = "../login.php";
             }
         });
     }
         });
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

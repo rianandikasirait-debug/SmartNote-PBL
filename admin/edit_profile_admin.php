@@ -27,11 +27,11 @@
                 <div>
                     <h5 class="fw-bold mb-4 ms-3">Menu</h5>
                     <ul class="nav flex-column">
-                        <li><a class="nav-link" href="dashboard_admin.html"><i class="bi bi-grid me-2"></i>Dashboard</a>
+                        <li><a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
                         </li>
-                        <li><a class="nav-link" href="kelola_rapat_admin.html"><i class="bi bi-people me-2"></i>Kelola
+                        <li><a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola
                                 Pengguna</a></li>
-                        <li><a class="nav-link" href="profile.html"><i class="bi bi-person-circle me-2"></i>Profile</a>
+                        <li><a class="nav-link" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
                         </li>
                     </ul>
                 </div>
@@ -53,14 +53,14 @@
             <h5 class="fw-bold mb-4 ms-3">Menu</h5>
             <ul class="nav flex-column">
                 <li>
-                    <a class="nav-link" href="dashboard_admin.html"><i class="bi bi-grid me-2"></i>Dashboard</a>
+                    <a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
                 </li>
                 <li>
-                    <a class="nav-link" href="kelola_rapat_admin.html"><i class="bi bi-people me-2"></i>Kelola
+                    <a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola
                         Pengguna</a>
                 </li>
                 <li>
-                    <a class="nav-link active" href="profile.html"><i class="bi bi-person-circle me-2"></i>Profile</a>
+                    <a class="nav-link active" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
                 </li>
             </ul>
         </div>
@@ -128,7 +128,7 @@
                 </div>
 
                 <div class="d-flex justify-content-end gap-2">
-                    <a href="profile.html" class="btn btn-cancel">Batal</a>
+                    <a href="profile.php" class="btn btn-cancel">Batal</a>
                     <button type="submit" id="simpan_perubahan" class="btn btn-save"><i
                             class="bi bi-check2-circle me-1"></i>Simpan
                         Perubahan Profil</button>
@@ -149,7 +149,7 @@
                 inputEmail.value = adminData.email;
             } else {
                 alert("Data admin tidak ditemukan. Silakan login kembali.");
-                window.location.href = "../login.html";
+                window.location.href = "../login.php";
                 return;
             }
 
@@ -176,7 +176,7 @@
             }
 
             alert("Profil berhasil diperbarui!");
-            window.location.href = "profile.html";
+            window.location.href = "profile.php";
         });
 
 
@@ -184,7 +184,7 @@
             const confirmLogout = confirm("Apakah kamu yakin ingin logout?");
             if (confirmLogout) {
                 localStorage.removeItem("adminData");
-                window.location.href = "../login.html";
+                window.location.href = "../login.php";
             }
         });
         // logout mobile
@@ -194,7 +194,7 @@
                 const konfirmasiLogout = confirm("Apakah kamu yakin ingin logout?");
                 if (konfirmasiLogout) {
                     localStorage.removeItem("adminData");
-                    window.location.href = "../login.html";
+                    window.location.href = "../login.php";
                 }
             });
         }

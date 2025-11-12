@@ -106,7 +106,7 @@
     margin-left: 4px;
     font-size: 15px;
     cursor: pointer;
-}
+    }
 
     .topbar {
     display: flex;
@@ -137,7 +137,7 @@
     margin-top: 10px;
     width: 50%;
     }
-   .added-item {
+    .added-item {
       background: #f8f9fa;
       border-radius: 8px;
       padding: 6px 10px;
@@ -146,7 +146,7 @@
       justify-content: space-between;
       align-items: center;
     }
-     .select-all-box {
+    .select-all-box {
       background-color: #f8f9fa; /* abu-abu muda */
       border-radius: 8px;
       padding: 6px 10px;

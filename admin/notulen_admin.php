@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="../css/admin.min.css">
     
     <script src="https://cdn.tiny.cloud/1/cl3yw8j9ej8nes9mctfudi2r0jysibdrbn3y932667p04jg5/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-     <style>
+    <style>
     .btn-save {
     background-color: #00b050;
     color: #fff;
@@ -56,23 +56,23 @@
     }
 
     .added-item {
-      background: #f8f9fa;
-      border-radius: 8px;
-      padding: 6px 10px;
-      margin: 5px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 6px 10px;
+    margin: 5px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     }
     .select-all-box {
       background-color: #f8f9fa; /* abu-abu muda */
-      border-radius: 8px;
-      padding: 6px 10px;
-      margin-top: 5px;
-      margin-bottom: 8px;
-      border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 3px 10px;
+    margin-top: 5px;
+    margin-bottom: 8px;
+    border: 1px solid #e0e0e0;
     }
-  </style>
+</style>
 </head>
 
 <body>
@@ -165,51 +165,49 @@
                 </div>
 
             <!-- Dropdown Peserta -->
-       <div class="mb-3">
-          <label class="form-label">Peserta Notulen</label>
-          <div class="dropdown w-50">
+        <div class="mb-3">
+        <label class="form-label">Peserta Notulen</label>
+        <div class="dropdown w-50">
             <button class="btn btn-save w-100 dropdown-toggle" type="button" data-bs-toggle="dropdown"
-              aria-expanded="false">
-              Pilih Peserta
-            </button>
+            aria-expanded="false">Pilih Peserta</button>
 
             <div class="dropdown-menu p-2">
-              <input type="text" class="form-control search-box" id="searchInput" placeholder="Cari nama notulen...">
-              <div class="select-all-box">
+            <input type="text" class="form-control search-box" id="searchInput" placeholder="Cari nama notulen...">
+            <div class="select-all-box">
                 <div class="form-check m-0">
                 <input class="form-check-input" type="checkbox" id="selectAll">
                 <label class="form-check-label fw-semibold" for="selectAll">Pilih Semua</label>
                 </div>
             </div>
-              <div id="notulenList" class="mt-2">
-                <div class="form-check">
-                  <input class="form-check-input notulen-checkbox" type="checkbox" value="Della Reska" id="n1">
-                  <label class="form-check-label" for="n1">Della Reska</label>
+            <div id="notulenList" class="mt-2">
+            <div class="form-check">
+                <input class="form-check-input notulen-checkbox" type="checkbox" value="Della Reska" id="n1">
+                <label class="form-check-label" for="n1">Della Reska</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input notulen-checkbox" type="checkbox" value="Andi Saputra" id="n2">
-                  <label class="form-check-label" for="n2">Andi Saputra</label>
+                    <input class="form-check-input notulen-checkbox" type="checkbox" value="Andi Saputra" id="n2">
+                    <label class="form-check-label" for="n2">Andi Saputra</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input notulen-checkbox" type="checkbox" value="Budi Santoso" id="n3">
-                  <label class="form-check-label" for="n3">Budi Santoso</label>
+                    <input class="form-check-input notulen-checkbox" type="checkbox" value="Budi Santoso" id="n3">
+                    <label class="form-check-label" for="n3">Budi Santoso</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input notulen-checkbox" type="checkbox" value="Citra Ayu" id="n4">
-                  <label class="form-check-label" for="n4">Citra Ayu</label>
+                    <input class="form-check-input notulen-checkbox" type="checkbox" value="Citra Ayu" id="n4">
+                    <label class="form-check-label" for="n4">Citra Ayu</label>
                 </div>
-              </div>
-              <button type="button" class="btn btn-save w-100 mt-3" id="addButton">Tambah</button>
+                </div>
+            <button type="button" class="btn btn-save w-100 mt-3" id="addButton">Tambah</button>
             </div>
-          </div>
+        </div>
 
-          <!-- List peserta -->
-          <div id="addedList" class="added-list mt-3">
+        <!-- List peserta -->
+        <div id="addedList" class="added-list mt-3">
             <h6 class="fw-bold mb-2">Peserta yang Telah Ditambahkan:</h6>
             <div id="addedContainer">
-              <p class="text-muted">Belum ada peserta yang ditambahkan</p>
+            <p class="text-muted">Belum ada peserta yang ditambahkan</p>
             </div>
-          </div>
+        </div>
         </div>
                 <div class="d-flex justify-content-end">
                     <button type="submit" class="btn btn-save px-4">Simpan</button>

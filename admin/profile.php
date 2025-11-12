@@ -108,47 +108,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        // 1. Menampilkan Data Profil
-        const adminData = JSON.parse(localStorage.getItem("adminData"));
-        console.log("Data di localStorage:", adminData);
-
-        if (adminData) {
-            // Perbaikan: Menggunakan .name agar sesuai dengan data di localStorage
-            document.getElementById("nama").textContent = adminData.name;
-            document.getElementById("email").textContent = adminData.email;
-            document.getElementById("role").textContent = adminData.role || "Admin";
-        } else {
-            // Tambahan: Pengaman jika data admin tidak ada (belum login)
-            alert("Data admin tidak ditemukan, silakan login kembali.");
-            window.location.href = "../login.php";
-        }
-
-        // 2. Tombol Edit Profile
-        document.getElementById("editprofile").addEventListener("click", function () {
-            window.location.href = "edit_profile_admin.php";
-        });
-
-        // 3. Fungsi Logout (Desktop)
-        document.getElementById("logoutBtn").addEventListener("click", function () {
-            const confirmLogout = confirm("Apakah kamu yakin ingin logout?");
-            if (confirmLogout) {
-                localStorage.removeItem("adminData");
-                window.location.href = "../login.php";
-            }
-        });
-
-        // 4. Fungsi Logout (Mobile)
-        document.getElementById("logoutBtnMobile").addEventListener("click", function () {
-            const confirmLogout = confirm("Apakah kamu yakin ingin logout?");
-            if (confirmLogout) {
-                localStorage.removeItem("adminData");
-                window.location.href = "../login.php";
-            }
-        });
-    </script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

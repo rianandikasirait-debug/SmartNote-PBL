@@ -1,20 +1,10 @@
 <?php
 session_start();
 
-// Path koneksi
-$koneksi_path = __DIR__ . '/../koneksi.php';
-if (!file_exists($koneksi_path)) {
-    die('File koneksi tidak ditemukan: ' . $koneksi_path);
-}
+// sesuaikan path ke koneksi.php
+require_once __DIR__ . '/../koneksi.php'; // <-- ubah ke '/../koneksi.php' kalau login.php ada di subfolder
 
-require_once $koneksi_path;
-
-// Pastikan variabel koneksi ($conn) tersedia
-if (!isset($conn) || !($conn instanceof mysqli)) {
-    die('Variabel koneksi ($conn) tidak tersedia atau bukan mysqli. Periksa koneksi.php');
-}
-
-// Pastikan method POST
+// Pastikan lewat POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $_SESSION['login_error'] = 'Metode tidak diperbolehkan.';
     header('Location: ../login.php');
@@ -25,71 +15,85 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $email = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
 
-// Validasi input sederhana
+// Validasi sederhana
 if ($email === '' || $password === '') {
-    $_SESSION['login_error'] = 'Email dan password wajib diisi.';
+    $_SESSION['login_error'] = 'Email dan password harus diisi.';
     header('Location: ../login.php');
     exit;
 }
 
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $_SESSION['login_error'] = 'Format email tidak valid.';
-    header('Location: ../login.php');
-    exit;
-}
-
-// Prepared statement — ambil kolom sesuai DB: 'nama' di-mapping ke 'name'
-$sql = "SELECT id, nama AS name, email, password, role FROM users WHERE email = ? LIMIT 1";
-$stmt = mysqli_prepare($conn, $sql);
-
+// Siapkan query (pastikan nama tabelmu 'users' atau sesuaikan)
+$sql = "SELECT * FROM users WHERE email = ? LIMIT 1";
+$stmt = $conn->prepare($sql);
 if (!$stmt) {
-    // Debug singkat (hapus/ubah sebelum production)
-    $_SESSION['login_error'] = 'Kesalahan server (prepare): ' . mysqli_error($conn);
+    error_log('Prepare failed: ' . $conn->error);
+    $_SESSION['login_error'] = 'Kesalahan server.';
     header('Location: ../login.php');
     exit;
 }
 
-// bind & execute
-mysqli_stmt_bind_param($stmt, 's', $email);
-if (!mysqli_stmt_execute($stmt)) {
-    $_SESSION['login_error'] = 'Kesalahan server (execute): ' . mysqli_stmt_error($stmt);
-    mysqli_stmt_close($stmt);
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+$stmt->close();
+
+if (!$user) {
+    $_SESSION['login_error'] = 'Email tidak ditemukan.';
     header('Location: ../login.php');
     exit;
 }
 
-// Bind hasil (fallback jika get_result() tidak tersedia)
-mysqli_stmt_bind_result($stmt, $id, $name, $email_db, $password_stored, $role);
-$found = mysqli_stmt_fetch($stmt);
-mysqli_stmt_close($stmt);
+$authenticated = false;
 
-if (!$found) {
-    $_SESSION['login_error'] = 'Email atau password salah.';
+if (!empty($user['password_hash'])) {
+    // normal case (aman)
+    if (password_verify($password, $user['password_hash'])) {
+        $authenticated = true;
+        // optionally rehash if algorithm changed
+        if (password_needs_rehash($user['password_hash'], PASSWORD_DEFAULT)) {
+            $newHash = password_hash($password, PASSWORD_DEFAULT);
+            $u_stmt = $conn->prepare("UPDATE users SET password_hash = ? WHERE id = ?");
+            if ($u_stmt) {
+                $u_stmt->bind_param('si', $newHash, $user['id']);
+                $u_stmt->execute();
+                $u_stmt->close();
+            }
+        }
+    }
+} elseif (isset($user['password'])) {
+    // fallback (insecure) -> migrate to hashed password
+    if ($password === $user['password']) {
+        $authenticated = true;
+        // migrasi: buat hash dan simpan
+        $newHash = password_hash($password, PASSWORD_DEFAULT);
+        $u_stmt = $conn->prepare("UPDATE users SET password_hash = ? WHERE id = ?");
+        if ($u_stmt) {
+            $u_stmt->bind_param('si', $newHash, $user['id']);
+            $u_stmt->execute();
+            $u_stmt->close();
+        }
+        // (opsional) kamu bisa menghapus kolom password plain nanti
+    }
+}
+
+if (!$authenticated) {
+    $_SESSION['login_error'] = 'Password salah.';
     header('Location: ../login.php');
     exit;
 }
 
-// --- Verifikasi password ---
-// Saat ini password di DB masih plaintext (contoh: 'lopolo9090'), jadi bandingkan langsung.
-// Setelah kamu migrasikan ke password_hash(), ganti ke password_verify().
-if ($password !== $password_stored) {
-    $_SESSION['login_error'] = 'Email atau password salah.';
-    header('Location: ../login.php');
-    exit;
-}
-
-// Login sukses
-session_regenerate_id(true);
-$_SESSION['user_id'] = $id;
-$_SESSION['user_name'] = $name;
-$_SESSION['user_email'] = $email_db;
-$_SESSION['user_role'] = $role;
+// Login berhasil
+session_regenerate_id(true); // penting
+$_SESSION['user_id'] = $user['id'];
+$_SESSION['user_name'] = $user['name'] ?? $user['username'] ?? '';
+$_SESSION['user_role'] = $user['role'] ?? 'peserta';
 
 // Redirect berdasarkan role
-if (strtolower(trim($role)) === 'admin') {
-    header('Location: ../admin/dashboard_admin.php');
+if (trim(strtolower($_SESSION['user_role'])) === 'admin') {
+    header('Location: ../admin/dashboard_admin.php'); // sesuaikan path
     exit;
 } else {
-    header('Location: ../peserta/dashboard_peserta.php');
+    header('Location: ../peserta/dashboard_peserta.php'); // sesuaikan path / halaman peserta
     exit;
 }

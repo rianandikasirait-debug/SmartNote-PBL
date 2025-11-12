@@ -45,7 +45,7 @@ session_start();
                             }
                             ?>
 
-                            <form id="loginform" action="proses/proses_login.php" method="post">
+                            <form id="loginform" action="proses/proses_login.php" method="POST">
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Email</label>
                                     <input type="email" class="form-control rounded-pill" id="email" placeholder="Email"
@@ -63,11 +63,6 @@ session_start();
                                         Login
                                     </button>
                                 </div>
-
-                                <p class="text-center small mb-0">
-                                    Belum punya akun?
-                                    <a href="register.php" class="link-custom-green">Daftar</a>
-                                </p>
                             </form>
 
                         </div>

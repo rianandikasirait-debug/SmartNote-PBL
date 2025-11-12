@@ -160,7 +160,11 @@
        <div class="mb-3">
           <label class="form-label">Peserta Notulen</label>
           <div class="dropdown w-50">
+<<<<<<< HEAD
             <button class="btn btn-save w-100 dropdown-toggle" type="button" data-bs-toggle="dropdown"
+=======
+            <button class="btn btn-outline-success w-100 dropdown-toggle" type="button" data-bs-toggle="dropdown"
+>>>>>>> eae20aae5a225127ba83842e7283ba8c32546696
               aria-expanded="false">
               Pilih Peserta
             </button>
@@ -189,7 +193,11 @@
                   <label class="form-check-label" for="n4">Citra Ayu</label>
                 </div>
               </div>
+<<<<<<< HEAD
               <button type="button" class="btn btn-save w-100 mt-3" id="addButton">Tambah</button>
+=======
+              <button type="button" class="btn btn-success w-100 mt-3" id="addButton">Tambah</button>
+>>>>>>> eae20aae5a225127ba83842e7283ba8c32546696
             </div>
           </div>
 

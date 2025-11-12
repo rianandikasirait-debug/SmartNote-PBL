@@ -10,6 +10,40 @@
     <link rel="stylesheet" href="../css/admin.min.css">
     
     <script src="https://cdn.tiny.cloud/1/cl3yw8j9ej8nes9mctfudi2r0jysibdrbn3y932667p04jg5/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+     <style>
+    .form-label {
+    font-weight: 500;
+    }
+
+    .dropdown-menu {
+    width: 100%;
+    max-height: 250px;
+    overflow-y: auto;
+    }
+
+    .search-box {
+    padding: 8px;
+    }
+
+    .added-list {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-top: 10px;
+    width: 50%;
+    }
+
+    .added-item {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 6px 10px;
+      margin: 5px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
 </head>
 
 <body>
@@ -100,51 +134,51 @@
                     <label class="form-label">Upload file (opsional)</label>
                     <input type="file" class="form-control" id="fileInput">
                 </div>
-
-                <!-- Dropdown Peserta -->
-        <div class="mb-3">
-            <label class="form-label">Peserta Notulen</label>
-            <div class="dropdown w-50">
+    
+            <!-- Dropdown Peserta -->
+       <div class="mb-3">
+          <label class="form-label">Peserta Notulen</label>
+          <div class="dropdown w-50">
             <button class="btn btn-outline-primary w-100 dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                Pilih Notulen
+              aria-expanded="false">
+              Pilih Peserta
             </button>
 
             <div class="dropdown-menu p-2">
-                <input type="text" class="form-control search-box" id="searchInput" placeholder="Cari nama notulen...">
-                <div class="form-check mt-2">
+              <input type="text" class="form-control search-box" id="searchInput" placeholder="Cari nama notulen...">
+              <div class="form-check mt-2">
                 <input class="form-check-input" type="checkbox" id="selectAll">
                 <label class="form-check-label" for="selectAll">Pilih Semua</label>
-                </div>
-                <div id="notulenList" class="mt-2">
+              </div>
+              <div id="notulenList" class="mt-2">
                 <div class="form-check">
-                    <input class="form-check-input notulen-checkbox" type="checkbox" value="Della Reska" id="n1">
-                    <label class="form-check-label" for="n1">Della Reska</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input notulen-checkbox" type="checkbox" value="Andi Saputra" id="n2">
-                    <label class="form-check-label" for="n2">Andi Saputra</label>
+                  <input class="form-check-input notulen-checkbox" type="checkbox" value="Della Reska" id="n1">
+                  <label class="form-check-label" for="n1">Della Reska</label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input notulen-checkbox" type="checkbox" value="Budi Santoso" id="n3">
-                    <label class="form-check-label" for="n3">Budi Santoso</label>
+                  <input class="form-check-input notulen-checkbox" type="checkbox" value="Andi Saputra" id="n2">
+                  <label class="form-check-label" for="n2">Andi Saputra</label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input notulen-checkbox" type="checkbox" value="Citra Ayu" id="n4">
-                    <label class="form-check-label" for="n4">Citra Ayu</label>
+                  <input class="form-check-input notulen-checkbox" type="checkbox" value="Budi Santoso" id="n3">
+                  <label class="form-check-label" for="n3">Budi Santoso</label>
                 </div>
+                <div class="form-check">
+                  <input class="form-check-input notulen-checkbox" type="checkbox" value="Citra Ayu" id="n4">
+                  <label class="form-check-label" for="n4">Citra Ayu</label>
                 </div>
-                <button type="button" class="btn btn-primary w-100 mt-3" id="addButton">Tambah</button>
+              </div>
+              <button type="button" class="btn btn-primary w-100 mt-3" id="addButton">Tambah</button>
             </div>
-            </div>
+          </div>
 
-            <!-- List peserta -->
-            <div id="addedList" class="added-list mt-3">
+          <!-- List peserta -->
+          <div id="addedList" class="added-list mt-3">
             <h6 class="fw-bold mb-2">Peserta yang Telah Ditambahkan:</h6>
             <div id="addedContainer">
-                <p class="text-muted">Belum ada peserta yang ditambahkan</p>
+              <p class="text-muted">Belum ada peserta yang ditambahkan</p>
             </div>
-            </div>
+          </div>
         </div>
                 <div class="d-flex justify-content-end">
                     <button type="submit" class="btn btn-save px-4">Simpan</button>
@@ -152,15 +186,15 @@
             </form>
         </div>
     </div>
-
+</div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         // === TINYMCE INITIALIZATION ===
         tinymce.init({
-            selector: '#isi', // Memastikan selector sesuai dengan ID textarea
+            selector: '#isi', 
             height: 350,
-            menubar: 'edit view insert format tools table help', // Tambahkan menu bar
+            menubar: 'edit view insert format tools table help', 
             plugins: [
                 "advlist", "anchor", "autolink", "charmap", "code", "fullscreen",
                 "help", "image", "insertdatetime", "link", "lists", "media",
@@ -168,7 +202,6 @@
             ],
             toolbar: "undo redo | styles | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
             
-            // Opsional: Untuk menyesuaikan tampilan placeholder agar terlihat seperti di gambar sebelumnya.
             setup: function (editor) {
                 editor.on('init', function (e) {
                     if (editor.getContent() === '') {
@@ -183,15 +216,12 @@
             }
         });
 
-        // === LOGIC FORM & LOGOUT ===
         // Simulasi penyimpanan form
         document.getElementById("notulenForm").addEventListener("submit", function (e) {
             e.preventDefault();
 
             const judul = document.getElementById("judul").value;
             const tanggal = document.getElementById("tanggal").value;
-            
-            // PERBAIKAN 2: Ambil konten dari INSTANCE TINYMCE
             const isi = tinymce.get('isi').getContent(); 
 
             const peserta = [];
@@ -210,7 +240,7 @@
             setTimeout(() => {
                 alertBox.style.display = "none";
                 document.getElementById("notulenForm").reset();
-                tinymce.get('isi').setContent(''); // Kosongkan editor
+                tinymce.get('isi').setContent(''); 
             }, 2000);
         });
 

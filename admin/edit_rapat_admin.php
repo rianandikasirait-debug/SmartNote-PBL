@@ -196,7 +196,7 @@
           <div class="dropdown w-50">
             <button class="btn btn-outline-primary w-100 dropdown-toggle" type="button" data-bs-toggle="dropdown"
               aria-expanded="false">
-              Pilih Notulen
+              Pilih Peserta
             </button>
 
             <div class="dropdown-menu p-2">

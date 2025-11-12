@@ -63,7 +63,20 @@
     color: #fff;
     border: none;
     }
-
+    .btn-save.dropdown-toggle:focus,
+    .btn-save.dropdown-toggle:active:focus,
+    .btn-save.dropdown-toggle:hover:focus,
+    .btn-save.dropdown-toggle:active {
+    background-color: #00b050 !important; 
+    color: #fff !important; 
+    border-color: #00b050 !important; 
+    box-shadow: none !important; 
+    }
+    .dropdown.show .btn-save.dropdown-toggle {
+    background-color: #00b050 !important;
+    color: #fff !important;
+    border-color: #00b050 !important;
+    }
     .btn-save:hover {
     background-color: #009443;
     color: #fff;
@@ -194,7 +207,7 @@
         <div class="mb-3">
           <label class="form-label">Peserta Notulen</label>
           <div class="dropdown w-50">
-            <button class="btn btn-outline-primary w-100 dropdown-toggle" type="button" data-bs-toggle="dropdown"
+            <button class="btn btn-save w-100 dropdown-toggle" type="button" data-bs-toggle="dropdown"
               aria-expanded="false">
               Pilih Peserta
             </button>
@@ -223,7 +236,7 @@
                   <label class="form-check-label" for="n4">Citra Ayu</label>
                 </div>
               </div>
-              <button type="button" class="btn btn-primary w-100 mt-3" id="addButton">Tambah</button>
+              <button type="button" class="btn btn-save w-100 mt-3" id="addButton">Tambah</button>
             </div>
           </div>
 

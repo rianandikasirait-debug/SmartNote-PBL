@@ -103,8 +103,8 @@
             </table>
 
             <div class="d-flex justify-content-end">
-                <button id="editprofile" class="btn btn-edit"><i class="bi bi-pencil me-2"></i>Edit
-                    Profil</button>
+                <a href="edit_profile_admin.php" class="btn btn-edit"><i class="bi bi-pencil me-2"></i>Edit
+                    Profil</a>
             </div>
         </div>
     </div>

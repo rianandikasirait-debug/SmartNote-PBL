@@ -93,7 +93,7 @@
                 <div class="highlight-card">
                     <span class="text-muted">29/12/2025</span>
                     <h6 class="mt-1 mb-1">Rapat Tim Proyek</h6>
-                    <p>Koordinasi terakhir untuk memastikan semua tugas proyek selesai dan siap untuk pelaporan akhir</p>
+                    <p>Koordinasi terakhir untuk memastikan tugas proyek selesai dan siap untuk pelaporan akhir</p>
                 </div>
             </div>
         </div>

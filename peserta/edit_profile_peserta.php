@@ -60,7 +60,7 @@ $foto_profile = !empty($user['foto']) ? '../file/' . $user['foto'] : '../file/us
 
         .sidebar-content .nav-link.active,
         .sidebar-content .nav-link:hover {
-            background-color: #00b050;
+            background-color: #00c853;
             color: #fff;
         }
 
@@ -98,7 +98,7 @@ $foto_profile = !empty($user['foto']) ? '../file/' . $user['foto'] : '../file/us
         }
 
         .btn-save {
-            background-color: #00b050;
+            background-color: #00c853;
             color: white;
             border: none;
             border-radius: .5rem;

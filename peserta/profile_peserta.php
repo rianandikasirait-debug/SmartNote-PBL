@@ -62,7 +62,7 @@ $foto_profile = (!empty($user['foto']) ? '../file/' . $user['foto'] : '../file/u
 
         .sidebar-content .nav-link.active,
         .sidebar-content .nav-link:hover {
-            background-color: #00b050;
+            background-color: #00c853;
             color: #fff;
         }
 
@@ -93,7 +93,7 @@ $foto_profile = (!empty($user['foto']) ? '../file/' . $user['foto'] : '../file/u
         }
 
         .badge-role {
-            background-color: #00b050;
+            background-color: #00c853;
             color: white;
             font-size: 0.8rem;
             border-radius: 0.5rem;
@@ -101,7 +101,7 @@ $foto_profile = (!empty($user['foto']) ? '../file/' . $user['foto'] : '../file/u
         }
 
         .btn-edit {
-            background-color: #00b050;
+            background-color: #00c853;
             color: white;
             border: none;
             border-radius: .5rem;

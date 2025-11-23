@@ -58,7 +58,7 @@ if ($result) {
 
         .sidebar-content .nav-link.active,
         .sidebar-content .nav-link:hover {
-            background-color: #00b050;
+            background-color: #00c853;
             color: #fff;
         }
 
@@ -84,12 +84,12 @@ if ($result) {
             border-radius: 1rem;
             border: 1px solid #00b050;
             padding: 1rem;
-            box-shadow: 8px 8px 0px 0px #00b050;
+            box-shadow: 8px 8px 0px 0px #00c853;
             transition: 0.2s;
         }
 
         .highlight-card:hover {
-            box-shadow: 14px 14px 0px 0px #00b050;
+            box-shadow: 14px 14px 0px 0px #00c853;
         }
 
         .highlight-card h6 {

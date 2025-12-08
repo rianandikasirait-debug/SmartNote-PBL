@@ -84,10 +84,6 @@ if ($error_msg)
                             <li><a class="nav-link" href="kelola_rapat_admin.php"><i
                                         class="bi bi-people me-2"></i>Kelola
                                     Pengguna</a></li>
-
-                            <li><a class="nav-link active" href="tambah_peserta_admin.php"><i
-                                        class="bi bi-person-plus me-2"></i>Tambah Pengguna</a></li>
-
                             <li><a class="nav-link" href="profile.php"><i
                                         class="bi bi-person-circle me-2"></i>Profile</a>
                             </li>

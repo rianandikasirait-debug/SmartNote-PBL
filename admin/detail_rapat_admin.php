@@ -8,6 +8,16 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     exit;
 }
 
+// Ambil data user login
+$userId = (int) $_SESSION['user_id'];
+$stmt = $conn->prepare("SELECT nama FROM users WHERE id = ?");
+$stmt->bind_param("i", $userId);
+$stmt->execute();
+$userRes = $stmt->get_result();
+$userData = $userRes->fetch_assoc();
+$stmt->close();
+$userName = $userData['nama'] ?? 'Admin';
+
 $id_notulen = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
 if ($id_notulen <= 0) {
@@ -164,7 +174,7 @@ if (trim($peserta_raw) !== '') {
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div></div>
             <div class="profile">
-                <span>Halo, Admin👋</span>
+                <span>Halo, <?= htmlspecialchars($userName) ?>👋</span>
             </div>
         </div>
 

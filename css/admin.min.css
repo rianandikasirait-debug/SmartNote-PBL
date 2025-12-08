@@ -1,4 +1,4 @@
-:root {
+﻿:root {
     --primary: #00c854;
 }
 
@@ -214,6 +214,10 @@ body {
     .table-header .controls>* {
         width: 100% !important;
     }
+
+    /* ensure search+button header in kelola_rapat_admin stays inside card */
+    .table-wrapper .search-box.flex-grow-1 { flex: 1 1 auto; min-width: 0; }
+    .table-wrapper .d-flex.align-items-center .bi-people-fill { font-size: 1.05rem; margin-left: .25rem; margin-right: .5rem; }
 }
 
 body {
@@ -253,22 +257,36 @@ body {
         gap: 0.5rem;
     }
 
+    .mobile-card {
+        position: relative;
+        margin-bottom: 0.75rem;
+    }
+
+    .mobile-card-inner {
+        background: #fff;
+        border-radius: 0.75rem;
+        border: 1px solid #e8e8e8;
+        padding: 0.875rem 0.875rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        box-shadow: none;
+        overflow: visible;
+    }
+
+    /* Remove decorative corner and any left markers for a clean, full-width look */
+    .mobile-card::after { display: none !important; }
+
     .mobile-card-header {
         display: flex;
         justify-content: space-between;
-        align-items: flex-start;
-        gap: 0.375rem;
+        align-items: center;
+        gap: 0.5rem;
     }
 
+    /* hide the old status badge (we use decorative corner instead) */
     .mobile-status-badge {
-        background: #e8f5e9;
-        color: var(--primary);
-        border-radius: 0.25rem;
-        padding: 0.2rem 0.6rem;
-        font-size: 0.75rem;
-        font-weight: 600;
-        white-space: nowrap;
-        flex-shrink: 0;
+        display: none;
     }
 
     .mobile-card-actions {
@@ -278,17 +296,60 @@ body {
         flex-shrink: 0;
     }
 
+    /* compact, subtle action buttons */
     .mobile-card-actions .btn-sm {
-        padding: 0.4rem 0.45rem;
+        padding: 0.35rem 0.45rem;
         font-size: 0.85rem;
+        border-radius: 0.45rem;
+        min-width: 36px;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        border: 1px solid #eef3ee;
+        color: #556b5a;
+    }
+
+    .mobile-card-actions .btn-sm.text-danger {
+        border-color: rgba(220,53,69,0.06);
+        color: #c92a2a;
+        background: #fff;
     }
 
     .mobile-card-title {
-        font-size: 1rem;
+        font-size: 0.98rem;
         font-weight: 700;
         color: #000;
-        line-height: 1.3;
-        margin: 0.125rem 0 0 0;
+        line-height: 1.25;
+        margin: 0 0 0.15rem 0;
+    }
+
+    /* make content inside the card horizontally scrollable when too long */
+    .mobile-card-scroll {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+        padding-bottom: 2px;
+    }
+
+    .mobile-card-title,
+    .mobile-card-info {
+        display: inline-block;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+
+    /* ensure card doesn't cause page horizontal scroll */
+    .mobile-list,
+    .mobile-card {
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+
+    .mobile-card-inner {
+        overflow: visible;
     }
 
     .mobile-card-info {
@@ -297,6 +358,21 @@ body {
         gap: 0.375rem;
         font-size: 0.85rem;
         color: #666;
+    }
+
+    /* Make the card container flush with the table wrapper */
+    .table-responsive {
+        padding: 0 !important;
+        display: none !important; /* hide table on small screens, use mobileList */
+    }
+
+    .mobile-card {
+        margin: 0 0 0.75rem 0;
+        padding-left: 0;
+    }
+
+    .mobile-card-inner {
+        padding: 0.75rem 0.9rem;
     }
 
     .mobile-card-info-row {
@@ -313,6 +389,13 @@ body {
 
     .table-wrapper {
         padding-bottom: 1rem;
+    }
+
+    /* Mobile list container (used instead of the table) */
+    .mobile-list {
+        display: block;
+        width: 100%;
+        padding: 0.5rem 0;
     }
 }
 
@@ -1311,38 +1394,22 @@ body {
             transform: none;
         }
 
-        /* Grid layout untuk menampilkan label dan nilai side-by-side */
+        /* Make cells full width on mobile and hide the left label badge */
         .table tbody td {
-            display: grid;
-            grid-template-columns: 70px 1fr;
-            gap: 12px;
-            padding: 10px 0;
+            display: block;
+            width: 100%;
+            padding: 8px 0;
             border: none;
             word-wrap: break-word;
             word-break: break-word;
-            align-items: center;
-        }
-
-        /* Styling untuk label - menjadi badge kecil */
-        .table tbody td::before {
-            content: attr(data-label);
-            display: inline-block;
-            font-weight: 700;
-            color: #fff;
-            background-color: #00c853;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 4px 8px;
-            border-radius: 4px;
-            white-space: nowrap;
-        }
-
-        /* Styling untuk nilai/konten */
-        .table tbody td {
-            font-weight: 500;
             color: #333;
+            font-weight: 500;
             font-size: 14px;
+        }
+
+        /* Hide the small green label/badge that appears on the left */
+        .table tbody td::before {
+            display: none !important;
         }
 
         /* Row number styling lebih menonjol */
@@ -1517,6 +1584,38 @@ body {
             color: white;
         }
     }
+
+    /* ---- Profile / Edit profile page shared tweaks (moved from page inline styles) ---- */
+    /* Centered card, avatar sizing, buttons and small responsive adjustments */
+    .main-content { padding: 1.25rem; }
+    .profile-box { max-width:720px; margin:0 auto; background:#fff; padding:1.25rem; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.06); }
+    .profile { display:flex; align-items:center; gap:.5rem; }
+    .profile img { width:40px; height:40px; object-fit:cover; border-radius:50%; }
+    .profile-box table { border-collapse:separate; border-spacing:0 0.65rem; }
+    .profile-box th { width:140px; font-weight:700; vertical-align:middle; border:none; }
+    .profile-box td { vertical-align:middle; border-bottom:1px solid #f1f1f1; padding: .6rem 0; }
+    .btn-edit { background:#10b981; color:#fff; border-radius:8px; padding:.5rem .85rem; display:inline-flex; align-items:center; gap:.5rem; box-shadow:0 6px 12px rgba(16,185,129,0.12); }
+    .btn-edit i { font-size:1.05rem; }
+
+    .foto-preview { width:120px; height:120px; border-radius:50%; object-fit:cover; border:1px solid #e9e9e9; display:block; margin:0 auto; }
+    .form-control { border-radius:8px; }
+    .btn-save { background-color: #10b981; color:#fff; border:none; padding:.5rem .9rem; border-radius:8px; box-shadow:0 6px 12px rgba(16,185,129,0.12); }
+    .btn-save i { margin-right:.45rem; }
+    .btn-save:hover { background-color:#0ea06e; }
+    .btn-cancel { background-color:#f8f9fa; border:1px solid #d1d5db; color:#000; padding:.45rem .8rem; border-radius:8px; }
+
+    @media (max-width:767.98px) {
+        .profile-box { margin: .5rem; }
+        .profile-box th { width:110px; font-size:.95rem; }
+        .profile-box td { font-size:.95rem; }
+    }
+
+    /* ensure table rows look like the screenshot: subtle separators and clean spacing */
+    .profile-box .table tbody td { border-bottom: 1px solid #f3f3f3; padding: 0.9rem 0; }
+    .profile-box .table tbody tr:last-child td { border-bottom: none; }
+    .profile-footer { margin-top: 0.6rem; }
+
+    /* End of profile/edit shared styles */
 
     /* Styling untuk table di desktop tetap normal */
     @media (min-width: 768px) {

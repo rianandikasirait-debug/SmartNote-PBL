@@ -1,33 +1,32 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_id'])) {
+require_once __DIR__ . '/../koneksi.php';
+
+// Cek Login
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     header("Location: ../login.php");
     exit;
 }
-$id = $_SESSION['user_id'] ??'';
-$nama  = $_SESSION['user_name'] ?? '';
-$email = $_SESSION['user_email'] ?? '';
-$role  = $_SESSION['user_role'] ?? '';
 
-// Fungsi masking email: tampilkan 1 huruf pertama lalu *** lalu @domain.com
-function mask_email(string $email): string {
-    if (empty($email)) return '';
-    $parts = explode('@', $email);
-    if (count($parts) !== 2) return htmlspecialchars($email, ENT_QUOTES, 'UTF-8');
+$id_user = $_SESSION['user_id'];
 
-    [$user, $domain] = $parts;
-    $userLen = mb_strlen($user);
-    if ($userLen <= 1) {
-        $maskedUser = '*';
-    } else {
-        $first = mb_substr($user, 0, 1);
-        $maskedUser = $first . str_repeat('*', max(1, $userLen - 1));
-    }
-    return htmlspecialchars($maskedUser . '@' . $domain, ENT_QUOTES, 'UTF-8');
+// Ambil data terbaru dari database
+$sql = "SELECT * FROM users WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $id_user);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+
+if (!$user) {
+    // Jika user tidak ditemukan (misal dihapus admin saat sedang login)
+    session_destroy();
+    header("Location: ../login.php");
+    exit;
 }
 
-$nama_html = htmlspecialchars((string)$nama, ENT_QUOTES, 'UTF-8');
-$email_masked = mask_email($email);
+// Set default foto jika kosong
+$foto_profile = (!empty($user['foto']) ? '../file/' . $user['foto'] : '../file/user.jpg') . '?v=' . time();
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -38,11 +37,92 @@ $email_masked = mask_email($email);
     <title>Profil Pengguna</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/admin.min.css">
+
+    <style>
+        body {
+            background-color: #fdf9f4;
+            font-family: "Poppins", sans-serif;
+        }
+
+        /* Sidebar */
+        .sidebar-content {
+            min-width: 250px;
+            background: #fff;
+            height: 100%;
+            border-right: 1px solid #eee;
+            padding: 1.5rem 1rem;
+        }
+
+        .sidebar-content .nav-link {
+            color: #555;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
+        }
+
+        .sidebar-content .nav-link.active,
+        .sidebar-content .nav-link:hover {
+            background-color: #00c853;
+            color: #fff;
+        }
+
+        .logout-btn {
+            border: 1px solid #f8d7da;
+            color: #dc3545;
+            border-radius: .5rem;
+            margin-top: 2rem;
+        }
+
+        /* Main content */
+        .main-content {
+            margin-left: 260px;
+            padding: 1.5rem;
+        }
+
+        @media (max-width: 991.98px) {
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        .profile-box {
+            background-color: #fff;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .badge-role {
+            background-color: #00c853;
+            color: white;
+            font-size: 0.8rem;
+            border-radius: 0.5rem;
+            padding: 0.3rem 0.7rem;
+        }
+
+        .btn-edit {
+            background-color: #00c853;
+            color: white;
+            border: none;
+            border-radius: .5rem;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .btn-edit:hover {
+            background-color: #02913f;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            font-weight: 500;
+        }
+    </style>
 </head>
 
 <body>
-
     <!-- navbar -->
     <nav class="navbar navbar-light bg-white sticky-top px-3">
         <button class="btn btn-outline-success d-lg-none" type="button" data-bs-toggle="offcanvas"
@@ -62,8 +142,6 @@ $email_masked = mask_email($email);
                         </li>
                         <li><a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola
                                 Pengguna</a></li>
-                        <li><a class="nav-link" href="tambah_peserta_admin.php"><i
-                                    class="bi bi-person-plus me-2"></i>Tambah Pengguna</a></li>
                         <li><a class="nav-link" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
                         </li>
                     </ul>
@@ -85,16 +163,11 @@ $email_masked = mask_email($email);
         <div>
             <h5 class="fw-bold mb-4 ms-3">Menu</h5>
             <ul class="nav flex-column">
-                <li>
-                    <a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
+                <li><a class="nav-link active" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
                 </li>
-                <li>
-                    <a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola
-                        Pengguna</a>
-                </li>
-                <li>
-                    <a class="nav-link active" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
-                </li>
+                <li><a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola
+                        Pengguna</a></li>
+                <li><a class="nav-link" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
             </ul>
         </div>
 
@@ -109,9 +182,19 @@ $email_masked = mask_email($email);
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
                 <h4><b>Profile Admin</b></h4>
+                <!-- Alert Messages -->
+                <?php if (isset($_SESSION['success_message'])): ?>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <?= $_SESSION['success_message']; ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <?php unset($_SESSION['success_message']); ?>
+                <?php endif; ?>
             </div>
             <div class="profile">
-                <span>Halo, Admin 👋</span>
+                <span>Halo, <?= htmlspecialchars($user['nama']); ?> 👋</span>
+                <img src="<?= htmlspecialchars($foto_profile); ?>" alt="Profile" class="rounded-circle"
+                    style="width: 40px; height: 40px; object-fit: cover;">
             </div>
         </div>
 
@@ -122,56 +205,45 @@ $email_masked = mask_email($email);
                 <tbody>
                     <tr>
                         <th style="width: 20%;">Nama:</th>
-                        <td><?= $nama_html ?></td>
+                        <td><?= htmlspecialchars($user['nama']); ?></td>
                     </tr>
                     <tr>
                         <th>Email:</th>
-                        <td><?= $email_masked ?></td>
+                        <td><?= htmlspecialchars($user['email']); ?></td>
                     </tr>
-
-                    <!-- Role disembunyikan (tetap ada di HTML tapi tidak tampil) -->
+                    <tr>
+                        <th>NIK:</th>
+                        <td><?= htmlspecialchars($user['nik']); ?></td>
+                    </tr>
                     <tr>
                         <th>Role:</th>
-                        <td><?= htmlspecialchars((string) $role, ENT_QUOTES, 'UTF-8') ?></td>
+                        <td><?= ucfirst($user['role']); ?></td>
                     </tr>
                 </tbody>
             </table>
+
             <div class="d-flex justify-content-end">
-                <a href="edit_profile_admin.php?id=<?= $id ?>" class="btn btn-edit"><i id="editprofile"
-                        class="bi bi-pencil me-2"></i>Edit
-                    Profil</a>
+                <a href="edit_profile_admin.php" class="btn btn-edit"><i class="bi bi-pencil me-2"></i>Edit Profil</a>
             </div>
         </div>
     </div>
+
     <script>
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const btnTambah = document.getElementById('editprofile');
-            if (btnTambah) {
-                btnTambah.addEventListener('click', function () {
-                    window.location.href = 'edit_profile_admin.php';
-                });
+        // Logout function
+        function confirmLogout() {
+            if (confirm("Apakah kamu yakin ingin logout?")) {
+                window.location.href = "../login.php";
             }
-
-        // Logout handlers
-        const logoutBtn = document.getElementById("logoutBtn");
-        if (logoutBtn) {
-            logoutBtn.addEventListener("click", function () {
-                if (confirm("Apakah kamu yakin ingin logout?")) {
-                    window.location.href = "../proses/proses_logout.php";
-                }
-            });
         }
+
+        document.getElementById("logoutBtn").addEventListener("click", confirmLogout);
+
         const logoutBtnMobile = document.getElementById("logoutBtnMobile");
         if (logoutBtnMobile) {
-            logoutBtnMobile.addEventListener("click", function () {
-                if (confirm("Apakah kamu yakin ingin logout?")) {
-                    window.location.href = "../proses/proses_logout.php";
-                }
-            });
+            logoutBtnMobile.addEventListener("click", confirmLogout);
         }
-        });
     </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

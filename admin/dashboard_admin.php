@@ -1,5 +1,22 @@
 <?php
+session_start();
 require_once __DIR__ . '/../koneksi.php';
+
+// Pastikan login
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../login.php");
+    exit;
+}
+
+// Ambil data user login
+$userId = (int) $_SESSION['user_id'];
+$stmt = $conn->prepare("SELECT nama FROM users WHERE id = ?");
+$stmt->bind_param("i", $userId);
+$stmt->execute();
+$userRes = $stmt->get_result();
+$userData = $userRes->fetch_assoc();
+$stmt->close();
+$userName = $userData['nama'] ?? 'Admin';
 
 // Ambil 10 notulen terbaru
 $sql = "SELECT id, judul_rapat, tanggal_rapat, Lampiran, peserta, created_by, created_at FROM tambah_notulen ORDER BY created_at DESC LIMIT 10";
@@ -84,7 +101,7 @@ if ($result) {
             <div>
                 <h4><b>Dashboard Admin</b></h4>
             </div>
-            <div class="d-flex align-items-center gap-2"><span class="fw-medium">Halo, Admin 👋</span></div>
+            <div class="d-flex align-items-center gap-2"><span class="fw-medium">Halo, <?= htmlspecialchars($userName) ?> 👋</span></div>
         </div>
 
         <!-- Highlight Cards -->
@@ -137,7 +154,9 @@ if ($result) {
             </div>
 
             <!-- Table -->
-            <div class="table-responsive">
+                <!-- Mobile list container (rendered by JS) -->
+                <div id="mobileList" class="mobile-list d-block d-md-none"></div>
+                <div class="table-responsive">
                 <table class="table align-middle table-hover mb-0">
                     <thead class="table-light border-0" style="background-color: #e8f6ee;">
                         <tr class="text-success">
@@ -206,20 +225,22 @@ if ($result) {
                     const pembuat = escapeHtml(item.created_by || 'Admin');
 
                     if (isMobile) {
-                        const tr = document.createElement("tr");
-                        const td = document.createElement("td");
-                        td.colSpan = 5;
-
-                        td.innerHTML = `
-                            <div class="mobile-card">
-                                <div class="mobile-card-inner">
-                                    <div class="mobile-card-header">
-                                        <div class="mobile-status-badge">Final</div>
-                                        <div class="mobile-card-actions">
-                                            <a href="#" class="btn btn-sm text-muted" title="Download"><i class="bi bi-download"></i></a>
-                                            <button class="btn btn-sm text-danger btn-delete" data-id="${encodeURIComponent(item.id)}" title="Hapus"><i class="bi bi-trash"></i></button>
-                                        </div>
+                        const mobileList = document.getElementById('mobileList');
+                        if (!mobileList) return;
+                        const card = document.createElement('div');
+                        card.className = 'mobile-card';
+                        card.innerHTML = `
+                            <div class="mobile-card-inner">
+                                <div class="mobile-card-header">
+                                    <div class="mobile-status-badge">Final</div>
+                                    <div class="mobile-card-actions">
+                                        <a href="detail_rapat_admin.php?id=${encodeURIComponent(item.id)}" class="btn btn-sm text-primary" title="Lihat"><i class="bi bi-eye"></i></a>
+                                        <a href="edit_rapat_admin.php?id=${encodeURIComponent(item.id)}" class="btn btn-sm text-success" title="Edit"><i class="bi bi-pencil"></i></a>
+                                        <a href="#" class="btn btn-sm text-muted" title="Download"><i class="bi bi-download"></i></a>
+                                        <button class="btn btn-sm text-danger btn-delete" data-id="${encodeURIComponent(item.id)}" title="Hapus"><i class="bi bi-trash"></i></button>
                                     </div>
+                                </div>
+                                <div class="mobile-card-scroll">
                                     <div class="mobile-card-title">${judul}</div>
                                     <div class="mobile-card-info">
                                         <div class="mobile-card-info-row">
@@ -242,9 +263,7 @@ if ($result) {
                                 </div>
                             </div>
                         `;
-
-                        tr.appendChild(td);
-                        tableBody.appendChild(tr);
+                        mobileList.appendChild(card);
                     } else {
                         const tr = document.createElement("tr");
                         tr.innerHTML = `

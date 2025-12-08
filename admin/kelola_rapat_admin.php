@@ -2,10 +2,25 @@
 session_start();
 require_once __DIR__ . '/../koneksi.php';
 
+// Cek login
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../login.php");
+    exit;
+}
+
+// Ambil data user login
+$userId = (int) $_SESSION['user_id'];
+$stmt = $conn->prepare("SELECT nama FROM users WHERE id = ?");
+$stmt->bind_param("i", $userId);
+$stmt->execute();
+$userRes = $stmt->get_result();
+$userData = $userRes->fetch_assoc();
+$stmt->close();
+$userName = $userData['nama'] ?? 'Admin';
+
 // 1. AMBIL DATA PENGGUNA (HANYA PESERTA)
 $all_users = [];
-// ==== PERUBAHAN DI SINI: Menambahkan "WHERE role = 'peserta'" ====
-$sql = "SELECT id, foto, nama, nik, email, role FROM users WHERE role = 'peserta' ORDER BY nama ASC";
+$sql = "SELECT id, foto, nama, nik, email, role FROM users WHERE LOWER(role) = 'peserta' ORDER BY nama ASC";
 $result = $conn->query($sql);
 
 if ($result && $result->num_rows > 0) {
@@ -30,6 +45,23 @@ $current_admin_id = $_SESSION['user_id'] ?? 0;
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
     <link rel="stylesheet" href="../css/admin.min.css">
+
+    <style>
+        /* Page-scoped override: keep the table visible on small screens and behave like desktop
+           Enable horizontal scrolling when table is wider than viewport. */
+        @media (max-width: 767.98px) {
+            /* Show the table container (global CSS hides it) and allow horizontal scroll */
+            .table-wrapper .table-responsive { display: block !important; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+            /* Ensure the table keeps its header and cell layout like desktop */
+            .table-wrapper .table-responsive table thead { display: table-header-group !important; }
+            .table-wrapper .table { min-width: 900px; white-space: nowrap; }
+            .table-wrapper .table tbody td { display: table-cell !important; }
+
+            /* Keep pagination and controls wrapped below the table when needed */
+            .table-wrapper .d-flex.justify-content-between.align-items-center.mt-3 { flex-direction: column; gap: .5rem; }
+        }
+    </style>
 
 </head>
 
@@ -88,16 +120,16 @@ $current_admin_id = $_SESSION['user_id'] ?? 0;
                 <h4><b>Kelola Pengguna Sistem</b></h4>
             </div>
             <div>
-                <span>Halo, Admin 👋</span>
+                <span>Halo, <?= htmlspecialchars($userName) ?> 👋</span>
             </div>
         </div>
 
         <div class="table-wrapper">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fw-semibold m-0 d-flex align-items-center">
-                    <i class="bi bi-people-fill me-2"></i>
-                    <input type="text" id="searchInput" class="form-control search-box" placeholder="Cari pengguna...">
-                </h5>
+            <div class="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap">
+                <div class="d-flex align-items-center gap-2 flex-grow-1">
+                    <i class="bi bi-people-fill"></i>
+                    <input type="text" id="searchInput" class="form-control search-box flex-grow-1" placeholder="Cari pengguna...">
+                </div>
                 <a href="tambah_peserta_admin.php" class="btn btn-success d-flex align-items-center gap-2">
                     <i class="bi bi-plus-circle"></i> Tambah Pengguna
                 </a>
@@ -169,23 +201,23 @@ $current_admin_id = $_SESSION['user_id'] ?? 0;
             const paginatedData = data.slice(start, end);
 
             paginatedData.forEach((u, index) => {
-                const photoPath = u.foto ? `../file/${u.foto}` : '../file/user.jpg';
+                const photoPath = u.foto ? `../file/${encodeURIComponent(u.foto)}` : '../file/user.jpg';
 
                 const row = `
                 <tr>
-                <td>${start + index + 1}</td>
-                <td><img src="${photoPath}" alt="${u.nama || ''}" class="user-photo" style="width:48px;height:48px;object-fit:cover;border-radius:4px;"></td>
-                <td>${u.nama || ''}</td>
-                <td>${u.nik || ''}</td>
-                <td>${u.email || ''}</td>
-                <td><span class="badge-role">${u.role || ''}</span></td>
-                <td>
-                    <button class="btn btn-sm text-danger" onclick="deleteUser(${u.id}, this)" title="Hapus">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </td>
-            </tr >
-                    `;
+                    <td>${start + index + 1}</td>
+                    <td><img src="${photoPath}" alt="${escapeHtml(u.nama || '')}" class="user-photo" style="width:48px;height:48px;object-fit:cover;border-radius:4px;"></td>
+                    <td>${escapeHtml(u.nama || '')}</td>
+                    <td>${escapeHtml(u.nik || '')}</td>
+                    <td>${escapeHtml(u.email || '')}</td>
+                    <td><span class="badge-role">${escapeHtml(u.role || '')}</span></td>
+                    <td>
+                        <button class="btn btn-sm text-danger" onclick="deleteUser(${Number(u.id)}, this)" title="Hapus">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                `;
                 tbody.insertAdjacentHTML("beforeend", row);
             });
 
@@ -286,11 +318,11 @@ $current_admin_id = $_SESSION['user_id'] ?? 0;
         // Fungsi showAlert
         function showAlert(message, type = 'success') {
             alertBox.innerHTML = `
-                    < div class="alert alert-${type} alert-dismissible fade show" role = "alert" >
-                        ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div >
-        `;
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
             setTimeout(() => {
                 const alertElement = alertBox.querySelector('.alert');
                 if (alertElement) {
@@ -300,15 +332,26 @@ $current_admin_id = $_SESSION['user_id'] ?? 0;
         }
 
         // Fitur search
+        // small helper to escape HTML when injecting from JSON
+        function escapeHtml(str) {
+            if (!str && str !== 0) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
         if (searchInput) {
             searchInput.addEventListener("input", function () {
                 const keyword = this.value.toLowerCase();
                 filteredUsers = users.filter(
                     (u) =>
-                        (u.nama && u.nama.toLowerCase().includes(keyword)) ||
-                        (u.email && u.email.toLowerCase().includes(keyword)) ||
-                        (u.nik && u.nik.toLowerCase().includes(keyword)) ||
-                        (u.role && u.role.toLowerCase().includes(keyword))
+                        (u.nama && String(u.nama).toLowerCase().includes(keyword)) ||
+                        (u.email && String(u.email).toLowerCase().includes(keyword)) ||
+                        (u.nik && String(u.nik).toLowerCase().includes(keyword)) ||
+                        (u.role && String(u.role).toLowerCase().includes(keyword))
                 );
                 currentPage = 1;
                 renderTable(filteredUsers);

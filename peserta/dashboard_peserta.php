@@ -33,6 +33,7 @@ if ($result) {
     <title>Dashboard Peserta</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/admin.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
@@ -159,6 +160,43 @@ if ($result) {
         .table-responsive .text-center a[title="Download"] i {
             color: #198754 !important;
         }
+
+        /* Custom controls styling to match admin mobile look (rounded green inputs) */
+        .table-header .controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .table-header .controls > * {
+            min-width: 0;
+        }
+
+        .table-header .controls select.form-select,
+        .table-header .controls input.form-control {
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 10px 12px;
+            background: #fff;
+            height: 46px;
+            box-shadow: none;
+        }
+
+        .table-header .controls .search-table input.form-control {
+            height: 46px;
+        }
+
+        /* Stack vertically on small screens to match the screenshot */
+        @media (max-width: 575.98px) {
+            .table-header .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .table-header .controls > * {
+                width: 100% !important;
+            }
+        }
     </style>
 </head>
 
@@ -244,11 +282,11 @@ if ($result) {
             <?php endforeach; ?>
         </div>
 
-        <div class="table-wrapper">
+            <div class="table-wrapper">
             <div class="table-header d-flex justify-content-between align-items-center mb-3 flex-wrap">
                 <h5 class="fw-semibold mb-2 mb-sm-0">Daftar Notulen</h5>
 
-                <div class="d-flex gap-2 flex-wrap">
+                <div class="d-flex gap-2 flex-wrap controls align-items-center">
                     <select id="filterPembuat" class="form-select form-select-sm border-success" style="width: 180px;">
                         <option value="">Semua Pembuat</option>
                     </select>
@@ -267,15 +305,17 @@ if ($result) {
                 </div>
             </div>
 
-            <div class="table-responsive">
-                <table class="table align-middle table-hover">
+                <!-- Mobile list container (rendered by JS) -->
+                <div id="mobileList" class="mobile-list d-block d-md-none"></div>
+                <div class="table-responsive">
+                <table class="table align-middle table-hover mb-0">
                     <thead class="table-light border-0" style="background-color: #e8f6ee;">
                         <tr class="text-success">
-                            <th>No</th>
-                            <th>Judul Rapat</th>
-                            <th>Tanggal</th>
-                            <th>Pembuat</th>
-                            <th class="text-center">Aksi</th>
+                            <th scope="col">No</th>
+                            <th scope="col" class="text-start">Judul Rapat</th>
+                            <th scope="col">Tanggal</th>
+                            <th scope="col">Pembuat</th>
+                            <th scope="col" class="text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody"></tbody>
@@ -301,10 +341,14 @@ if ($result) {
             const rowsPerPageSelect = document.getElementById("rowsPerPage");
 
             // Data dari PHP
-            const notulenData = <?= json_encode($notulens) ?>;
+            const notulenData = <?= json_encode($notulens, JSON_UNESCAPED_UNICODE) ?>;
 
             let currentPage = 1;
             let rowsPerPage = 10;
+
+            function escapeHtml(text) {
+                return String(text || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            }
 
             function renderTable(data, startIndex = 0) {
                 tableBody.innerHTML = "";
@@ -313,31 +357,64 @@ if ($result) {
                     return;
                 }
 
+                const isMobile = window.innerWidth < 768;
+
                 data.forEach((item, index) => {
                     const nomorUrut = startIndex + index + 1;
-                    const tanggal = new Date(item.tanggal_rapat).toLocaleDateString('id-ID');
-                    const pembuat = item.created_by || 'Admin';
+                    const judul = escapeHtml(item.judul_rapat || '');
+                    const tanggal = escapeHtml(item.tanggal_rapat || '');
+                    const pembuat = escapeHtml(item.created_by || 'Admin');
 
                     let downloadBtn = '';
                     if (item.Lampiran) {
-                        downloadBtn = `<a href="../file/${item.Lampiran}" class="text-success" title="Download" download> <i class="bi bi-download"></i></a>`;
+                        downloadBtn = `<a href="../file/${encodeURIComponent(item.Lampiran)}" class="text-success" title="Download" download> <i class="bi bi-download"></i></a>`;
                     } else {
                         downloadBtn = `<span class="text-muted" title="Tidak ada lampiran"><i class="bi bi-download"></i></span>`;
                     }
 
-                    const row = `
-                <tr>
-                  <td>${nomorUrut}</td>
-                  <td>${item.judul_rapat}</td>
-                  <td>${tanggal}</td>
-                  <td>${pembuat}</td>
-                  <td class="text-center"> 
-                    <a href="detail_rapat_peserta.php?id=${item.id}" class="text-primary me-2 px-2" title="Lihat"><i class="bi bi-eye"></i></a>
-                    ${downloadBtn}
-                  </td>
-                </tr>
-              `;
-                    tableBody.insertAdjacentHTML("beforeend", row);
+                    if (isMobile) {
+                        const mobileList = document.getElementById('mobileList');
+                        if (!mobileList) return;
+                        const card = document.createElement('div');
+                        card.className = 'mobile-card';
+                        card.innerHTML = `
+                            <div class="mobile-card-inner">
+                                <div class="mobile-card-header">
+                                    <div class="mobile-card-actions">
+                                        <a href="detail_rapat_peserta.php?id=${encodeURIComponent(item.id)}" class="btn btn-sm text-primary" title="Lihat"><i class="bi bi-eye"></i></a>
+                                        ${item.Lampiran ? `<a href="../file/${encodeURIComponent(item.Lampiran)}" class="btn btn-sm text-success" title="Download" download><i class="bi bi-download"></i></a>` : ''}
+                                    </div>
+                                </div>
+                                <div class="mobile-card-scroll">
+                                    <div class="mobile-card-title">${judul}</div>
+                                    <div class="mobile-card-info">
+                                        <div class="mobile-card-info-row">
+                                            <i class="bi bi-calendar-event"></i>
+                                            <span>${tanggal}</span>
+                                        </div>
+                                        <div class="mobile-card-info-row">
+                                            <i class="bi bi-person"></i>
+                                            <span>Pembuat: ${pembuat}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        mobileList.appendChild(card);
+                    } else {
+                        const tr = document.createElement("tr");
+                        tr.innerHTML = `
+                            <td>${nomorUrut}</td>
+                            <td class="text-start">${judul}</td>
+                            <td>${tanggal}</td>
+                            <td>${pembuat}</td>
+                            <td class="text-center">
+                                <a href="detail_rapat_peserta.php?id=${encodeURIComponent(item.id)}" class="btn btn-sm text-primary" title="Lihat"><i class="bi bi-eye"></i></a>
+                                ${item.Lampiran ? `<a href="../file/${encodeURIComponent(item.Lampiran)}" class="btn btn-sm text-success ms-2" title="Download" download><i class="bi bi-download"></i></a>` : ''}
+                            </td>
+                        `;
+                        tableBody.appendChild(tr);
+                    }
                 });
             }
 

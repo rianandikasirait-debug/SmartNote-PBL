@@ -196,26 +196,70 @@ if ($result) {
                     return;
                 }
 
+                const isMobile = window.innerWidth < 768;
+
                 data.forEach((item, index) => {
                     const nomorUrut = startIndex + index + 1;
-                    const tr = document.createElement("tr");
 
                     const judul = escapeHtml(item.judul_rapat || '');
                     const tanggal = escapeHtml(item.tanggal_rapat || '');
                     const pembuat = escapeHtml(item.created_by || 'Admin');
 
-                    tr.innerHTML = `
-                        <td>${nomorUrut}</td>
-                        <td class="text-start">${judul}</td>
-                        <td>${tanggal}</td>
-                        <td>${pembuat}</td>
-                        <td class="text-center">
-                            <a href="detail_rapat_admin.php?id=${encodeURIComponent(item.id)}" class="btn btn-sm text-primary" title="Lihat"><i class="bi bi-eye"></i></a>
-                            <a href="edit_rapat_admin.php?id=${encodeURIComponent(item.id)}" class="btn btn-sm text-success" title="Edit"><i class="bi bi-pencil"></i></a>
-                            <button class="btn btn-sm text-danger btn-delete" data-id="${encodeURIComponent(item.id)}" title="Hapus"><i class="bi bi-trash"></i></button>
-                        </td>
-                    `;
-                    tableBody.appendChild(tr);
+                    if (isMobile) {
+                        const tr = document.createElement("tr");
+                        const td = document.createElement("td");
+                        td.colSpan = 5;
+
+                        td.innerHTML = `
+                            <div class="mobile-card">
+                                <div class="mobile-card-inner">
+                                    <div class="mobile-card-header">
+                                        <div class="mobile-status-badge">Final</div>
+                                        <div class="mobile-card-actions">
+                                            <a href="#" class="btn btn-sm text-muted" title="Download"><i class="bi bi-download"></i></a>
+                                            <button class="btn btn-sm text-danger btn-delete" data-id="${encodeURIComponent(item.id)}" title="Hapus"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="mobile-card-title">${judul}</div>
+                                    <div class="mobile-card-info">
+                                        <div class="mobile-card-info-row">
+                                            <i class="bi bi-calendar-event"></i>
+                                            <span>${tanggal} • 09:00</span>
+                                        </div>
+                                        <div class="mobile-card-info-row">
+                                            <i class="bi bi-geo-alt"></i>
+                                            <span>medan</span>
+                                        </div>
+                                        <div class="mobile-card-info-row">
+                                            <i class="bi bi-person"></i>
+                                            <span>PIC: ${pembuat}</span>
+                                        </div>
+                                        <div class="mobile-card-info-row">
+                                            <i class="bi bi-people"></i>
+                                            <span>1 Peserta</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+
+                        tr.appendChild(td);
+                        tableBody.appendChild(tr);
+                    } else {
+                        const tr = document.createElement("tr");
+                        tr.innerHTML = `
+                            <td>${nomorUrut}</td>
+                            <td class="text-start">${judul}</td>
+                            <td>${tanggal}</td>
+                            <td>${pembuat}</td>
+                            <td class="text-center">
+                                <a href="detail_rapat_admin.php?id=${encodeURIComponent(item.id)}" class="btn btn-sm text-primary" title="Lihat"><i class="bi bi-eye"></i></a>
+                                <a href="edit_rapat_admin.php?id=${encodeURIComponent(item.id)}" class="btn btn-sm text-success" title="Edit"><i class="bi bi-pencil"></i></a>
+                                <button class="btn btn-sm text-danger btn-delete" data-id="${encodeURIComponent(item.id)}" title="Hapus"><i class="bi bi-trash"></i></button>
+                            </td>
+                        `;
+                        tableBody.appendChild(tr);
+                    }
                 });
             }
 
@@ -338,7 +382,7 @@ if ($result) {
                     logoutBtn.addEventListener("click", function () {
                         if (confirm("Apakah kamu yakin ingin logout?")) {
                             localStorage.removeItem("adminData");
-                            window.location.href = "../login.php";
+                            window.location.href = "../proses/proses_logout.php";
                         }
                     });
                 }
@@ -346,7 +390,7 @@ if ($result) {
                     logoutBtnMobile.addEventListener("click", function () {
                         if (confirm("Apakah kamu yakin ingin logout?")) {
                             localStorage.removeItem("adminData");
-                            window.location.href = "../login.php";
+                            window.location.href = "../proses/proses_logout.php";
                         }
                     });
                 }
@@ -354,6 +398,15 @@ if ($result) {
 
             populateFilterPembuat();
             updateTable();
+
+            // Re-render table when viewport changes (debounced)
+            window.addEventListener('resize', function () {
+                if (window._dashResizeTimer) clearTimeout(window._dashResizeTimer);
+                window._dashResizeTimer = setTimeout(() => {
+                    updateTable();
+                }, 120);
+            });
+
             setupLogoutButtons();
         });
     </script>

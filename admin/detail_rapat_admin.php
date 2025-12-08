@@ -218,20 +218,22 @@ if (trim($peserta_raw) !== '') {
     </div>
 
     <script>
-        // =======================
-        // Logout function
-        // =======================
-        function confirmLogout() {
-            if (confirm("Apakah kamu yakin ingin logout?")) {
-                window.location.href = "../proses/proses_logout.php";
-            }
+        // Logout handlers
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) {
+            logoutBtn.addEventListener("click", function () {
+                if (confirm("Apakah kamu yakin ingin logout?")) {
+                    window.location.href = "../proses/proses_logout.php";
+                }
+            });
         }
-
-        document.getElementById("logoutBtn").addEventListener("click", confirmLogout);
-
         const logoutBtnMobile = document.getElementById("logoutBtnMobile");
         if (logoutBtnMobile) {
-            logoutBtnMobile.addEventListener("click", confirmLogout);
+            logoutBtnMobile.addEventListener("click", function () {
+                if (confirm("Apakah kamu yakin ingin logout?")) {
+                    window.location.href = "../proses/proses_logout.php";
+                }
+            });
         }
     </script>
 

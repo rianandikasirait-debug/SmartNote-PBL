@@ -152,6 +152,24 @@ $email_masked = mask_email($email);
                     window.location.href = 'edit_profile_admin.php';
                 });
             }
+
+        // Logout handlers
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) {
+            logoutBtn.addEventListener("click", function () {
+                if (confirm("Apakah kamu yakin ingin logout?")) {
+                    window.location.href = "../proses/proses_logout.php";
+                }
+            });
+        }
+        const logoutBtnMobile = document.getElementById("logoutBtnMobile");
+        if (logoutBtnMobile) {
+            logoutBtnMobile.addEventListener("click", function () {
+                if (confirm("Apakah kamu yakin ingin logout?")) {
+                    window.location.href = "../proses/proses_logout.php";
+                }
+            });
+        }
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

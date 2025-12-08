@@ -373,6 +373,23 @@ if ($updated === 1) {
                 currentObjectUrl = null;
             }
         };
+    // Logout handlers
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) {
+            logoutBtn.addEventListener("click", function () {
+                if (confirm("Apakah kamu yakin ingin logout?")) {
+                    window.location.href = "../proses/proses_logout.php";
+                }
+            });
+        }
+        const logoutBtnMobile = document.getElementById("logoutBtnMobile");
+        if (logoutBtnMobile) {
+            logoutBtnMobile.addEventListener("click", function () {
+                if (confirm("Apakah kamu yakin ingin logout?")) {
+                    window.location.href = "../proses/proses_logout.php";
+                }
+            });
+        }
     });
 })();
 </script>

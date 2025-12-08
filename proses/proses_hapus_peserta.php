@@ -1,12 +1,18 @@
 <?php
-session_start();
+session_start(); 
+// Memulai session untuk mengakses data login user
+
 require_once __DIR__ . '/../koneksi.php';
+// Menghubungkan file koneksi database
 
-// Atur header sebagai JSON
 header('Content-Type: application/json');
+// Mengatur response agar selalu dikirim dalam format JSON
 
-// 1. PERIKSA APAKAH ADMIN SUDAH LOGIN (PENTING!)
+// =============================
+// 1. VALIDASI LOGIN ADMIN
+// =============================
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
+    // Jika user belum login atau bukan admin → tolak akses
     http_response_code(403);
     echo json_encode([
         'success' => false,
@@ -15,8 +21,11 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     exit;
 }
 
-// 2. PERIKSA METODE REQUEST
+// =============================
+// 2. VALIDASI METODE REQUEST
+// =============================
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    // Endpoint ini hanya boleh diakses dengan metode POST
     http_response_code(405);
     echo json_encode([
         'success' => false,
@@ -25,11 +34,16 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// 3. AMBIL DATA JSON DARI BODY REQUEST
-$input = file_get_contents('php://input');
-$data = json_decode($input, true);
+// =============================
+// 3. MEMBACA DAN VALIDASI JSON INPUT
+// =============================
+$input = file_get_contents('php://input'); 
+// Mengambil raw JSON body dari fetch/AJAX
 
-// Cek jika JSON invalid atau ID tidak ada
+$data = json_decode($input, true); 
+// Mengubah JSON menjadi array PHP
+
+// Validasi apakah JSON valid dan ID tersedia
 if (json_last_error() !== JSON_ERROR_NONE || empty($data['id'])) {
     http_response_code(400);
     echo json_encode([
@@ -39,11 +53,16 @@ if (json_last_error() !== JSON_ERROR_NONE || empty($data['id'])) {
     exit;
 }
 
-$id_to_delete = $data['id'];
+$id_to_delete = $data['id']; 
+// ID pengguna yang ingin dihapus
 
-// 4. PENCEGAHAN KRUSIAL: JANGAN BIARKAN ADMIN MENGHAPUS DIRINYA SENDIRI
+// =============================
+// 4. CEGAH ADMIN MENGHAPUS DIRI SENDIRI
+// =============================
 $current_admin_id = $_SESSION['user_id'];
+
 if ($id_to_delete == $current_admin_id) {
+    // Mencegah admin menghapus akunnya sendiri
     http_response_code(400);
     echo json_encode([
         'success' => false,
@@ -52,10 +71,13 @@ if ($id_to_delete == $current_admin_id) {
     exit;
 }
 
-// 5. EKSEKUSI PENGHAPUSAN
+// =============================
+// 5. PROSES PENGHAPUSAN USER
+// =============================
 try {
-    // A. AMBIL INFO FOTO DULU (Sebelum delete)
-    // Kita perlu tahu nama filenya untuk dihapus dari folder
+    // -----------------------------------------
+    // A. AMBIL DATA FOTO USER SEBELUM MENGHAPUS
+    // -----------------------------------------
     $sql_info = "SELECT foto FROM users WHERE id = ?";
     $stmt_info = $conn->prepare($sql_info);
     $stmt_info->bind_param("i", $id_to_delete);
@@ -63,6 +85,7 @@ try {
     $result_info = $stmt_info->get_result();
 
     if ($result_info->num_rows === 0) {
+        // Jika user tidak ditemukan
         http_response_code(404);
         echo json_encode([
             'success' => false,
@@ -72,34 +95,46 @@ try {
     }
 
     $user_data = $result_info->fetch_assoc();
-    $foto_file = $user_data['foto'];
+    $foto_file = $user_data['foto']; 
+    // Nama file foto yang akan dihapus setelah DB delete
+
     $stmt_info->close();
 
-    // B. DELETE DARI DATABASE
+    // -----------------------------------------
+    // B. HAPUS DATA USER DARI DATABASE
+    // -----------------------------------------
     $sql = "DELETE FROM users WHERE id = ?";
     $stmt = $conn->prepare($sql);
 
     if (!$stmt) {
+        // Jika prepare gagal, lempar error
         throw new Exception("Gagal mempersiapkan statement: " . $conn->error);
     }
 
     $stmt->bind_param("i", $id_to_delete);
 
     if ($stmt->execute()) {
-        // C. HAPUS FILE FOTO (Jika bukan default dan file ada)
-        // Path relatif ke folder file dari folder proses
+        // -----------------------------------------
+        // C. HAPUS FILE FOTO USER (JIKA ADA)
+        // -----------------------------------------
         $path_foto = __DIR__ . '/../file/' . $foto_file;
 
-        // Cek apakah file ada, bukan default, dan bisa dihapus
+        // Hanya hapus jika:
+        // - File ada
+        // - Bukan foto default template
         if ($foto_file && $foto_file !== 'user.jpg' && file_exists($path_foto)) {
-            unlink($path_foto); // Hapus file
+            unlink($path_foto); 
+            // Menghapus file foto dari folder server
         }
 
+        // Kirim response sukses
         echo json_encode([
             'success' => true,
             'message' => 'Pengguna berhasil dihapus.'
         ]);
+
     } else {
+        // Jika eksekusi gagal → lempar error
         throw new Exception("Gagal mengeksekusi penghapusan: " . $stmt->error);
     }
 
@@ -107,7 +142,10 @@ try {
     $conn->close();
 
 } catch (Exception $e) {
-    error_log($e->getMessage()); // Catat error log server
+    // Menangani error tak terduga
+    error_log($e->getMessage()); 
+    // Catat ke log server
+
     http_response_code(500);
     echo json_encode([
         'success' => false,

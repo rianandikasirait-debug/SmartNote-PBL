@@ -129,7 +129,7 @@ if ($q) {
     <label class="form-label">Peserta Notulen</label>
 
     <!-- Trigger button -->
-    <div class="dropdown w-50">
+    <div class="dropdown w-50" data-bs-auto-close="false">
         <button id="dropdownToggle" class="btn btn-save w-100 dropdown-toggle" type="button" data-bs-toggle="dropdown"
             aria-expanded="false">Pilih Peserta</button>
 
@@ -173,14 +173,14 @@ if ($q) {
         </div>
     </div>
 
-    <!-- List peserta (target) -->
-    <div id="addedList" class="added-list mt-3">
-        <h6 class="fw-bold mb-2">Peserta yang Telah Ditambahkan:</h6>
-        <div id="addedContainer">
-            <p class="text-muted">Belum ada peserta yang ditambahkan</p>
-        </div>
-    </div>
-</div>
+                <!-- List peserta (target) -->
+                <div id="addedList" class="added-list mt-3">
+                    <h6 class="fw-bold mb-2">Peserta yang Telah Ditambahkan:</h6>
+                    <div id="addedContainer">
+                        <p class="text-muted">Belum ada peserta yang ditambahkan</p>
+                    </div>
+                </div>
+            </div>
 
                 <div class="d-flex justify-content-end">
                     <button type="submit" class="btn btn-save px-4">Simpan</button>
@@ -284,7 +284,7 @@ if ($q) {
         document.getElementById("logoutBtn").addEventListener("click", function () {
             if (confirm("Apakah kamu yakin ingin logout?")) {
                 localStorage.removeItem("userData");
-                window.location.href = "../login.php";
+                window.location.href = "../proses/proses_logout.php";
             }
         });
 
@@ -294,13 +294,26 @@ if ($q) {
             logoutBtnMobile.addEventListener("click", function () {
                 if (confirm("Apakah kamu yakin ingin logout?")) {
                     localStorage.removeItem("adminData");
-                    window.location.href = "../login.php";
+                    window.location.href = "../proses/proses_logout.php";
                 }
             });
         }
         // ===================
         // Fungsi Dropdown Peserta
         // ===================
+        
+        // Helper function untuk escape HTML
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+        
         const searchInput = document.getElementById('searchInput');
         const notulenItems = document.querySelectorAll('#notulenList .form-check');
         const selectAll = document.getElementById('selectAll');
@@ -325,49 +338,54 @@ if ($q) {
         // Tambah peserta
         addButton.addEventListener('click', function () {
             const selected = document.querySelectorAll('.notulen-checkbox:checked');
-            addedContainer.innerHTML = ''; // Kosongkan dulu
-
+            
             if (selected.length === 0) {
                 addedContainer.innerHTML = '<p class="text-muted">Belum ada peserta yang ditambahkan</p>';
                 return;
             }
 
+            // Ambil peserta yang sudah ada untuk mencegah duplikat
+            const existingIds = new Set();
+            addedContainer.querySelectorAll('.added-item').forEach(item => {
+                existingIds.add(item.dataset.id);
+            });
+            
+            // Hapus pesan "Belum ada peserta" jika ada
+            const emptyMsg = addedContainer.querySelector('.text-muted');
+            if (emptyMsg) {
+                emptyMsg.remove();
+            }
+
             selected.forEach(cb => {
                 const id = cb.value;
                 const name = cb.dataset.name || cb.nextElementSibling?.textContent?.trim() || 'Unknown';
-                // Cek jika id sudah ada di addedContainer untuk mencegah duplikat
-                if (addedContainer.querySelector(`.added-item[data-id="${id}"]`)) return;
+                
+                // Cek jika id sudah ada untuk mencegah duplikat
+                if (existingIds.has(id)) return;
 
                 const div = document.createElement('div');
                 div.className = 'added-item d-flex align-items-center gap-2 mb-2';
                 div.dataset.id = id;
-                // tampilkan nama dan tombol hapus
                 div.innerHTML = `
-            <span class="flex-grow-1">${escapeHtml(name)}</span>
-            <button type="button" class="btn btn-sm btn-outline-danger remove-btn">Hapus</button>
-        `;
+                    <span class="flex-grow-1">${escapeHtml(name)}</span>
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-btn">Hapus</button>
+                `;
                 addedContainer.appendChild(div);
-            });
-
-            // Tombol hapus (event delegation lebih baik, tapi ini cepat)
-            addedContainer.querySelectorAll('.remove-btn').forEach(btn => {
-                btn.removeEventListener('click', removeHandler); // hindari double attach
-                btn.addEventListener('click', removeHandler);
+                
+                // Attach event listener ke tombol hapus
+                const removeBtn = div.querySelector('.remove-btn');
+                removeBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const id = this.parentElement.dataset.id;
+                    const cb = document.querySelector(`.notulen-checkbox[value="${id}"]`);
+                    if (cb) cb.checked = false;
+                    this.parentElement.remove();
+                    if (addedContainer.children.length === 0) {
+                        addedContainer.innerHTML = '<p class="text-muted">Belum ada peserta yang ditambahkan</p>';
+                    }
+                });
             });
         });
-
-        function removeHandler() {
-            const parent = this.parentElement;
-            if (!parent) return;
-            // uncheck checkbox terkait
-            const id = parent.dataset.id;
-            const cb = document.querySelector(`.notulen-checkbox[value="${id}"]`);
-            if (cb) cb.checked = false;
-            parent.remove();
-            if (addedContainer.children.length === 0) {
-                addedContainer.innerHTML = '<p class="text-muted">Belum ada peserta yang ditambahkan</p>';
-            }
-        }
 
     </script>
 </body>

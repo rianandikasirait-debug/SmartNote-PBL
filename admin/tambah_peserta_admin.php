@@ -211,7 +211,7 @@ if ($error_msg)
                 const confirmLogout = confirm("Apakah kamu yakin ingin logout?");
                 if (confirmLogout) {
                     // Path logout ini SUDAH BENAR
-                    window.location.href = "../login.php";
+                    window.location.href = "../proses/proses_logout.php";
                 }
             });
 
@@ -221,7 +221,7 @@ if ($error_msg)
                     const konfirmasiLogout = confirm("Apakah kamu yakin ingin logout?");
                     if (konfirmasiLogout) {
                         // Path logout ini SUDAH BENAR
-                        window.location.href = "../login.php";
+                        window.location.href = "../proses/proses_logout.php";
                     }
                 });
             }

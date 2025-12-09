@@ -142,40 +142,39 @@ $foto_profile = !empty($user['foto']) ? '../file/' . $user['foto'] : '../file/us
             <div class="sidebar-content d-flex flex-column justify-content-between h-100">
                 <div>
                     <h4 class="fw-bold mb-4 ms-3">MENU</h4>
-                    <ul class="nav flex-column">
-                        <li><a class="nav-link" href="dashboard_peserta.php"><i
-                                    class="bi bi-grid me-2"></i>Dashboard</a></li>
-                        <li><a class="nav-link active" href="profile_peserta.php"><i
-                                    class="bi bi-person-circle me-2"></i>Profile</a></li>
+                        <ul class="nav flex-column">
+                        <li>
+                            <a class="nav-link active" href="dashboard_peserta.php"><i
+                                    class="bi bi-grid me-2"></i>Dashboard</a>
+                        </li>
+                        <li>
+                            <a class="nav-link" href="profile_peserta.php"><i
+                                    class="bi bi-person-circle me-2"></i>Profile</a>
+                        </li>
+                        <li>
+                            <a id="logoutBtnMobile" class="nav-link text-danger" href="#"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Logout</a>
+                        </li>
                     </ul>
-                </div>
-
-                <div class="text-center mt-4">
-                    <button id="logoutBtnMobile" class="btn logout-btn px-4 py-2">
-                        <i class="bi bi-box-arrow-right me-2"></i>Logout
-                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-
-
-    <!-- Sidebar -->
+    <!-- Sidebar Desktop -->
     <div class="sidebar-content d-none d-lg-flex flex-column justify-content-between position-fixed">
         <div>
             <h4 class="fw-bold mb-4 ms-3">MENU</h4>
-            <ul class="nav flex-column">
-                <li><a class="nav-link" href="dashboard_peserta.php"><i class="bi bi-grid me-2"></i>Dashboard</a></li>
-                <li><a class="nav-link active" href="profile_peserta.php"><i class="bi bi-person me-2"></i>Profile</a>
-                </li>
-            </ul>
-        </div>
-
-        <div class="text-center">
-            <button id="logoutBtn" class="btn logout-btn px-4 py-2">
-                <i class="bi bi-box-arrow-right me-2"></i>Logout
-            </button>
+                <ul class="nav flex-column">
+                    <li>
+                        <a class="nav-link active" href="dashboard_peserta.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="profile_peserta.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
+                    </li>
+                    <li>
+                        <a id="logoutBtnMobile" class="nav-link text-danger" href="#"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Logout</a>
+                    </li>
+                </ul>
         </div>
     </div>
 

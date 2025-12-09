@@ -44,6 +44,7 @@ $current_admin_id = $_SESSION['user_id'] ?? 0;
     <title>Kelola Pengguna</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:wght@400" />
     <link rel="stylesheet" href="../css/admin.min.css">
 
     <style>
@@ -82,6 +83,7 @@ $current_admin_id = $_SESSION['user_id'] ?? 0;
         </button>
     </nav>
 
+<!-- mobile -->
     <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="sidebarOffcanvas"
         aria-labelledby="sidebarOffcanvasLabel">
         <div class="offcanvas-body p-0">
@@ -89,37 +91,41 @@ $current_admin_id = $_SESSION['user_id'] ?? 0;
                 <div>
                     <h4 class="fw-bold mb-4 ms-3">MENU</h4>
                     <ul class="nav flex-column">
-                        <li><a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
+                        <li>
+                            <a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
                         </li>
-                        <li><a class="nav-link active" href="kelola_rapat_admin.php"><i
-                                    class="bi bi-people me-2"></i>Kelola Pengguna</a></li>
-                        <li><a class="nav-link" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
+                        <li>
+                            <a class="nav-link active" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola Pengguna</a></li>
+                        <li>
+                            <a class="nav-link" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
+                        </li>
+                        <li>
+                            <a id="logoutBtn" class="nav-link text-danger" href="#"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Logout</a>
                         </li>
                     </ul>
-                </div>
-                <div class="text-center mt-4">
-                    <button id="logoutBtnMobile" class="btn logout-btn px-4 py-2">
-                        <i class="bi bi-box-arrow-right me-2"></i>Logout
-                    </button>
                 </div>
             </div>
         </div>
     </div>
 
+<!-- desktop -->
     <div class="sidebar-content d-none d-lg-flex flex-column justify-content-between position-fixed">
         <div>
             <h4 class="fw-bold mb-4 ms-3">MENU</h4>
             <ul class="nav flex-column">
-                <li><a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a></li>
-                <li><a class="nav-link active" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola
-                        Pengguna</a></li>
-                <li><a class="nav-link" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
+                <li>
+                    <a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
+                </li>
+                <li>
+                    <a class="nav-link active" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola Pengguna</a>
+                </li>
+                <li>
+                    <a class="nav-link" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
+                </li>
+                <li>
+                    <a id="logoutBtn" class="nav-link text-danger" href="#"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Logout</a>
+                </li>
             </ul>
-        </div>
-        <div class="text-center">
-            <button id="logoutBtn" class="btn logout-btn px-4 py-2">
-                <i class="bi bi-box-arrow-right me-2"></i>Logout
-            </button>
         </div>
     </div>
 
@@ -136,7 +142,9 @@ $current_admin_id = $_SESSION['user_id'] ?? 0;
         <div class="table-wrapper">
             <div class="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap">
                 <div class="d-flex align-items-center gap-2 flex-grow-1">
-                    <i class="bi bi-people-fill"></i>
+                   <span class="material-symbols-rounded" style="font-size:28px;">
+                        person_search
+                    </span>
                     <input type="text" id="searchInput" class="form-control search-box flex-grow-1" placeholder="Cari pengguna...">
                 </div>
                 <a href="tambah_peserta_admin.php" class="btn btn-success d-flex align-items-center gap-2">

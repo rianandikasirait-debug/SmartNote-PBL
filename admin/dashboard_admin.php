@@ -46,6 +46,7 @@ if ($result) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
     <link rel="stylesheet" href="../css/admin.min.css">
     <style>
+<<<<<<< HEAD
         .mobile-card {
             border: 1px solid #198754; /* Bootstrap success color */
             transition: all 0.2s ease-in-out;
@@ -62,6 +63,25 @@ if ($result) {
                 border-left: 1px solid #dee2e6 !important;
             }
         }
+=======
+        /* Make offcanvas (mobile sidebar) wider and more usable on small screens */
+        @media (max-width: 991.98px) {
+            .offcanvas.offcanvas-start {
+                width: 320px !important;
+                max-width: 90% !important;
+            }
+            /* Ensure sidebar content inside offcanvas uses full width and padding */
+            .offcanvas.offcanvas-start .sidebar-content {
+                min-width: 0 !important;
+                padding: 1.25rem !important;
+            }
+        }
+
+        /* Keep desktop layout unchanged: apply min-width only on large screens */
+        @media (min-width: 992px) {
+            .sidebar-content { min-width: 250px; }
+        }
+>>>>>>> 113bf630acfd33def2c4aef1b930991629a41cf3
     </style>
 </head>
 
@@ -82,22 +102,28 @@ if ($result) {
                 <div>
                     <h4 class="fw-bold mb-4 ms-3">MENU</h4>
                     <ul class="nav flex-column">
-                        <li><a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
+                        <li>
+                            <a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
                         </li>
-                        <li><a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola
+                        <li>
+                            <a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola
                                 Pengguna</a></li>
+<<<<<<< HEAD
                     </ul>
                 </div>
 
                 <div class="mt-auto px-3">
                     <ul class="nav flex-column">
                         <li><a class="nav-link" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
+=======
+                        <li>
+                            <a class="nav-link" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
+                        </li>
+                        <li>
+                            <a id="logoutBtn" class="nav-link text-danger" href="#"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Logout</a>
+                        </li>
+>>>>>>> 113bf630acfd33def2c4aef1b930991629a41cf3
                     </ul>
-                </div>
-
-                <div class="text-center mt-4">
-                    <button id="logoutBtnMobile" class="btn logout-btn px-4 py-2"><i
-                            class="bi bi-box-arrow-right me-2"></i>Logout</button>
                 </div>
             </div>
         </div>
@@ -108,10 +134,13 @@ if ($result) {
         <div>
             <h4 class="fw-bold mb-4 ms-3">MENU</h4>
             <ul class="nav flex-column">
-                <li><a class="nav-link active" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
+                <li>
+                    <a class="nav-link active" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
                 </li>
-                <li><a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola
+                <li>
+                    <a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola
                         Pengguna</a></li>
+<<<<<<< HEAD
             </ul>
         </div>
 
@@ -123,13 +152,22 @@ if ($result) {
             <button id="logoutBtn" class="btn logout-btn px-4 py-2"><i
                     class="bi bi-box-arrow-right me-2"></i>Logout</button>
         </div>
+=======
+                <li>
+                    <a class="nav-link" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
+                <li>
+                    <a id="logoutBtn" class="nav-link text-danger" href="#"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Logout</a>
+                </li>
+            </ul>
+        </div>
+>>>>>>> 113bf630acfd33def2c4aef1b930991629a41cf3
     </aside>
 
     <!-- Main content -->
     <main class="main-content">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
-                <h4><b>Dashboard Admin</b></h4>
+                <h4><b>Dashboard Notulis</b></h4>
             </div>
             <div class="d-flex align-items-center gap-2"><span class="fw-medium">Halo, <?= htmlspecialchars($userName) ?> 👋</span></div>
         </div>

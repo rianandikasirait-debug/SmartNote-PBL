@@ -18,6 +18,11 @@ $userData = $userRes->fetch_assoc();
 $stmt->close();
 $userName = $userData['nama'] ?? 'Admin';
 
+// Initialize viewed notulen session if not exists
+if (!isset($_SESSION['viewed_notulen'])) {
+    $_SESSION['viewed_notulen'] = [];
+}
+
 // Ambil 10 notulen terbaru
 $sql = "SELECT id, judul_rapat, tanggal_rapat, Lampiran, peserta, created_by, created_at FROM tambah_notulen ORDER BY created_at DESC LIMIT 10";
 $result = $conn->query($sql);
@@ -40,6 +45,25 @@ if ($result) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
     <link rel="stylesheet" href="../css/admin.min.css">
+    <style>
+        /* Make offcanvas (mobile sidebar) wider and more usable on small screens */
+        @media (max-width: 991.98px) {
+            .offcanvas.offcanvas-start {
+                width: 320px !important;
+                max-width: 90% !important;
+            }
+            /* Ensure sidebar content inside offcanvas uses full width and padding */
+            .offcanvas.offcanvas-start .sidebar-content {
+                min-width: 0 !important;
+                padding: 1.25rem !important;
+            }
+        }
+
+        /* Keep desktop layout unchanged: apply min-width only on large screens */
+        @media (min-width: 992px) {
+            .sidebar-content { min-width: 250px; }
+        }
+    </style>
 </head>
 
 <body>
@@ -101,7 +125,7 @@ if ($result) {
     <main class="main-content">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
-                <h4><b>Dashboard Admin</b></h4>
+                <h4><b>Dashboard Notulis</b></h4>
             </div>
             <div class="d-flex align-items-center gap-2"><span class="fw-medium">Halo, <?= htmlspecialchars($userName) ?> 👋</span></div>
         </div>
@@ -112,13 +136,20 @@ if ($result) {
             // Ambil 3 notulen terbaru untuk highlight
             $top3 = array_slice($notulens, 0, 3);
             foreach ($top3 as $highlight):
+                $id = (int) ($highlight['id'] ?? 0);
+                $isViewed = in_array($id, $_SESSION['viewed_notulen']);
                 ?>
                 <div class="col-md-4">
-                    <div class="highlight-card h-100">
-                        <span class="text-muted"><?= date('d/m/Y', strtotime($highlight['tanggal_rapat'])) ?></span>
-                        <h6 class="mt-1 mb-1"><?= htmlspecialchars($highlight['judul_rapat']) ?></h6>
-                        <p class="text-truncate">Dibuat oleh: <?= htmlspecialchars($highlight['created_by'] ?? 'Admin') ?></p>
-                    </div>
+                    <a href="detail_rapat_admin.php?id=<?php echo $id ?>" class="text-decoration-none text-reset">
+                        <div class="highlight-card h-100 position-relative">
+                            <?php if (!$isViewed): ?>
+                                <span class="badge bg-success position-absolute top-0 end-0 m-2">Baru</span>
+                            <?php endif; ?>
+                            <span class="text-muted"><?php echo date('d/m/Y', strtotime($highlight['tanggal_rapat'])) ?><?php if (!empty($highlight['created_at'])) echo ' • ' . date('H:i', strtotime($highlight['created_at'])); ?></span>
+                            <h6 class="mt-1 mb-1"><?php echo htmlspecialchars($highlight['judul_rapat']) ?></h6>
+                            <p class="text-truncate">Dibuat oleh: <?php echo htmlspecialchars($highlight['created_by'] ?? 'Admin') ?></p>
+                        </div>
+                    </a>
                 </div>
             <?php endforeach; ?>
         </div>
@@ -158,7 +189,7 @@ if ($result) {
             <!-- Table -->
                 <!-- Mobile list container (rendered by JS) -->
                 <div id="mobileList" class="mobile-list d-block d-md-none"></div>
-                <div class="table-responsive">
+                <div class="table-responsive d-none d-md-block">
                 <table class="table align-middle table-hover mb-0">
                     <thead class="table-light border-0" style="background-color: #e8f6ee;">
                         <tr class="text-success">
@@ -212,8 +243,12 @@ if ($result) {
 
             function renderTable(data, startIndex = 0) {
                 tableBody.innerHTML = "";
+                const mobileList = document.getElementById('mobileList');
+                if (mobileList) mobileList.innerHTML = "";
+
                 if (data.length === 0) {
                     tableBody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-4">Belum ada data notulen.</td></tr>`;
+                    if (mobileList) mobileList.innerHTML = `<div class="text-center text-muted py-4">Belum ada data notulen.</div>`;
                     return;
                 }
 
@@ -225,18 +260,26 @@ if ($result) {
                     const judul = escapeHtml(item.judul_rapat || '');
                     const tanggal = escapeHtml(item.tanggal_rapat || '');
                     const pembuat = escapeHtml(item.created_by || 'Admin');
+                    
+                    // Basic logic for participant count (comma separated)
+                    const pesertaCount = item.peserta ? item.peserta.split(',').length : 0;
 
                     if (isMobile) {
-                        const mobileList = document.getElementById('mobileList');
                         if (!mobileList) return;
                         const card = document.createElement('div');
+                        card.style.cursor = 'pointer';
+                        card.onclick = (e) => {
+                            if (!e.target.closest('.btn') && !e.target.closest('a')) {
+                                window.location.href = `detail_rapat_admin.php?id=${encodeURIComponent(item.id)}`;
+                            }
+                        };
                         card.className = 'mobile-card';
                         card.innerHTML = `
                             <div class="mobile-card-inner">
                                 <div class="mobile-card-header">
                                     <div class="mobile-status-badge">Final</div>
                                     <div class="mobile-card-actions">
-                                        <a href="detail_rapat_admin.php?id=${encodeURIComponent(item.id)}" class="btn btn-sm text-primary" title="Lihat"><i class="bi bi-eye"></i></a>
+
                                         <a href="edit_rapat_admin.php?id=${encodeURIComponent(item.id)}" class="btn btn-sm text-success" title="Edit"><i class="bi bi-pencil"></i></a>
                                         <a href="#" class="btn btn-sm text-muted" title="Download"><i class="bi bi-download"></i></a>
                                         <button class="btn btn-sm text-danger btn-delete" data-id="${encodeURIComponent(item.id)}" title="Hapus"><i class="bi bi-trash"></i></button>
@@ -250,16 +293,12 @@ if ($result) {
                                             <span>${tanggal} • 09:00</span>
                                         </div>
                                         <div class="mobile-card-info-row">
-                                            <i class="bi bi-geo-alt"></i>
-                                            <span>medan</span>
-                                        </div>
-                                        <div class="mobile-card-info-row">
                                             <i class="bi bi-person"></i>
                                             <span>PIC: ${pembuat}</span>
                                         </div>
                                         <div class="mobile-card-info-row">
                                             <i class="bi bi-people"></i>
-                                            <span>1 Peserta</span>
+                                            <span>${pesertaCount} Peserta</span>
                                         </div>
                                     </div>
                                 </div>
@@ -268,13 +307,19 @@ if ($result) {
                         mobileList.appendChild(card);
                     } else {
                         const tr = document.createElement("tr");
+                        tr.style.cursor = "pointer";
+                        tr.onclick = (e) => {
+                            if (!e.target.closest('.btn') && !e.target.closest('a')) {
+                                window.location.href = `detail_rapat_admin.php?id=${encodeURIComponent(item.id)}`;
+                            }
+                        };
                         tr.innerHTML = `
                             <td>${nomorUrut}</td>
                             <td class="text-start">${judul}</td>
                             <td>${tanggal}</td>
                             <td>${pembuat}</td>
                             <td class="text-center">
-                                <a href="detail_rapat_admin.php?id=${encodeURIComponent(item.id)}" class="btn btn-sm text-primary" title="Lihat"><i class="bi bi-eye"></i></a>
+
                                 <a href="edit_rapat_admin.php?id=${encodeURIComponent(item.id)}" class="btn btn-sm text-success" title="Edit"><i class="bi bi-pencil"></i></a>
                                 <button class="btn btn-sm text-danger btn-delete" data-id="${encodeURIComponent(item.id)}" title="Hapus"><i class="bi bi-trash"></i></button>
                             </td>
@@ -429,6 +474,26 @@ if ($result) {
             });
 
             setupLogoutButtons();
+
+            // Handle highlight card clicks to mark as viewed
+            document.querySelectorAll('.highlight-card').forEach(card => {
+                const link = card.closest('a');
+                if (link) {
+                    link.addEventListener('click', function(e) {
+                        const href = this.getAttribute('href');
+                        const urlParams = new URLSearchParams(new URL(href, window.location.origin).search);
+                        const id = urlParams.get('id');
+                        
+                        if (id) {
+                            fetch('../proses/proses_mark_viewed.php', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id: id })
+                            }).catch(err => console.error('Error marking as viewed:', err));
+                        }
+                    });
+                }
+            });
         });
     </script>
 </body>

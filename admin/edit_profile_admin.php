@@ -135,6 +135,7 @@ $foto_profile = !empty($user['foto']) ? '../file/' . $user['foto'] : '../file/us
             <i class="bi bi-list"></i>
         </button>
     </nav>
+    
     <!-- sidebar mobile -->
     <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="sidebarOffcanvas"
         aria-labelledby="sidebarOffcanvasLabel">
@@ -161,8 +162,6 @@ $foto_profile = !empty($user['foto']) ? '../file/' . $user['foto'] : '../file/us
             </div>
         </div>
     </div>
-
-
 
     <!-- Sidebar Desktop -->
     <div class="sidebar-content d-none d-lg-flex flex-column justify-content-between position-fixed">

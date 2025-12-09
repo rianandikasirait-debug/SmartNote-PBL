@@ -8,11 +8,16 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'peserta') {
     exit;
 }
 
+// Initialize viewed notulen session if not exists
+if (!isset($_SESSION['viewed_notulen'])) {
+    $_SESSION['viewed_notulen'] = [];
+}
+
 // Ambil semua notulen dari database
 $user_id = $_SESSION['user_id'];
 
 // Query untuk mengambil semua notulen (untuk sementara tidak filter, agar kita bisa debug)
-$sql = "SELECT id, judul_rapat, tanggal_rapat, created_by, Lampiran, peserta 
+$sql = "SELECT id, judul_rapat, tanggal_rapat, created_by, Lampiran, peserta, created_at 
         FROM tambah_notulen 
         ORDER BY tanggal_rapat DESC";
 
@@ -47,11 +52,27 @@ if ($result) {
             flex-direction: column;
         }
         .sidebar-content {
-            min-width: 250px;
             background: #fff;
             height: 100%;
             border-right: 1px solid #eee;
             padding: 1.5rem 1rem;
+        }
+
+        /* Apply min-width only on larger screens */
+        @media (min-width: 992px) {
+            .sidebar-content { min-width: 250px; }
+        }
+
+        /* Make offcanvas (mobile sidebar) wider and more usable on small screens */
+        @media (max-width: 991.98px) {
+            .offcanvas.offcanvas-start {
+                width: 320px !important;
+                max-width: 90% !important;
+            }
+            .offcanvas.offcanvas-start .sidebar-content {
+                min-width: 0 !important;
+                padding: 1.25rem !important;
+            }
         }
 
         .sidebar-content .nav-link {
@@ -280,14 +301,21 @@ if ($result) {
             // Ambil 3 notulen terbaru untuk highlight
             $top3 = array_slice($notulens, 0, 3);
             foreach ($top3 as $highlight):
+                $id = (int) ($highlight['id'] ?? 0);
+                $isViewed = in_array($id, $_SESSION['viewed_notulen']);
                 ?>
                 <div class="col-md-4">
-                    <div class="highlight-card h-100">
-                        <span class="text-muted"><?= date('d/m/Y', strtotime($highlight['tanggal_rapat'])) ?></span>
-                        <h6 class="mt-1 mb-1"><?= htmlspecialchars($highlight['judul_rapat']) ?></h6>
-                        <p class="text-truncate">Dibuat oleh: <?= htmlspecialchars($highlight['created_by'] ?? 'Admin') ?>
-                        </p>
-                    </div>
+                    <a href="detail_rapat_peserta.php?id=<?php echo $id ?>" class="text-decoration-none text-reset">
+                        <div class="highlight-card h-100 position-relative">
+                            <?php if (!$isViewed): ?>
+                                <span class="badge bg-success position-absolute top-0 end-0 m-2">Baru</span>
+                            <?php endif; ?>
+                            <span class="text-muted"><?= date('d/m/Y', strtotime($highlight['tanggal_rapat'])) ?><?php if (!empty($highlight['created_at'])) echo ' • ' . date('H:i', strtotime($highlight['created_at'])); ?></span>
+                            <h6 class="mt-1 mb-1"><?= htmlspecialchars($highlight['judul_rapat']) ?></h6>
+                            <p class="text-truncate">Dibuat oleh: <?= htmlspecialchars($highlight['created_by'] ?? 'Admin') ?>
+                            </p>
+                        </div>
+                    </a>
                 </div>
             <?php endforeach; ?>
         </div>
@@ -317,7 +345,7 @@ if ($result) {
 
                 <!-- Mobile list container (rendered by JS) -->
                 <div id="mobileList" class="mobile-list d-block d-md-none"></div>
-                <div class="table-responsive">
+                <div class="table-responsive d-none d-md-block">
                 <table class="table align-middle table-hover mb-0">
                     <thead class="table-light border-0" style="background-color: #e8f6ee;">
                         <tr class="text-success">
@@ -362,8 +390,12 @@ if ($result) {
 
             function renderTable(data, startIndex = 0) {
                 tableBody.innerHTML = "";
+                const mobileList = document.getElementById('mobileList');
+                if (mobileList) mobileList.innerHTML = "";
+
                 if (data.length === 0) {
                     tableBody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-4">Tidak ada data notulen.</td></tr>`;
+                    if (mobileList) mobileList.innerHTML = `<div class="text-center text-muted py-4">Tidak ada data notulen.</div>`;
                     return;
                 }
 
@@ -374,24 +406,27 @@ if ($result) {
                     const judul = escapeHtml(item.judul_rapat || '');
                     const tanggal = escapeHtml(item.tanggal_rapat || '');
                     const pembuat = escapeHtml(item.created_by || 'Admin');
-
-                    let downloadBtn = '';
-                    if (item.Lampiran) {
-                        downloadBtn = `<a href="../file/${encodeURIComponent(item.Lampiran)}" class="text-success" title="Download" download> <i class="bi bi-download"></i></a>`;
-                    } else {
-                        downloadBtn = `<span class="text-muted" title="Tidak ada lampiran"><i class="bi bi-download"></i></span>`;
-                    }
+                    
+                    // Basic logic for participant count (comma separated)
+                    const pesertaCount = item.peserta ? item.peserta.split(',').length : 0;
 
                     if (isMobile) {
-                        const mobileList = document.getElementById('mobileList');
                         if (!mobileList) return;
                         const card = document.createElement('div');
                         card.className = 'mobile-card';
+                        card.style.cursor = 'pointer';
+                        card.onclick = (e) => {
+                            if (!e.target.closest('a') && !e.target.closest('.btn')) {
+                                window.location.href = `detail_rapat_peserta.php?id=${encodeURIComponent(item.id)}`;
+                            }
+                        };
+                        
+                        // Match Admin Style
                         card.innerHTML = `
                             <div class="mobile-card-inner">
                                 <div class="mobile-card-header">
+                                    <div class="mobile-status-badge">Final</div>
                                     <div class="mobile-card-actions">
-                                        <a href="detail_rapat_peserta.php?id=${encodeURIComponent(item.id)}" class="btn btn-sm text-primary" title="Lihat"><i class="bi bi-eye"></i></a>
                                         ${item.Lampiran ? `<a href="../file/${encodeURIComponent(item.Lampiran)}" class="btn btn-sm text-success" title="Download" download><i class="bi bi-download"></i></a>` : ''}
                                     </div>
                                 </div>
@@ -404,7 +439,11 @@ if ($result) {
                                         </div>
                                         <div class="mobile-card-info-row">
                                             <i class="bi bi-person"></i>
-                                            <span>Pembuat: ${pembuat}</span>
+                                            <span>PIC: ${pembuat}</span>
+                                        </div>
+                                        <div class="mobile-card-info-row">
+                                            <i class="bi bi-people"></i>
+                                            <span>${pesertaCount} Peserta</span>
                                         </div>
                                     </div>
                                 </div>
@@ -413,13 +452,18 @@ if ($result) {
                         mobileList.appendChild(card);
                     } else {
                         const tr = document.createElement("tr");
+                        tr.style.cursor = "pointer";
+                        tr.onclick = (e) => {
+                            if (!e.target.closest('a') && !e.target.closest('.btn')) {
+                                window.location.href = `detail_rapat_peserta.php?id=${encodeURIComponent(item.id)}`;
+                            }
+                        };
                         tr.innerHTML = `
                             <td>${nomorUrut}</td>
                             <td class="text-start">${judul}</td>
                             <td>${tanggal}</td>
                             <td>${pembuat}</td>
                             <td class="text-center">
-                                <a href="detail_rapat_peserta.php?id=${encodeURIComponent(item.id)}" class="btn btn-sm text-primary" title="Lihat"><i class="bi bi-eye"></i></a>
                                 ${item.Lampiran ? `<a href="../file/${encodeURIComponent(item.Lampiran)}" class="btn btn-sm text-success ms-2" title="Download" download><i class="bi bi-download"></i></a>` : ''}
                             </td>
                         `;
@@ -526,9 +570,36 @@ if ($result) {
                 logoutBtnMobile.addEventListener("click", confirmLogout);
             }
 
+            // Handle highlight card clicks to mark as viewed
+            document.querySelectorAll('.highlight-card').forEach(card => {
+                const link = card.closest('a');
+                if (link) {
+                    link.addEventListener('click', function(e) {
+                        const href = this.getAttribute('href');
+                        const urlParams = new URLSearchParams(new URL(href, window.location.origin).search);
+                        const id = urlParams.get('id');
+                        
+                        if (id) {
+                            fetch('../proses/proses_mark_viewed.php', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id: id })
+                            }).catch(err => console.error('Error marking as viewed:', err));
+                        }
+                    });
+                }
+            });
+
             updateTable();
+
+            // Re-render table when viewport changes (debounced)
+            window.addEventListener('resize', function () {
+                if (window._dashResizeTimer) clearTimeout(window._dashResizeTimer);
+                window._dashResizeTimer = setTimeout(() => {
+                    updateTable();
+                }, 120);
+            });
         });
     </script>
 </body>
-
 </html>

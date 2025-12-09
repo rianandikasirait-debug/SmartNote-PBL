@@ -297,8 +297,6 @@ foreach ($current_participants as $pid) {
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
   <script>
     // === TINYMCE INITIALIZATION ===
     tinymce.init({
@@ -312,7 +310,7 @@ foreach ($current_participants as $pid) {
 
     document.addEventListener("DOMContentLoaded", function() {
         /* =======================
-           FORM SUBMIT AJAX
+          FORM SUBMIT AJAX
         ======================= */
         document.getElementById("editForm").addEventListener("submit", async function (e) {
             e.preventDefault();

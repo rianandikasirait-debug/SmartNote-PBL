@@ -103,8 +103,8 @@ if ($result) {
                             <a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
                         </li>
                         <li>
-                            <a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola
-                                Pengguna</a></li>
+                            <a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola Pengguna</a>
+                        </li>
                     </ul>
                 </div>
 
@@ -131,8 +131,8 @@ if ($result) {
                     <a class="nav-link active" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
                 </li>
                 <li>
-                    <a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola
-                        Pengguna</a></li>
+                    <a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola Pengguna</a>
+                </li>
             </ul>
         </div>
 

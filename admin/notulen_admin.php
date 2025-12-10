@@ -218,7 +218,7 @@ if ($q) {
                     <!-- Trigger button -->
                     <div class="dropdown w-100" data-bs-auto-close="false">
                         <button id="dropdownToggle" class="btn btn-save w-100 dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">Pilih Peserta</button>
+                            aria-expanded="true">Pilih Peserta</button>
 
                         <ul class="dropdown-menu w-100">
                             <li class="px-3 py-2">
@@ -478,7 +478,6 @@ if (logoutBtnMobile) {
     });
 }
     </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../js/admin.js"></script>
 </body>
 </html>

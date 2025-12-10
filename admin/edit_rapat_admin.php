@@ -79,6 +79,21 @@ foreach ($current_participants as $pid) {
   <script src="https://cdn.tiny.cloud/1/cl3yw8j9ej8nes9mctfudi2r0jysibdrbn3y932667p04jg5/tinymce/6/tinymce.min.js"
     referrerpolicy="origin"></script>
   <link rel="stylesheet" href="../css/admin.min.css">
+   <style>
+        .btn-save {
+            background-color: #00C853 !important; 
+            border-color: #00C853 !important;
+            color: #ffffff !important;
+        }
+        .btn-save:hover, .btn-save:focus {
+            background-color: #02913f !important; 
+            border-color: #02913f !important;
+        }
+        .sidebar-content .nav-link.active {
+            background-color: #00C853 !important;
+            color: #ffffff !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -141,7 +156,7 @@ foreach ($current_participants as $pid) {
                     <a class="nav-link" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
                 </li>
                 <li>
-                    <a id="logoutBtn" class="nav-link text-danger" href="#"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Logout</a>
+                    <a id="logoutBtn" class="nav-link text-danger" href="#"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Keluar</a>
                 </li>
             </ul>
         </div>

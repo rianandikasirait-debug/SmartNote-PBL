@@ -10,13 +10,14 @@ if (!isset($_SESSION['user_id'])) {
 
 // Ambil data user login
 $userId = (int) $_SESSION['user_id'];
-$stmt = $conn->prepare("SELECT nama FROM users WHERE id = ?");
+$stmt = $conn->prepare("SELECT nama, foto FROM users WHERE id = ?");
 $stmt->bind_param("i", $userId);
 $stmt->execute();
 $userRes = $stmt->get_result();
 $userData = $userRes->fetch_assoc();
 $stmt->close();
 $userName = $userData['nama'] ?? 'Admin';
+$userPhoto = $userData['foto'] ?? null;
 
 // Ambil peserta
 $users = [];
@@ -150,7 +151,16 @@ if ($q) {
             <div>
                 <h4><b>Dashboard Notulis</b></h4>
             </div>
-            <div class="profile"><span>Halo, <?= htmlspecialchars($userName) ?> 👋</span></div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="text-end">
+                    <span class="d-block fw-medium text-dark">Halo, <?= htmlspecialchars($userName) ?> 👋</span>
+                </div>
+                <img src="<?= $userPhoto ? '../file/' . htmlspecialchars($userPhoto) : '../file/user.jpg' ?>" 
+                     alt="Profile" 
+                     class="rounded-circle shadow-sm"
+                     style="width: 45px; height: 45px; object-fit: cover; border: 2px solid #fff;"
+                     onerror="this.onerror=null;this.src='../file/user.jpg';">
+            </div>
         </div>
 
         <nav aria-label="breadcrumb">

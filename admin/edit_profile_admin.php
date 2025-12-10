@@ -196,6 +196,7 @@ $foto_profile = !empty($user['foto']) ? '../file/' . $user['foto'] : '../file/us
     <!-- Main -->
     <div class="main-content">
         <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4><b>Profile Notulis</b></h4>
             <div class="w-50">
                 <!-- Alert Error -->
                 <?php if (isset($_SESSION['error_message'])): ?>

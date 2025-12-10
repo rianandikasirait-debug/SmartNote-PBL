@@ -23,6 +23,22 @@ if (!in_array($id_notulen, $_SESSION['viewed_notulen'])) {
     $_SESSION['viewed_notulen'][] = $id_notulen;
 }
 
+// Ambil data user login (nama + foto)
+$userId = (int) ($_SESSION['user_id'] ?? 0);
+if ($userId > 0) {
+    $s = $conn->prepare("SELECT nama, foto FROM users WHERE id = ?");
+    $s->bind_param("i", $userId);
+    $s->execute();
+    $r = $s->get_result();
+    $u = $r->fetch_assoc();
+    $s->close();
+    $sessionUserName = $u['nama'] ?? null;
+    $userPhoto = $u['foto'] ?? null;
+} else {
+    $sessionUserName = null;
+    $userPhoto = null;
+}
+
 // Ambil data notulen
 $sql = "SELECT * FROM tambah_notulen WHERE id = ?";
 $stmt = $conn->prepare($sql);
@@ -198,8 +214,15 @@ $created_by = $notulen['created_by'] ?? 'Admin';
     <div class="main-content">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div></div>
-            <div class="profile">
-                <span>Halo, <?= htmlspecialchars($_SESSION['user_name'] ?? 'Peserta') ?>👋</span>
+            <div class="d-flex align-items-center gap-3">
+                <div class="text-end">
+                    <span class="d-block fw-medium text-dark">Halo, <?= htmlspecialchars($sessionUserName ?? ($_SESSION['user_name'] ?? 'Peserta')) ?> 👋</span>
+                </div>
+                <img src="<?= isset($userPhoto) && $userPhoto ? '../file/' . htmlspecialchars($userPhoto) : '../file/user.jpg' ?>"
+                     alt="Profile"
+                     class="rounded-circle shadow-sm"
+                     style="width: 45px; height: 45px; object-fit: cover; border: 2px solid #fff;"
+                     onerror="this.onerror=null;this.src='../file/user.jpg';">
             </div>
         </div>
 

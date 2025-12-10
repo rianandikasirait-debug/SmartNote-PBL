@@ -193,7 +193,7 @@ $foto_profile = (!empty($user['foto']) ? '../file/' . $user['foto'] : '../file/u
     <div class="main-content">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
-                <h4><b>Profile Admin</b></h4>
+                <h4><b>Profile Notulis</b></h4>
                 <!-- Alert Messages -->
                 <?php if (isset($_SESSION['success_message'])): ?>
                     <div class="alert alert-success alert-dismissible fade show" role="alert">

@@ -48,6 +48,7 @@ if ($q) {
             background-color: #00C853 !important; 
             border-color: #00C853 !important;
             color: #ffffff !important;
+            font-weight: bold;
         }
         .btn-save:hover, .btn-save:focus {
             background-color: #02913f !important; 
@@ -56,6 +57,26 @@ if ($q) {
         .sidebar-content .nav-link.active {
             background-color: #00C853 !important;
             color: #ffffff !important;
+        }
+        .btn.btn-sm.btn-light{
+          background-color: #00C853 !important; 
+          border-color: #00C853 !important;
+          color: #ffffff !important;
+        }
+        .btn.btn-sm.btn-light:hover, .btn.btn-sm.btn-light:focus{
+            background-color: #02913f !important; 
+            border-color: #02913f !important;
+        }
+        .btn.btn-back{
+          background-color: #00C853 !important; 
+          border-color: #00C853 !important;
+          color: #ffffff !important;
+          font-weight: bold;
+          text-decoration: none !important;
+        }
+        .btn.btn-back:hover, .btn.btn-back:focus{
+          background-color: #02913f !important; 
+            border-color: #02913f !important;
         }
     </style>
 </head>
@@ -216,9 +237,9 @@ if ($q) {
                             <li><hr class="dropdown-divider"></li>
 
                             <li class="px-3 py-2">
-                                <div class="d-flex justify-content-between gap-2">
-                                    <button type="button" id="clearSearchBtn" class="btn btn-light btn-sm flex-grow-1">Reset</button>
-                                    <button type="button" id="addButton" class="btn btn-success btn-sm flex-grow-1" style="background-color: #198754; border-color: #198754;">Tambah</button>
+                               <div class="d-flex justify-content-between">
+                                    <button id="clearSearchBtn" type="button" class="btn btn-sm btn-light">Reset</button>
+                                    <button id="addButton" type="button" class="btn btn-sm btn-success">Tambah</button>
                                 </div>
                             </li>
                         </ul>
@@ -234,7 +255,8 @@ if ($q) {
                 </div>
 
                 <!-- Submit -->
-                <div class="d-flex justify-content-end">
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <a href="dashboard_admin.php" class="btn btn-back">Kembali</a>
                     <button type="submit" class="btn btn-save px-4">Simpan</button>
                 </div>
             </form>

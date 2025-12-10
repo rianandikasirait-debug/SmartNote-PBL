@@ -84,6 +84,7 @@ foreach ($current_participants as $pid) {
             background-color: #00C853 !important; 
             border-color: #00C853 !important;
             color: #ffffff !important;
+            font-weight: bold;
         }
         .btn-save:hover, .btn-save:focus {
             background-color: #02913f !important; 
@@ -97,6 +98,21 @@ foreach ($current_participants as $pid) {
           background-color: #00C853 !important; 
           border-color: #00C853 !important;
           color: #ffffff !important;
+        }
+        .btn.btn-sm.btn-light:hover, .btn.btn-sm.btn-light:focus{
+            background-color: #02913f !important; 
+            border-color: #02913f !important;
+        }
+        .btn.btn-back{
+          background-color: #00C853 !important; 
+          border-color: #00C853 !important;
+          color: #ffffff !important;
+          font-weight: bold;
+          text-decoration: none !important;
+        }
+        .btn.btn-back:hover, .btn.btn-back:focus{
+          background-color: #02913f !important; 
+            border-color: #02913f !important;
         }
     </style>
 </head>

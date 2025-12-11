@@ -38,86 +38,7 @@ $foto_profile = (!empty($user['foto']) ? '../file/' . $user['foto'] : '../file/u
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
-    <style>
-        body {
-            background-color: #fdf9f4;
-            font-family: "Poppins", sans-serif;
-        }
-
-        /* Sidebar */
-        .sidebar-content {
-            min-width: 250px;
-            background: #fff;
-            height: 100%;
-            border-right: 1px solid #eee;
-            padding: 1.5rem 1rem;
-        }
-
-        .sidebar-content .nav-link {
-            color: #555;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            border-radius: 0.5rem;
-        }
-
-        .sidebar-content .nav-link.active,
-        .sidebar-content .nav-link:hover {
-            background-color: #00c853;
-            color: #fff;
-        }
-
-        .logout-btn {
-            border: 1px solid #f8d7da;
-            color: #dc3545;
-            border-radius: .5rem;
-            margin-top: 2rem;
-        }
-
-        /* Main content */
-        .main-content {
-            margin-left: 260px;
-            padding: 1.5rem;
-        }
-
-        @media (max-width: 991.98px) {
-            .main-content {
-                margin-left: 0;
-            }
-        }
-
-        .profile-box {
-            background-color: #fff;
-            border-radius: 1rem;
-            padding: 1.5rem;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .badge-role {
-            background-color: #00c853;
-            color: white;
-            font-size: 0.8rem;
-            border-radius: 0.5rem;
-            padding: 0.3rem 0.7rem;
-        }
-
-        .btn.btn-edit{
-            background-color: #00C853 !important; 
-            border-color: #00C853 !important;
-            color: #ffffff !important;
-            font-weight: bold;
-            text-decoration: none !important;
-        }
-        .btn.btn-edit:hover, .btn.btn-edit:focus{
-            background-color: #02913f !important; 
-            border-color: #02913f !important;
-        }
-        .profile {
-            display: flex;
-            align-items: center;
-            gap: .5rem;
-            font-weight: 500;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/admin.min.css">
 </head>
 
 <body>
@@ -182,51 +103,58 @@ $foto_profile = (!empty($user['foto']) ? '../file/' . $user['foto'] : '../file/u
 
     <!-- Main -->
     <div class="main-content">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div>
-                <h4><b>Profile Peserta</b></h4>
-                <!-- Alert Messages -->
-                <?php if (isset($_SESSION['success_message'])): ?>
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <?= $_SESSION['success_message']; ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    <?php unset($_SESSION['success_message']); ?>
-                <?php endif; ?>
-            </div>
-            <div class="profile">
-                <span>Halo, <?= htmlspecialchars($user['nama']); ?> 👋</span>
-                <img src="<?= htmlspecialchars($foto_profile); ?>" alt="Profile" class="rounded-circle"
-                    style="width: 40px; height: 40px; object-fit: cover;">
+        <div class="row align-items-center mb-4">
+            <div class="col">
+                <h4 class="fw-bold fs-4 mb-0 text-dark">Profil Saya</h4>
             </div>
         </div>
 
-        <div class="profile-box">
-            <h5 class="fw-semibold mb-3"></h5>
+        <!-- Alert Messages (retained structure) -->
+         <?php if (isset($_SESSION['success_message'])): ?>
+            <div class="mb-3">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <?= $_SESSION['success_message']; ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+            <?php unset($_SESSION['success_message']); ?>
+        <?php endif; ?>
 
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <th style="width: 20%;">Nama:</th>
-                        <td><?= htmlspecialchars($user['nama']); ?></td>
-                    </tr>
-                    <tr>
-                        <th>Email:</th>
-                        <td><?= htmlspecialchars($user['email']); ?></td>
-                    </tr>
-                    <tr>
-                        <th>NIK:</th>
-                        <td><?= htmlspecialchars($user['nik']); ?></td>
-                    </tr>
-                    <tr>
-                        <th>Role:</th>
-                        <td><?= ucfirst($user['role']); ?></td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="profile-container">
+            <div class="profile-card-modern">
+                <!-- Header: Photo, Name, Role -->
+                <div class="profile-header-modern">
+                    <img src="<?= htmlspecialchars($foto_profile); ?>" alt="Profile" class="profile-avatar-modern">
+                    <h3 class="profile-name-modern"><?= htmlspecialchars($user['nama']); ?></h3>
+                    <span class="profile-role-badge"><?= ucfirst($user['role']); ?></span>
+                </div>
 
-            <div class="d-flex justify-content-end">
-                <a href="edit_profile_peserta.php" class="btn btn-edit"><i class="bi bi-pencil me-2"></i>Edit Profil</a>
+                <!-- 2-Column Grid Info -->
+                <div class="profile-info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Nama Lengkap</span>
+                        <span class="info-value"><?= htmlspecialchars($user['nama']); ?></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Email Address</span>
+                        <span class="info-value"><?= htmlspecialchars($user['email']); ?></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Nomor Induk Kependudukan (NIK)</span>
+                        <span class="info-value"><?= htmlspecialchars($user['nik']); ?></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Status Akun</span>
+                        <span class="info-value"><?= ucfirst($user['role']); ?></span>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <div class="profile-actions-modern">
+                    <a href="edit_profile_peserta.php" class="btn-edit-modern">
+                        <i class="bi bi-pencil-square"></i> Edit Profil
+                    </a>
+                </div>
             </div>
         </div>
     </div>

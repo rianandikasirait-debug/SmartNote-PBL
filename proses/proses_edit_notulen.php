@@ -47,45 +47,69 @@ if (strlen($peserta_str) > 255) {
     exit;
 }
 
-// Cek apakah ada upload lampiran baru
-$lampiran_baru = null;
-if (!empty($_FILES['lampiran']['name'])) {
-    $file = $_FILES['lampiran'];
+// --- 1. Ambil data lama untuk mendapatkan list file saat ini ---
+$sql_get = "SELECT tindak_lanjut FROM tambah_notulen WHERE id = ?";
+$stmt_get = $conn->prepare($sql_get);
+$stmt_get->bind_param("i", $id);
+$stmt_get->execute();
+$res_get = $stmt_get->get_result();
+$row_old = $res_get->fetch_assoc();
+$stmt_get->close();
+
+$current_files_str = $row_old['tindak_lanjut'] ?? '';
+$current_files = array_filter(array_map('trim', explode('|', $current_files_str)), function($v){ return $v !== ''; });
+
+// --- 2. Proses Penghapusan File ---
+$deleted_files = isset($_POST['deleted_files']) ? $_POST['deleted_files'] : [];
+if (!empty($deleted_files)) {
+    // Hapus dari array current_files
+    $current_files = array_diff($current_files, $deleted_files);
+    
+    // Opsional: Hapus fisik file jika diperlukan (hati-hati jika file dipakai di tempat lain)
+    // foreach ($deleted_files as $del) {
+    //    $path = __DIR__ . '/../file/' . $del;
+    //    if (file_exists($path)) unlink($path);
+    // }
+}
+
+// --- 3. Proses Upload File Baru (Multiple) ---
+$new_uploaded_files = [];
+if (!empty($_FILES['lampiran']['name'][0])) {
+    $total_files = count($_FILES['lampiran']['name']);
     $allowed_types = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'];
-
-    if (!in_array($file['type'], $allowed_types)) {
-        echo json_encode(['success' => false, 'message' => 'Format file tidak didukung!']);
-        exit;
-    }
-
-    if ($file['size'] > 5 * 1024 * 1024) { // batas 5MB
-        echo json_encode(['success' => false, 'message' => 'Ukuran file terlalu besar (Maks 5MB)!']);
-        exit;
-    }
-
-    $namaFile = time() . "_" . preg_replace("/[^a-zA-Z0-9.]/", "", basename($file['name']));
     $target_dir = __DIR__ . '/../file/';
 
-    if (move_uploaded_file($file['tmp_name'], $target_dir . $namaFile)) {
-        $lampiran_baru = $namaFile;
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Gagal upload file!']);
-        exit;
+    for ($i = 0; $i < $total_files; $i++) {
+        $fileName = $_FILES['lampiran']['name'][$i];
+        $fileTmp = $_FILES['lampiran']['tmp_name'][$i];
+        $fileType = $_FILES['lampiran']['type'][$i];
+        $fileSize = $_FILES['lampiran']['size'][$i];
+        $fileError = $_FILES['lampiran']['error'][$i];
+
+        if ($fileError === UPLOAD_ERR_OK) {
+            if (in_array($fileType, $allowed_types)) {
+                if ($fileSize <= 5 * 1024 * 1024) { // 5MB limit
+                    $safeName = time() . "_" . $i . "_" . preg_replace("/[^a-zA-Z0-9.]/", "", basename($fileName));
+                    if (move_uploaded_file($fileTmp, $target_dir . $safeName)) {
+                        $new_uploaded_files[] = $safeName;
+                    }
+                }
+            }
+        }
     }
 }
 
-// Update Database
-// Update Database
-if ($lampiran_baru) {
-    // Gunakan kolom yang benar: judul, tanggal, hasil, peserta, tindak_lanjut (file), status
-    $sql = "UPDATE tambah_notulen SET judul=?, tanggal=?, hasil=?, peserta=?, tindak_lanjut=CONCAT(IFNULL(tindak_lanjut, ''), IF(tindak_lanjut IS NOT NULL AND tindak_lanjut != '', '|', ''), ?), status=? WHERE id=?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssssi", $judul, $tanggal, $isi, $peserta_str, $lampiran_baru, $status, $id);
-} else {
-    $sql = "UPDATE tambah_notulen SET judul=?, tanggal=?, hasil=?, peserta=?, status=? WHERE id=?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssssi", $judul, $tanggal, $isi, $peserta_str, $status, $id);
-}
+// --- 4. Gabungkan File Lama (sisa) + File Baru ---
+$final_files = array_merge($current_files, $new_uploaded_files);
+// Hapus duplikat jika ada
+$final_files = array_unique($final_files);
+// Gabungkan jadi string
+$final_files_str = implode('|', $final_files);
+
+// --- 5. Update Database ---
+$sql = "UPDATE tambah_notulen SET judul=?, tanggal=?, hasil=?, peserta=?, tindak_lanjut=?, status=? WHERE id=?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ssssssi", $judul, $tanggal, $isi, $peserta_str, $final_files_str, $status, $id);
 
 if ($stmt->execute()) {
     echo json_encode(['success' => true, 'message' => 'Notulen berhasil diperbarui!']);

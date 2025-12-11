@@ -254,11 +254,24 @@ if (trim($peserta_raw) !== '') {
             </div>
 
             <h6 class="fw-semibold mb-2">Lampiran:</h6>
-            <?php if (!empty($notulen['tindak_lanjut'])): ?>
-                <a href="../file/<?= htmlspecialchars($notulen['tindak_lanjut']); ?>" class="btn btn-outline-success btn-sm"
-                    download>
-                    <i class="bi bi-download me-2"></i>Download Lampiran
-                </a>
+            <?php if (!empty($notulen['tindak_lanjut'])): 
+                $files = explode('|', $notulen['tindak_lanjut']);
+                foreach($files as $f):
+                    $f = trim($f);
+                    if (empty($f)) continue;
+            ?>
+                <div class="mb-2">
+                    <a href="../file/<?= htmlspecialchars($f); ?>" class="btn btn-outline-primary btn-sm me-2" target="_blank">
+                        <i class="bi bi-eye me-2"></i>Lihat Lampiran
+                    </a>
+                    <a href="../file/<?= htmlspecialchars($f); ?>" class="btn btn-outline-success btn-sm" download>
+                        <i class="bi bi-download me-2"></i>Download Lampiran
+                    </a>
+                </div>
+            <?php endforeach; ?>
+            <?php if (empty($files)): ?>
+                <p class="text-muted">Tidak ada lampiran.</p>
+            <?php endif; ?>
             <?php else: ?>
                 <p class="text-muted">Tidak ada lampiran.</p>
             <?php endif; ?>

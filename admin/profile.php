@@ -19,14 +19,16 @@ $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 
 if (!$user) {
-    // Jika pengguna tidak ditemukan (misal dihapus admin saat sedang login)
     session_destroy();
     header("Location: ../login.php");
     exit;
 }
 
-// Atur foto default jika kosong
-$foto_profile = (!empty($user['foto']) ? '../file/' . $user['foto'] : '../file/user.jpg') . '?v=' . time();
+// Buat variabel foto
+$foto = $user['foto'] ?? null;
+$filePath = "../file/" . $foto;
+$hasPhoto = ($foto && file_exists($filePath));
+
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -38,44 +40,33 @@ $foto_profile = (!empty($user['foto']) ? '../file/' . $user['foto'] : '../file/u
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/admin.min.css">
-
 </head>
 
 <body>
-    <!-- navbar -->
-    <!-- navbar -->
+
+    <!-- Navbar -->
     <nav class="navbar navbar-light bg-white sticky-top px-3">
         <button class="btn btn-outline-success d-lg-none" type="button" data-bs-toggle="offcanvas"
-            data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
+            data-bs-target="#sidebarOffcanvas">
             <i class="bi bi-list"></i>
         </button>
     </nav>
 
     <!-- Sidebar Mobile -->
-    <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="sidebarOffcanvas"
-        aria-labelledby="sidebarOffcanvasLabel">
+    <div class="offcanvas offcanvas-start d-lg-none" id="sidebarOffcanvas">
         <div class="offcanvas-body p-0">
             <div class="sidebar-content d-flex flex-column justify-content-between h-100">
                 <div>
                     <h4 class="fw-bold mb-4 ms-3">SmartNote</h4>
                     <ul class="nav flex-column">
-                        <li>
-                            <a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
-                        </li>
-                        <li>
-                            <a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola Pengguna</a>
-                        </li>
+                        <li><a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a></li>
+                        <li><a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola Pengguna</a></li>
                     </ul>
                 </div>
-
                 <div class="mt-auto px-3">
                     <ul class="nav flex-column mb-3">
-                        <li>
-                            <a class="nav-link active" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
-                        </li>
-                        <li>
-                            <a id="logoutBtnMobile" class="nav-link text-danger" href="#"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Keluar</a>
-                        </li>
+                        <li><a class="nav-link active" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
+                        <li><a id="logoutBtnMobile" class="nav-link text-danger" href="#"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Keluar</a></li>
                     </ul>
                 </div>
             </div>
@@ -87,23 +78,14 @@ $foto_profile = (!empty($user['foto']) ? '../file/' . $user['foto'] : '../file/u
         <div>
             <h4 class="fw-bold mb-4 ms-3">SmartNote</h4>
             <ul class="nav flex-column">
-                <li>
-                    <a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
-                </li>
-                <li>
-                    <a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola Pengguna</a>
-                </li>
+                <li><a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a></li>
+                <li><a class="nav-link" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola Pengguna</a></li>
             </ul>
         </div>
-
         <div>
             <ul class="nav flex-column mb-3">
-                <li>
-                    <a class="nav-link active" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
-                </li>
-                <li>
-                    <a id="logoutBtn" class="nav-link text-danger" href="#"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Keluar</a>
-                </li>
+                <li><a class="nav-link active" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
+                <li><a id="logoutBtn" class="nav-link text-danger" href="#"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Keluar</a></li>
             </ul>
         </div>
     </div>
@@ -114,22 +96,30 @@ $foto_profile = (!empty($user['foto']) ? '../file/' . $user['foto'] : '../file/u
             <div class="col">
                 <h4 class="fw-bold fs-4 mb-0 text-dark">Profile Admin</h4>
             </div>
-            <div class="col-auto">
-                 <!-- Indikator kecil kanan atas jika diperlukan -->
-            </div>
         </div>
 
         <div class="profile-container">
             <div class="profile-card-modern">
-                <!-- Header: Foto, Nama, Peran -->
-                <div class="profile-header-modern">
-                    <img src="<?= htmlspecialchars($foto_profile); ?>" alt="Profile" class="profile-avatar-modern">
-                    <h3 class="profile-name-modern"><?= htmlspecialchars($user['nama']); ?></h3>
+
+                <!-- FOTO PROFIL + NAMA + ROLE -->
+                <div class="profile-header-modern text-center">
+
+                    <?php if ($hasPhoto): ?>
+                        <img src="<?= htmlspecialchars($filePath) . '?v=' . time(); ?>"
+                             alt="Profile"
+                             class="profile-avatar-modern"
+                             style="object-fit: cover;">
+                    <?php else: ?>
+                        <i class="bi bi-person-circle"
+                           style="font-size: 95px; color: #495057;"></i>
+                    <?php endif; ?>
+
+                    <h3 class="profile-name-modern mt-3"><?= htmlspecialchars($user['nama']); ?></h3>
                     <span class="profile-role-badge"><?= ucfirst($user['role']); ?></span>
                 </div>
 
-                <!-- Info Grid 2 Kolom -->
-                <div class="profile-info-grid">
+                <!-- DETAIL INFORMASI -->
+                <div class="profile-info-grid mt-4">
                     <div class="info-item">
                         <span class="info-label">Nama Lengkap</span>
                         <span class="info-value"><?= htmlspecialchars($user['nama']); ?></span>
@@ -138,47 +128,43 @@ $foto_profile = (!empty($user['foto']) ? '../file/' . $user['foto'] : '../file/u
                         <span class="info-label">Email Address</span>
                         <span class="info-value"><?= htmlspecialchars($user['email']); ?></span>
                     </div>
-                    <!-- Peran Admin mungkin biasanya tidak memiliki NIK, tetapi tabel pengguna memilikinya. Tampilkan jika ada -->
-                     <div class="info-item">
+
+                    <div class="info-item">
                         <span class="info-label">Nomor Induk (NIK/NIP)</span>
                         <span class="info-value"><?= !empty($user['nik']) ? htmlspecialchars($user['nik']) : '-'; ?></span>
                     </div>
+
                     <div class="info-item">
                         <span class="info-label">Role Akses</span>
                         <span class="info-value"><?= ucfirst($user['role']); ?></span>
                     </div>
                 </div>
 
-                <!-- Tombol Aksi -->
-                <div class="profile-actions-modern">
+                <!-- ACTION BUTTON -->
+                <div class="profile-actions-modern mt-4">
                     <a href="edit_profile_admin.php" class="btn-edit-modern">
                         <i class="bi bi-pencil-square"></i> Edit Profil
                     </a>
                 </div>
+
             </div>
         </div>
     </div>
 
+    <!-- Logout Confirm -->
     <script>
-        // Fungsi Logout
         async function confirmLogout(e) {
             e.preventDefault();
             const confirmed = await showConfirm("Apakah kamu yakin ingin logout?");
-            if (confirmed) {
-                window.location.href = "../proses/proses_logout.php";
-            }
+            if (confirmed) window.location.href = "../proses/proses_logout.php";
         }
 
         document.getElementById("logoutBtn").addEventListener("click", confirmLogout);
-
-        const logoutBtnMobile = document.getElementById("logoutBtnMobile");
-        if (logoutBtnMobile) {
-            logoutBtnMobile.addEventListener("click", confirmLogout);
-        }
+        document.getElementById("logoutBtnMobile").addEventListener("click", confirmLogout);
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/admin.js"></script>
-</body>
 
+</body>
 </html>

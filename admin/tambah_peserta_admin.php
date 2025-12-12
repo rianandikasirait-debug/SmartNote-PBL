@@ -100,13 +100,9 @@ if ($error_msg)
     </head>
 
     <body>
-    <nav class="navbar navbar-light bg-white sticky-top px-3">
-        <button class="btn btn-outline-success d-lg-none" type="button" data-bs-toggle="offcanvas"
-            data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
-            <i class="bi bi-list"></i>
-        </button>
-    </nav>
-    
+    <!-- Navbar -->
+    <?php include __DIR__ . '/header.php'; ?>
+
     <!-- Sidebar Mobile -->
     <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="sidebarOffcanvas"
         aria-labelledby="sidebarOffcanvasLabel">
@@ -176,17 +172,6 @@ if ($error_msg)
                     $filePath = "../file/" . $userPhoto; 
                     $hasPhoto = $userPhoto && file_exists($filePath);
                     ?>
-
-                    <?php if ($hasPhoto): ?>
-                        <img src="<?= htmlspecialchars($filePath) ?>" 
-                            alt="Profile"
-                            class="rounded-circle shadow-sm"
-                            style="width: 45px; height: 45px; object-fit: cover; border: 2px solid #fff;">
-                    <?php else: ?>
-                        <!-- ICON formal (abu gelap, clean, profesional) -->
-                        <i class="bi bi-person-circle"
-                        style="font-size: 45px; color: #495057;"></i>
-                    <?php endif; ?>
                 </div>
             </div>
             

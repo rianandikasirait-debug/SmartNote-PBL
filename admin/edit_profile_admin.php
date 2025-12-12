@@ -41,15 +41,9 @@ $foto_profile = !empty($user['foto']) ? '../file/' . $user['foto'] : '../file/us
 </head>
 
 <body>
-    <!-- navbar -->
-    <!-- navbar -->
-    <nav class="navbar navbar-light bg-white sticky-top px-3">
-        <button class="btn btn-outline-success d-lg-none" type="button" data-bs-toggle="offcanvas"
-            data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
-            <i class="bi bi-list"></i>
-        </button>
-    </nav>
-    
+    <!-- Navbar -->
+    <?php include __DIR__ . '/header.php'; ?>
+
     <!-- Sidebar Mobile -->
     <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="sidebarOffcanvas"
         aria-labelledby="sidebarOffcanvasLabel">

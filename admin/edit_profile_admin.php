@@ -32,10 +32,11 @@ $foto_profile = !empty($user['foto']) ? '../file/' . $user['foto'] : '../file/us
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profil Pengguna</title>
+    <title>Edit Profil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" />    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
     <link rel="stylesheet" href="../css/admin.min.css">
 
 </head>
@@ -166,7 +167,7 @@ $foto_profile = !empty($user['foto']) ? '../file/' . $user['foto'] : '../file/us
             <i class="bi bi-list"></i>
         </button>
 
-        <div class="page-title">Edit Profil</div>
+        <div class="page-title">Edit Profile</div>
 
         <div class="right-section">
             <div class="d-none d-md-block text-end me-2">
@@ -238,7 +239,7 @@ $foto_profile = !empty($user['foto']) ? '../file/' . $user['foto'] : '../file/us
                     vertical-align: -4px;">
                     person_edit
                 </span>
-                Edit Profil Pengguna
+                Edit Profile Pengguna
             </h5>
 
             <form action="../proses/proses_edit_profile.php" method="POST" enctype="multipart/form-data">

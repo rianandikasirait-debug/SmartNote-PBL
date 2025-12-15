@@ -36,7 +36,8 @@ $hasPhoto = ($foto && file_exists($filePath));
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Admin</title>
+    <title>Profil Pengguna</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/admin.min.css">
@@ -269,7 +270,7 @@ $hasPhoto = ($foto && file_exists($filePath));
                 <!-- ACTION BUTTON -->
                 <div class="profile-actions-modern mt-4">
                     <a href="edit_profile_admin.php" class="btn-edit-modern">
-                        <i class="bi bi-pencil-square"></i> Edit Profil
+                        <i class="bi bi-pencil-square"></i> Edit Profile
                     </a>
                 </div>
 

@@ -92,12 +92,37 @@ if (trim($peserta_raw) !== '') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lihat Rapat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/admin.min.css">
     <style>
-    <!-- CSS Header & Sidebar -->
-    <style>
-        body { 
+        body { font-family: 'Poppins', sans-serif !important; }
+
+        /* ===== SIDEBAR DESKTOP ===== */
+        .sidebar-admin {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            background: #ffffff;
+            border-right: 1px solid #e6e6e6;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 999;
+        }
+
+        .sidebar-admin .title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            padding-left: 10px;
+            color: #2c3e50;
+            font-family: 'Poppins', sans-serif !important;
+        } 
             background-color: #fdf9f4; 
             font-family: "Poppins", sans-serif; 
         }
@@ -357,7 +382,7 @@ if (trim($peserta_raw) !== '') {
                         <i class="bi bi-eye me-2"></i>Lihat Lampiran
                     </a>
                     <a href="../file/<?= htmlspecialchars($f); ?>" class="btn btn-outline-success btn-sm" download>
-                        <i class="bi bi-download me-2"></i>Download Lampiran
+                        <i class="bi bi-download me-2"></i>Unduh Lampiran
                     </a>
                 </div>
             <?php endforeach; ?>

@@ -2651,3 +2651,41 @@ body a#logoutBtnMobile i {
     box-shadow: 0 15px 30px rgba(0, 200, 84, 0.2) !important;
 }
 
+
+/* PARTICIPANT DOWNLOAD BUTTON REFINEMENT */
+
+.mobile-card a[download],
+.mobile-card a.btn-download {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 38px !important;       /* Slightly larger background block */
+    height: 38px !important;
+    border-radius: 12px !important; /* Softer rounding */
+    background-color: #F0F0F0 !important; /* Very Light Gray */
+    color: #555555 !important;
+    border: none !important;
+    text-decoration: none !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.mobile-card a[download] i,
+.mobile-card a.btn-download i {
+    font-size: 1.1rem !important;
+    color: #555555 !important;
+    /* vertical-align: middle; */
+}
+
+/* Hover State */
+.mobile-card a[download]:hover {
+    background-color: #E0E0E0 !important; /* Darker Gray */
+    color: #333333 !important;
+    transform: translateY(-2px);
+}
+
+/* Active/Clicked State */
+.mobile-card a[download]:active {
+    background-color: #BDBDBD !important;
+    transform: scale(0.95);
+}
+

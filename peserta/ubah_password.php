@@ -43,7 +43,100 @@ if ($error_msg) unset($_SESSION['error_message']);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/admin.min.css">
+    <!-- CSS Header & Sidebar -->
     <style>
+        /* ===== SIDEBAR DESKTOP ===== */
+        .sidebar-admin {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            background: #ffffff;
+            border-right: 1px solid #e6e6e6;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 999;
+        }
+
+        .sidebar-admin .title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            padding-left: 10px;
+        }
+
+        .sidebar-admin a {
+            display: block;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            color: #222;
+            font-weight: 500;
+            text-decoration: none !important;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-admin a:hover,
+        .sidebar-admin a.active {
+            background: #00C853;
+            color: #fff !important;
+        }
+
+        /* ===== HEADER (TOP BAR) ===== */
+        .header-admin {
+            position: fixed;
+            top: 0;
+            left: 250px;
+            right: 0;
+            height: 70px;
+            background: white;
+            border-bottom: 1px solid #e6e6e6;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            z-index: 998;
+        }
+
+        .header-admin .page-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .header-admin .right-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* ===== MAIN CONTENT ADJUSTMENT ===== */
+        .main-content {
+            margin-left: 250px;
+            padding: 90px 20px 20px 20px;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        /* ===== MOBILE ONLY ===== */
+        @media (max-width: 991px) {
+            .sidebar-admin {
+                display: none;
+            }
+
+            .header-admin {
+                left: 0 !important;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding-top: 90px;
+            }
+        }
+
         .password-section {
             max-width: 500px;
             margin: 0 auto;
@@ -68,62 +161,75 @@ if ($error_msg) unset($_SESSION['error_message']);
         }
     </style>
 </head>
-
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-light bg-white sticky-top px-3">
-        <button class="btn btn-outline-success d-lg-none" type="button" data-bs-toggle="offcanvas"
-            data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
-            <i class="bi bi-list"></i>
-        </button>
-    </nav>
+    
+   <!-- Sidebar Desktop -->
+    <div class="sidebar-admin d-none d-lg-flex">
+        <div class="sidebar-top">
+            <div class="title text-success">SmartNote</div>
+            
+            <a href="dashboard_peserta.php" class="<?= basename($_SERVER['PHP_SELF']) === 'dashboard_peserta.php' ? 'active' : '' ?>">
+                <i class="bi bi-grid me-2"></i> Dashboard
+            </a>
+        </div>
 
-    <!-- Sidebar Mobile -->
-    <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="sidebarOffcanvas"
-        aria-labelledby="sidebarOffcanvasLabel">
-        <div class="offcanvas-body p-0">
-            <div class="sidebar-content d-flex flex-column justify-content-between h-100">
-                <div>
-                    <h4 class="fw-bold mb-4 ms-3">SmartNote</h4>
-                    <ul class="nav flex-column">
-                        <li>
-                            <a class="nav-link" href="dashboard_peserta.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="mt-auto px-3">
-                    <ul class="nav flex-column mb-3">
-                        <li>
-                            <a class="nav-link" href="profile_peserta.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
-                        </li>
-                        <li>
-                            <a id="logoutBtnMobile" class="nav-link text-danger" href="#"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Keluar</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+        <div class="sidebar-bottom">
+            <a href="profile_peserta.php" class="<?= basename($_SERVER['PHP_SELF']) === 'profile_peserta.php' ? 'active' : '' ?>">
+                <i class="bi bi-person-circle me-2"></i> Profile
+            </a>
+            <a href="#" id="logoutBtn" class="text-danger">
+                <i class="bi bi-box-arrow-right me-2"></i> Keluar
+            </a>
         </div>
     </div>
 
-    <!-- Sidebar Desktop -->
-    <div class="sidebar-content d-none d-lg-flex flex-column justify-content-between position-fixed">
-        <div>
-            <h4 class="fw-bold mb-4 ms-3">SmartNote</h4>
-            <ul class="nav flex-column">
-                <li>
-                    <a class="nav-link" href="dashboard_peserta.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
+    <!-- Header / Top Bar -->
+    <div class="header-admin">
+        <button class="btn btn-outline-success d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMobile">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <div class="page-title">Ubah Password</div>
+
+        <div class="right-section">
+            <div class="d-none d-md-block text-end me-2">
+                <div class="fw-bold small"><?= htmlspecialchars($userName) ?></div>
+                <small class="text-muted" style="font-size: 0.75rem;">Peserta</small>
+            </div>
+            
+            <?php if (!empty($userPhoto) && file_exists('../file/' . $userPhoto)): ?>
+                <img src="../file/<?= htmlspecialchars($userPhoto) ?>" class="rounded-circle border" style="width:40px;height:40px;object-fit:cover;">
+            <?php else: ?>
+                <i class="bi bi-person-circle fs-2 text-secondary"></i>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- Sidebar Mobile -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarMobile">
+         <div class="offcanvas-header">
+            <h5 class="offcanvas-title fw-bold text-success">SmartNote</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column justify-content-between">
+            <ul class="nav flex-column gap-2">
+                <li class="nav-item">
+                    <a class="nav-link text-dark fw-medium <?= basename($_SERVER['PHP_SELF']) === 'dashboard_peserta.php' ? 'bg-success text-white rounded' : '' ?>" href="dashboard_peserta.php">
+                        <i class="bi bi-grid me-2"></i> Dashboard
+                    </a>
                 </li>
             </ul>
-        </div>
 
-        <div>
-            <ul class="nav flex-column mb-3">
-                <li>
-                    <a class="nav-link" href="profile_peserta.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
+            <ul class="nav flex-column gap-2 mt-4 border-top pt-3">
+                 <li class="nav-item">
+                    <a class="nav-link text-dark fw-medium <?= basename($_SERVER['PHP_SELF']) === 'profile_peserta.php' ? 'bg-success text-white rounded' : '' ?>" href="profile_peserta.php">
+                        <i class="bi bi-person-circle me-2"></i> Profile
+                    </a>
                 </li>
-                <li>
-                    <a id="logoutBtn" class="nav-link text-danger" href="#"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Keluar</a>
+                <li class="nav-item">
+                    <a id="logoutBtnMobile" class="nav-link text-danger fw-medium" href="#">
+                        <i class="bi bi-box-arrow-right me-2"></i> Keluar
+                    </a>
                 </li>
             </ul>
         </div>
@@ -133,16 +239,6 @@ if ($error_msg) unset($_SESSION['error_message']);
     <div class="main-content">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h5 class="fw-semibold"><i class="bi bi-key-fill me-2"></i>Ubah Password</h5>
-            <div class="d-flex align-items-center gap-3">
-                <div class="text-end">
-                    <span class="d-block fw-medium text-dark">Halo, <?= htmlspecialchars($userName) ?> 👋</span>
-                </div>
-                <img src="<?= $userPhoto ? '../file/' . htmlspecialchars($userPhoto) : '../file/user.jpg' ?>"
-                     alt="Profile"
-                     class="rounded-circle shadow-sm"
-                     style="width: 45px; height: 45px; object-fit: cover; border: 2px solid #fff;"
-                     onerror="this.onerror=null;this.src='../file/user.jpg';">
-            </div>
         </div>
 
         <?php if ($isFirstLogin): ?>

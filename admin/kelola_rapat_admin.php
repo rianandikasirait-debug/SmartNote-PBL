@@ -65,65 +65,188 @@ if ($wa_message) {
 </head>
 
 <body>
-    <nav class="navbar navbar-light bg-white sticky-top px-3">
-        <button class="btn btn-outline-success d-lg-none" type="button" data-bs-toggle="offcanvas"
-            data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
-            <i class="bi bi-list"></i>
-        </button>
-    </nav>
+    <!-- CSS Header & Sidebar -->
+    <style>
+        /* ===== SIDEBAR DESKTOP ===== */
+        .sidebar-admin {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            background: #ffffff;
+            border-right: 1px solid #e6e6e6;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 999;
+        }
 
-    <!-- Sidebar Mobile -->
-    <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="sidebarOffcanvas"
-        aria-labelledby="sidebarOffcanvasLabel">
-        <div class="offcanvas-body p-0">
-            <div class="sidebar-content d-flex flex-column justify-content-between h-100">
-                <div>
-                    <h4 class="fw-bold mb-4 ms-3">SmartNote</h4>
-                    <ul class="nav flex-column">
-                        <li>
-                            <a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
-                        </li>
-                        <li>
-                            <a class="nav-link active" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola Pengguna</a>
-                        </li>
-                    </ul>
-                </div>
+        .sidebar-admin .title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            padding-left: 10px;
+        }
 
-                <div class="mt-auto px-3">
-                    <ul class="nav flex-column mb-3">
-                        <li>
-                            <a class="nav-link" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
-                        </li>
-                        <li>
-                            <a id="logoutBtnMobile" class="nav-link text-danger" href="#"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Keluar</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+        .sidebar-admin a {
+            display: block;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            color: #222;
+            font-weight: 500;
+            text-decoration: none !important;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-admin a:hover,
+        .sidebar-admin a.active {
+            background: #00C853;
+            color: #fff !important;
+        }
+
+        /* ===== HEADER (TOP BAR) ===== */
+        .header-admin {
+            position: fixed;
+            top: 0;
+            left: 250px;
+            right: 0;
+            height: 70px;
+            background: white;
+            border-bottom: 1px solid #e6e6e6;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            z-index: 998;
+        }
+
+        .header-admin .page-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .header-admin .right-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* ===== MAIN CONTENT ADJUSTMENT ===== */
+        .main-content {
+            margin-left: 250px;
+            padding: 90px 20px 20px 20px;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        /* ===== MOBILE ONLY ===== */
+        @media (max-width: 991px) {
+            .sidebar-admin {
+                display: none;
+            }
+
+            .header-admin {
+                left: 0 !important;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding-top: 90px;
+            }
+        }
+
+        .badge-role-custom {
+            background-color: #e8f5e9;
+            color: #1b5e20;
+            padding: 6px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-block;
+            letter-spacing: 0.5px;
+        }
+    </style>
+
+    <!-- Sidebar Desktop -->
+    <div class="sidebar-admin d-none d-lg-flex">
+        <div class="sidebar-top">
+            <div class="title text-success">SmartNote</div>
+            
+            <a href="dashboard_admin.php" class="<?= basename($_SERVER['PHP_SELF']) === 'dashboard_admin.php' ? 'active' : '' ?>">
+                <i class="bi bi-grid me-2"></i> Dashboard
+            </a>
+            
+            <a href="kelola_rapat_admin.php" class="<?= basename($_SERVER['PHP_SELF']) === 'kelola_rapat_admin.php' ? 'active' : '' ?>">
+                <i class="bi bi-people me-2"></i> Kelola Pengguna
+            </a>
+        </div>
+
+        <div class="sidebar-bottom">
+            <a href="profile.php" class="<?= basename($_SERVER['PHP_SELF']) === 'profile.php' ? 'active' : '' ?>">
+                <i class="bi bi-person-circle me-2"></i> Profile
+            </a>
+            <a href="#" id="logoutBtn" class="text-danger">
+                <i class="bi bi-box-arrow-right me-2"></i> Keluar
+            </a>
         </div>
     </div>
 
-    <!-- Sidebar Desktop -->
-    <div class="sidebar-content d-none d-lg-flex flex-column justify-content-between position-fixed">
-        <div>
-            <h4 class="fw-bold mb-4 ms-3">SmartNote</h4>
-            <ul class="nav flex-column">
-                <li>
-                    <a class="nav-link" href="dashboard_admin.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
+    <!-- Header / Top Bar -->
+    <div class="header-admin">
+        <button class="btn btn-outline-success d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMobile">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <div class="page-title">Kelola Pengguna</div>
+
+        <div class="right-section">
+            <div class="d-none d-md-block text-end me-2">
+                <div class="fw-bold small"><?= htmlspecialchars($userName) ?></div>
+                <small class="text-muted" style="font-size: 0.75rem;">Administrator</small>
+            </div>
+            
+            <?php if ($userPhoto && file_exists("../file/" . $userPhoto)): ?>
+                <img src="../file/<?= htmlspecialchars($userPhoto) ?>" class="rounded-circle border" style="width:40px;height:40px;object-fit:cover;">
+            <?php else: ?>
+                <i class="bi bi-person-circle fs-2 text-secondary"></i>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- Sidebar Mobile -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarMobile">
+         <div class="offcanvas-header">
+            <h5 class="offcanvas-title fw-bold text-success">SmartNote</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column justify-content-between">
+            <ul class="nav flex-column gap-2">
+                <li class="nav-item">
+                    <a class="nav-link text-dark fw-medium <?= basename($_SERVER['PHP_SELF']) === 'dashboard_admin.php' ? 'bg-success text-white rounded' : '' ?>" href="dashboard_admin.php">
+                        <i class="bi bi-grid me-2"></i> Dashboard
+                    </a>
                 </li>
-                <li>
-                    <a class="nav-link active" href="kelola_rapat_admin.php"><i class="bi bi-people me-2"></i>Kelola Pengguna</a>
+                <li class="nav-item">
+                    <a class="nav-link text-dark fw-medium <?= basename($_SERVER['PHP_SELF']) === 'kelola_rapat_admin.php' ? 'bg-success text-white rounded' : '' ?>" href="kelola_rapat_admin.php">
+                        <i class="bi bi-people me-2"></i> Kelola Pengguna
+                    </a>
                 </li>
             </ul>
-        </div>
 
-        <div>
-            <ul class="nav flex-column mb-3">
-                <li>
-                    <a class="nav-link" href="profile.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
+            <ul class="nav flex-column gap-2 mt-4 border-top pt-3">
+                 <li class="nav-item">
+                    <a class="nav-link text-dark fw-medium <?= basename($_SERVER['PHP_SELF']) === 'profile.php' ? 'bg-success text-white rounded' : '' ?>" href="profile.php">
+                        <i class="bi bi-person-circle me-2"></i> Profile
+                    </a>
                 </li>
-                <li>
-                    <a id="logoutBtn" class="nav-link text-danger" href="#"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Keluar</a>
+                <li class="nav-item">
+                    <a id="logoutBtnMobile" class="nav-link text-danger fw-medium" href="#">
+                        <i class="bi bi-box-arrow-right me-2"></i> Keluar
+                    </a>
                 </li>
             </ul>
         </div>
@@ -134,26 +257,7 @@ if ($wa_message) {
             <div>
                 <h4><b>Kelola Pengguna Sistem</b></h4>
             </div>
-            <div class="d-flex align-items-center gap-3">
-                <div class="text-end">
-                    <span class="d-block fw-medium text-dark">Halo, <?= htmlspecialchars($userName) ?> 👋</span>
-                </div>
-                    <?php 
-                    $filePath = "../file/" . $userPhoto; 
-                    $hasPhoto = $userPhoto && file_exists($filePath);
-                    ?>
-
-                    <?php if ($hasPhoto): ?>
-                        <img src="<?= htmlspecialchars($filePath) ?>" 
-                            alt="Profile"
-                            class="rounded-circle shadow-sm"
-                            style="width: 45px; height: 45px; object-fit: cover; border: 2px solid #fff;">
-                    <?php else: ?>
-                        <!-- ICON formal (abu gelap, clean, profesional) -->
-                        <i class="bi bi-person-circle"
-                        style="font-size: 45px; color: #495057;"></i>
-                    <?php endif; ?>
-            </div>
+            <!-- User info removed as it is in header now -->
         </div>
 
         <div class="table-wrapper">
@@ -252,11 +356,24 @@ if ($wa_message) {
             const isMobile = window.innerWidth < 768;
 
             paginatedData.forEach((u, index) => {
-                const photoPath = u.foto ? `../file/${encodeURIComponent(u.foto)}` : '../file/user.jpg';
                 const nama = escapeHtml(u.nama || '');
                 const nik = escapeHtml(u.nik || '-');
                 const email = escapeHtml(u.email || '-');
                 const role = escapeHtml(u.role || '');
+
+                // Logic Foto vs Default Icon
+                let photoHtml = '';
+                if (u.foto && u.foto !== '') {
+                    // Jika ada foto
+                    const photoPath = `../file/${encodeURIComponent(u.foto)}`;
+                    photoHtml = `<img src="${photoPath}" alt="${nama}" 
+                                      class="rounded-circle shadow-sm" 
+                                      style="width: 45px; height: 45px; object-fit: cover;"
+                                      onerror="handleImageError(this)">`;
+                } else {
+                    // Default Icon
+                    photoHtml = `<i class="bi bi-person-circle text-secondary" style="font-size: 45px;"></i>`;
+                }
 
                 if (isMobile) {
                     if (!mobileList) return;
@@ -265,14 +382,16 @@ if ($wa_message) {
                     card.innerHTML = `
                         <div class="mobile-card-inner">
                             <div class="d-flex justify-content-between align-items-start mb-2">
-                                <span class="badge-role">${role}</span>
+                                <span class="badge-role-custom">${role}</span>
                                 <button class="btn btn-sm text-danger p-0" onclick="deleteUser(${Number(u.id)}, this)" title="Hapus">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </div>
                             
                             <div class="d-flex align-items-center mb-3">
-                                <img src="${photoPath}" alt="${nama}" class="user-photo me-3" style="width:50px;height:50px;min-width:50px;" onerror="this.onerror=null;this.src='../file/user.jpg';">
+                                <div class="me-3" style="width: 50px; text-align: center;">
+                                    ${photoHtml.replace('style="width: 45px; height: 45px;', 'style="width: 50px; height: 50px;')}
+                                </div>
                                 <div class="d-flex flex-column">
                                     <div class="mobile-card-title">${nama}</div>
                                     <small class="text-muted text-break">${email}</small>
@@ -291,13 +410,15 @@ if ($wa_message) {
                 } else {
                      const row = `
                     <tr>
-                        <td>${start + index + 1}</td>
-                        <td><img src="${photoPath}" alt="${nama}" class="user-photo" style="width:48px;height:48px;object-fit:cover;border-radius:4px;"></td>
-                        <td>${nama}</td>
-                        <td>${nik}</td>
-                        <td>${email}</td>
-                        <td><span class="badge-role">${role}</span></td>
-                        <td>
+                        <td class="align-middle">${start + index + 1}</td>
+                        <td class="align-middle">
+                            ${photoHtml}
+                        </td>
+                        <td class="align-middle fw-medium">${nama}</td>
+                        <td class="align-middle">${nik}</td>
+                        <td class="align-middle">${email}</td>
+                        <td class="align-middle"><span class="badge-role-custom">${role}</span></td>
+                        <td class="align-middle">
                             <button class="btn btn-sm text-danger" onclick="deleteUser(${Number(u.id)}, this)" title="Hapus">
                                 <i class="bi bi-trash"></i>
                             </button>
@@ -323,7 +444,7 @@ if ($wa_message) {
             pagination.insertAdjacentHTML(
                 "beforeend",
                 `<li class="page-item ${currentPage === 1 ? "disabled" : ""}" >
-                    <a class="page-link" href="#" onclick="changePage(${currentPage - 1});return false;">Previous</a>
+                    <a class="page-link" href="#" onclick="changePage(${currentPage - 1});return false;">Sebelumnya</a>
             </li> `
             );
 
@@ -340,7 +461,7 @@ if ($wa_message) {
             pagination.insertAdjacentHTML(
                 "beforeend",
                 `<li class="page-item ${currentPage === totalPages ? "disabled" : ""}" >
-                    <a class="page-link" href="#" onclick="changePage(${currentPage + 1});return false;">Next</a>
+                    <a class="page-link" href="#" onclick="changePage(${currentPage + 1});return false;">Selanjutnya</a>
             </li>`
             );
         }
@@ -417,6 +538,16 @@ if ($wa_message) {
                     new bootstrap.Alert(alertElement).close();
                 }
             }, 5000);
+        }
+
+        // Global function to handle image errors
+        function handleImageError(img) {
+            img.onerror = null; // Prevent infinite loop
+            // Replace the image with the default icon
+            const icon = document.createElement('i');
+            icon.className = 'bi bi-person-circle text-secondary';
+            icon.style.fontSize = '45px';
+            img.parentNode.replaceChild(icon, img);
         }
 
         // Fitur pencarian

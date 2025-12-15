@@ -41,59 +41,168 @@ $foto_profile = !empty($user['foto']) ? '../file/' . $user['foto'] : '../file/us
 
 <body>
     <!-- navbar -->
-    <nav class="navbar navbar-light bg-white sticky-top px-3">
-        <button class="btn btn-outline-success d-lg-none" type="button" data-bs-toggle="offcanvas"
-            data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
-            <i class="bi bi-list"></i>
-        </button>
-    </nav>
+    <!-- CSS Header & Sidebar -->
+    <style>
+        /* ===== SIDEBAR DESKTOP ===== */
+        .sidebar-admin {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            background: #ffffff;
+            border-right: 1px solid #e6e6e6;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 999;
+        }
 
-    <!-- sidebar moblie -->
-    <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="sidebarOffcanvas"
-        aria-labelledby="sidebarOffcanvasLabel">
-        <div class="offcanvas-body p-0">
-            <div class="sidebar-content d-flex flex-column justify-content-between h-100">
-                <div>
-                    <h4 class="fw-bold mb-4 ms-3">SmartNote</h4>
-                        <ul class="nav flex-column">
-                        <li>
-                            <a class="nav-link" href="dashboard_peserta.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
-                        </li>
-                    </ul>
-                </div>
+        .sidebar-admin .title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            padding-left: 10px;
+        }
 
-                <div class="mt-auto px-3">
-                    <ul class="nav flex-column mb-3">
-                        <li>
-                            <a class="nav-link active" href="profile_peserta.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
-                        </li>
-                        <li>
-                            <a id="logoutBtnMobile" class="nav-link text-danger" href="#"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Keluar</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+        .sidebar-admin a {
+            display: block;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            color: #222;
+            font-weight: 500;
+            text-decoration: none !important;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-admin a:hover,
+        .sidebar-admin a.active {
+            background: #00C853;
+            color: #fff !important;
+        }
+
+        /* ===== HEADER (TOP BAR) ===== */
+        .header-admin {
+            position: fixed;
+            top: 0;
+            left: 250px;
+            right: 0;
+            height: 70px;
+            background: white;
+            border-bottom: 1px solid #e6e6e6;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            z-index: 998;
+        }
+
+        .header-admin .page-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .header-admin .right-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* ===== MAIN CONTENT ADJUSTMENT ===== */
+        .main-content {
+            margin-left: 250px;
+            padding: 90px 20px 20px 20px;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        /* ===== MOBILE ONLY ===== */
+        @media (max-width: 991px) {
+            .sidebar-admin {
+                display: none;
+            }
+
+            .header-admin {
+                left: 0 !important;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding-top: 90px;
+            }
+        }
+    </style>
+
+    <!-- Sidebar Desktop -->
+    <div class="sidebar-admin d-none d-lg-flex">
+        <div class="sidebar-top">
+            <div class="title text-success">SmartNote</div>
+            
+            <a href="dashboard_peserta.php" class="<?= basename($_SERVER['PHP_SELF']) === 'dashboard_peserta.php' ? 'active' : '' ?>">
+                <i class="bi bi-grid me-2"></i> Dashboard
+            </a>
+        </div>
+
+        <div class="sidebar-bottom">
+            <a href="profile_peserta.php" class="<?= basename($_SERVER['PHP_SELF']) === 'profile_peserta.php' ? 'active' : '' ?>">
+                <i class="bi bi-person-circle me-2"></i> Profile
+            </a>
+            <a href="#" id="logoutBtn" class="text-danger">
+                <i class="bi bi-box-arrow-right me-2"></i> Keluar
+            </a>
         </div>
     </div>
 
-    <!-- Sidebar Desktop -->
-    <div class="sidebar-content d-none d-lg-flex flex-column justify-content-between position-fixed">
-        <div>
-            <h4 class="fw-bold mb-4 ms-3">SmartNote</h4>
-                <ul class="nav flex-column">
-                    <li>
-                        <a class="nav-link" href="dashboard_peserta.php"><i class="bi bi-grid me-2"></i>Dashboard</a>
-                    </li>
-                </ul>
+    <!-- Header / Top Bar -->
+    <div class="header-admin">
+        <button class="btn btn-outline-success d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMobile">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <div class="page-title">Edit Profil</div>
+
+        <div class="right-section">
+            <div class="d-none d-md-block text-end me-2">
+                <div class="fw-bold small"><?= htmlspecialchars($user['nama']) ?></div>
+                <small class="text-muted" style="font-size: 0.75rem;">Peserta</small>
+            </div>
+            
+            <?php if (!empty($user['foto']) && file_exists('../file/' . $user['foto'])): ?>
+                <img src="../file/<?= htmlspecialchars($user['foto']) ?>" class="rounded-circle border" style="width:40px;height:40px;object-fit:cover;">
+            <?php else: ?>
+                <i class="bi bi-person-circle fs-2 text-secondary"></i>
+            <?php endif; ?>
         </div>
-        
-        <div>
-            <ul class="nav flex-column mb-3">
-                <li>
-                    <a class="nav-link active" href="profile_peserta.php"><i class="bi bi-person-circle me-2"></i>Profile</a>
+    </div>
+
+    <!-- Sidebar Mobile -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarMobile">
+         <div class="offcanvas-header">
+            <h5 class="offcanvas-title fw-bold text-success">SmartNote</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column justify-content-between">
+            <ul class="nav flex-column gap-2">
+                <li class="nav-item">
+                    <a class="nav-link text-dark fw-medium <?= basename($_SERVER['PHP_SELF']) === 'dashboard_peserta.php' ? 'bg-success text-white rounded' : '' ?>" href="dashboard_peserta.php">
+                        <i class="bi bi-grid me-2"></i> Dashboard
+                    </a>
                 </li>
-                <li>
-                    <a id="logoutBtn" class="nav-link text-danger" href="#"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Keluar</a>
+            </ul>
+
+            <ul class="nav flex-column gap-2 mt-4 border-top pt-3">
+                 <li class="nav-item">
+                    <a class="nav-link text-dark fw-medium <?= basename($_SERVER['PHP_SELF']) === 'profile_peserta.php' ? 'bg-success text-white rounded' : '' ?>" href="profile_peserta.php">
+                        <i class="bi bi-person-circle me-2"></i> Profile
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a id="logoutBtnMobile" class="nav-link text-danger fw-medium" href="#">
+                        <i class="bi bi-box-arrow-right me-2"></i> Keluar
+                    </a>
                 </li>
             </ul>
         </div>
@@ -101,8 +210,8 @@ $foto_profile = !empty($user['foto']) ? '../file/' . $user['foto'] : '../file/us
 
     <!-- Main -->
     <div class="main-content">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div class="w-50">
+        <div class="mb-3">
+            <div class="w-100">
                 <!-- Alert Error -->
                 <?php if (isset($_SESSION['error_message'])): ?>
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -112,11 +221,6 @@ $foto_profile = !empty($user['foto']) ? '../file/' . $user['foto'] : '../file/us
                     <?php unset($_SESSION['error_message']); ?>
                 <?php endif; ?>
             </div>
-            <div class="profile">
-                <span>Halo, <?= htmlspecialchars($user['nama']); ?> 👋</span>
-                <img src="<?= htmlspecialchars($foto_profile); ?>" alt="Profile" class="rounded-circle"
-                    style="width: 40px; height: 40px; object-fit: cover;">
-            </div>
         </div>
 
         <div class="profile-box">
@@ -124,9 +228,15 @@ $foto_profile = !empty($user['foto']) ? '../file/' . $user['foto'] : '../file/us
 
             <form action="../proses/proses_edit_profile.php" method="POST" enctype="multipart/form-data">
                 <div class="text-center mb-4">
-                    <img src="<?= htmlspecialchars($foto_profile); ?>" width="100" height="100"
-                        class="rounded-circle mb-2" style="object-fit: cover; border: 2px solid #ddd;"
-                        alt="Foto Profil">
+                    <?php if (!empty($user['foto']) && file_exists('../file/' . $user['foto'])): ?>
+                        <img src="../file/<?= htmlspecialchars($user['foto']) ?>" width="100" height="100"
+                            class="rounded-circle mb-2" style="object-fit: cover; border: 2px solid #ddd;"
+                            alt="Foto Profil">
+                    <?php else: ?>
+                        <div class="mb-2">
+                             <i class="bi bi-person-circle text-secondary" style="font-size: 100px;"></i>
+                        </div>
+                    <?php endif; ?>
                     <div>
                         <input type="file" name="foto" class="form-control w-auto mx-auto" accept=".jpg,.png,.jpeg">
                         <small class="text-muted d-block mt-1">Kosongkan jika tidak ingin mengubah foto (Maks.

@@ -88,7 +88,7 @@ $created_by = $_SESSION['user_name'] ?? 'Admin';
 // Siapkan statement INSERT
 // Sesuaikan dengan kolom database yang benar: judul, tanggal, hasil, tindak_lanjut, peserta, status, id_user
 $userId = (int) $_SESSION['user_id'];
-$status = 'draft'; // Status default untuk notulen baru
+$status = $_POST['status'] ?? 'draft'; // Ambil status dari form (draft/final)
 $tempat = ''; // Tempat kosong jika tidak ada input
 
 $stmt = $conn->prepare("INSERT INTO tambah_notulen (id_user, judul, tanggal, tempat, peserta, hasil, tindak_lanjut, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");

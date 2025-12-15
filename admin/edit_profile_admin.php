@@ -24,7 +24,8 @@ if (!$user) {
     exit;
 }
 
-$foto_profile = !empty($user['foto']) ? '../file/' . $user['foto'] : '../file/user.jpg';
+$foto_path = !empty($user['foto']) ? '../file/' . $user['foto'] : '';
+$foto_profile = (!empty($foto_path) && file_exists($foto_path)) ? $foto_path : '';
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -244,9 +245,15 @@ $foto_profile = !empty($user['foto']) ? '../file/' . $user['foto'] : '../file/us
 
             <form action="../proses/proses_edit_profile.php" method="POST" enctype="multipart/form-data">
                 <div class="text-center mb-4">
-                    <img src="<?= htmlspecialchars($foto_profile); ?>" width="100" height="100"
-                        class="rounded-circle mb-2" style="object-fit: cover; border: 2px solid #ddd;"
-                        alt="Foto Profil">
+                    <?php if (!empty($foto_profile)): ?>
+                        <img src="<?= htmlspecialchars($foto_profile); ?>" width="100" height="100"
+                            class="rounded-circle mb-2" style="object-fit: cover; border: 2px solid #ddd;"
+                            alt="Foto Profil">
+                    <?php else: ?>
+                         <div class="mb-2 d-inline-block bg-light rounded-circle border d-flex align-items-center justify-content-center" style="width:100px; height:100px;">
+                           <i class="bi bi-person-fill text-secondary" style="font-size: 50px;"></i>
+                        </div>
+                    <?php endif; ?>
                     <div>
                         <input type="file" name="foto" class="form-control w-auto mx-auto" accept=".jpg,.png,.jpeg">
                         <small class="text-muted d-block mt-1">Kosongkan jika tidak ingin mengubah foto (Maks.

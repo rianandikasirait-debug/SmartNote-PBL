@@ -477,27 +477,62 @@ while ($row = $result->fetch_assoc()) {
             function renderPagination(totalRows) {
                 pagination.innerHTML = "";
                 if (rowsPerPage === "all") return;
+
                 const totalPages = Math.ceil(totalRows / rowsPerPage);
+                
+                // Helper untuk scroll
+                const doScroll = () => {
+                     const notulenList = document.getElementById("notulenList");
+                     window.scrollTo({
+                        top: notulenList.getBoundingClientRect().top + window.scrollY - 100,
+                        behavior: "smooth"
+                    });
+                };
+
+                // Tombol Sebelumnya
+                const prevLi = document.createElement("li");
+                prevLi.className = `page-item ${currentPage === 1 ? "disabled" : ""}`;
+                prevLi.innerHTML = `<a class="page-link border-success text-success" href="#">Sebelumnya</a>`;
+                prevLi.querySelector("a").addEventListener("click", (e) => {
+                    e.preventDefault();
+                    if (currentPage > 1) {
+                        currentPage--;
+                        updateTable();
+                        doScroll();
+                    }
+                });
+                pagination.appendChild(prevLi);
+
+                // Angka Halaman
                 for (let i = 1; i <= totalPages; i++) {
                     const li = document.createElement("li");
                     li.className = `page-item ${i === currentPage ? "active" : ""}`;
-                    const a = document.createElement("a");
-                    a.className = "page-link border-success text-success";
-                    a.href = "#";
-                    a.textContent = i;
-                    a.addEventListener("click", (e) => {
+                    
+                    // Note: Active state styling needs to override text-success usually, but bootstrap handles .page-item.active .page-link
+                    li.innerHTML = `<a class="page-link border-success text-success" href="#">${i}</a>`;
+                    
+                    li.querySelector("a").addEventListener("click", (e) => {
                         e.preventDefault();
                         currentPage = i;
                         updateTable();
-                        const notulenList = document.getElementById("notulenList");
-                        window.scrollTo({
-                            top: notulenList.getBoundingClientRect().top + window.scrollY - 100,
-                            behavior: "smooth"
-                        });
+                        doScroll();
                     });
-                    li.appendChild(a);
                     pagination.appendChild(li);
                 }
+
+                // Tombol Selanjutnya
+                const nextLi = document.createElement("li");
+                nextLi.className = `page-item ${currentPage === totalPages ? "disabled" : ""}`;
+                nextLi.innerHTML = `<a class="page-link border-success text-success" href="#">Selanjutnya</a>`;
+                nextLi.querySelector("a").addEventListener("click", (e) => {
+                    e.preventDefault();
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        updateTable();
+                        doScroll();
+                    }
+                });
+                pagination.appendChild(nextLi);
             }
 
             function updateTable() {

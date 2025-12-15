@@ -83,11 +83,11 @@ if (trim($peserta_raw) !== '') {
         $ids_list = implode(',', $unique_ids); // aman karena sudah di-cast ke int
 
         // Ambil nama dari tabel pengguna
-        $sql_users = "SELECT id, nama FROM users WHERE id IN ($ids_list)";
+        $sql_users = "SELECT id, nama, email, nik, foto FROM users WHERE id IN ($ids_list)";
         $res_users = $conn->query($sql_users);
         $map = [];
         while ($r = $res_users->fetch_assoc()) {
-            $map[(int)$r['id']] = $r['nama'];
+            $map[(int)$r['id']] = $r;
         }
 
         // isi nama_peserta dari urutan asli (jika ID ditemukan gunakan nama, jika tidak gunakan ID asli)
@@ -95,20 +95,20 @@ if (trim($peserta_raw) !== '') {
             if (is_numeric($orig)) {
                 $idint = (int)$orig;
                 if (isset($map[$idint])) {
-                    $peserta_names[] = $map[$idint];
+                    $peserta_details[] = $map[$idint];
                 } else {
                     // fallback: tampilkan ID jika nama tidak ditemukan
-                    $peserta_names[] = (string)$idint;
+                    $peserta_details[] = ['nama' => (string)$idint, 'email' => '', 'nik' => ''];
                 }
             } else {
                 // jika bukan numerik (misal: sudah nama tersimpan), langsung gunakan
-                $peserta_names[] = $orig;
+                $peserta_details[] = ['nama' => $orig, 'email' => '', 'nik' => ''];
             }
         }
     } else {
         // Tidak ada ID numerik — kemungkinan peserta disimpan sebagai nama string
         foreach ($parts as $orig) {
-            $peserta_names[] = $orig;
+            $peserta_details[] = ['nama' => $orig, 'email' => '', 'nik' => ''];
         }
     }
 }
@@ -349,16 +349,42 @@ if (trim($peserta_raw) !== '') {
                 <?= $notulen['hasil']; // Isi rapat biasanya HTML dari TinyMCE, jadi tidak di-escape ?>
             </div>
 
-            <h6 class="fw-semibold mb-2">Peserta Rapat:</h6>
-            <div class="mb-3">
-                <?php if (!empty($peserta_names)): ?>
-                    <?php foreach ($peserta_names as $pn): ?>
-                        <span class="participant-badge"><i class="bi bi-person-fill me-1"></i>
-                            <?= htmlspecialchars($pn); ?></span>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <p class="text-muted">Belum ada peserta yang tercatat.</p>
-                <?php endif; ?>
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="fw-semibold mb-0">Peserta Rapat:</h6>
+                        <div class="input-group" style="width: 300px;">
+                            <span class="input-group-text bg-white border-end-0 text-muted ps-3"><i class="bi bi-search"></i></span>
+                            <input type="text" id="searchPeserta" class="form-control border-start-0 shadow-none ps-2" placeholder="Cari peserta..." style="font-size: 0.95rem;">
+                        </div>
+                    </div>
+                    <div class="card border-0 shadow-sm" style="max-height: 400px; overflow-y: auto;">
+                        <div class="list-group list-group-flush" id="participantList">
+                            <?php if (!empty($peserta_details)): ?>
+                                <?php foreach ($peserta_details as $index => $pd): ?>
+                                    <div class="list-group-item d-flex align-items-center py-3 px-3 border-bottom-0 border-top-0 border-end-0 border-start-0">
+                                        <span class="me-3 fw-bold text-secondary small" style="min-width: 25px;"><?= $index + 1 ?>.</span>
+                                        <?php if (!empty($pd['foto']) && file_exists('../file/' . $pd['foto'])): ?>
+                                            <img src="../file/<?= htmlspecialchars($pd['foto']) ?>" class="rounded-circle me-3 border" style="width: 38px; height: 38px; object-fit: cover; flex-shrink: 0;">
+                                        <?php else: ?>
+                                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3 border" style="width: 38px; height: 38px; flex-shrink: 0;">
+                                                <i class="bi bi-person-fill text-secondary fs-5"></i>
+                                            </div>
+                                        <?php endif; ?>
+                                        <div class="flex-grow-1">
+                                            <div class="fw-medium text-dark name-text"><?= htmlspecialchars($pd['nama']); ?></div>
+                                            <?php if (!empty($pd['email'])): ?>
+                                                <div class="text-muted small" style="font-size: 0.75rem;"><?= htmlspecialchars($pd['email']); ?></div>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div class="p-4 text-center text-muted small">Belum ada peserta yang tercatat.</div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <h6 class="fw-semibold mb-3">Lampiran:</h6>
@@ -435,6 +461,26 @@ if (trim($peserta_raw) !== '') {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/admin.js"></script>
+    <script>
+        document.getElementById('searchPeserta').addEventListener('input', function() {
+            const searchText = this.value.toLowerCase();
+            const list = document.getElementById('participantList');
+            // Get direct children divs that act as items
+            const cols = list.children;
+
+            for (let i = 0; i < cols.length; i++) {
+                const item = cols[i];
+                if (item.classList.contains('list-group-item')) {
+                    const text = item.textContent || item.innerText;
+                    if (text.toLowerCase().indexOf(searchText) > -1) {
+                        item.style.removeProperty('display'); // Reset to CSS default (flex)
+                    } else {
+                        item.style.display = 'none'; // Hide
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>

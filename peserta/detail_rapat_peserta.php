@@ -86,23 +86,25 @@ if (trim($peserta_raw) !== '') {
     $parts = array_filter(array_map('trim', explode(',', $peserta_raw)), function($v){ return $v !== ''; });
     $peserta_ids = array_filter(array_map('intval', $parts), function($v){ return $v > 0; });
     
-    if (!empty($peserta_ids)) {
+        if (!empty($peserta_ids)) {
         $ids_list = implode(',', $peserta_ids);
-        $sql_users = "SELECT id, nama FROM users WHERE id IN ($ids_list)";
+        $sql_users = "SELECT id, nama, email, nik, foto FROM users WHERE id IN ($ids_list)";
         $res_users = $conn->query($sql_users);
         $map = [];
         while ($r = $res_users->fetch_assoc()) {
-            $map[(int)$r['id']] = $r['nama'];
+            $map[(int)$r['id']] = $r;
         }
         
         foreach ($parts as $orig) {
             if (is_numeric($orig)) {
                 $idint = (int)$orig;
                 if (isset($map[$idint])) {
-                    $peserta_names[] = $map[$idint];
+                    $peserta_details[] = $map[$idint];
+                } else {
+                     $peserta_details[] = ['nama' => (string)$idint, 'email' => '', 'nik' => ''];
                 }
             } else {
-                $peserta_names[] = $orig;
+                $peserta_details[] = ['nama' => $orig, 'email' => '', 'nik' => ''];
             }
         }
     }
@@ -144,32 +146,6 @@ if (trim($peserta_raw) !== '') {
             padding-left: 10px;
             color: #2c3e50;
             font-family: 'Poppins', sans-serif !important;
-        } 
-            background-color: #fdf9f4; 
-            font-family: "Poppins", sans-serif; 
-        }
-
-        /* ===== SIDEBAR DESKTOP ===== */
-        .sidebar-admin {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 250px;
-            height: 100vh;
-            background: #ffffff;
-            border-right: 1px solid #e6e6e6;
-            padding: 20px 15px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            z-index: 999;
-        }
-
-        .sidebar-admin .title {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 25px;
-            padding-left: 10px;
         }
 
         .sidebar-admin a {
@@ -380,16 +356,42 @@ if (trim($peserta_raw) !== '') {
                 <?= $notulen['hasil'] ?? ''; // Isi rapat ?>
             </div>
 
-            <h6 class="fw-semibold mb-2">Peserta Rapat:</h6>
-            <div class="mb-3">
-                <?php if (!empty($peserta_names)): ?>
-                    <?php foreach ($peserta_names as $pn): ?>
-                        <span class="participant-badge"><i class="bi bi-person-fill me-1"></i>
-                            <?= htmlspecialchars($pn); ?></span>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <p class="text-muted">Belum ada peserta yang tercatat.</p>
-                <?php endif; ?>
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="fw-semibold mb-0">Peserta Rapat:</h6>
+                        <div class="input-group" style="width: 300px;">
+                            <span class="input-group-text bg-white border-end-0 text-muted ps-3"><i class="bi bi-search"></i></span>
+                            <input type="text" id="searchPeserta" class="form-control border-start-0 shadow-none ps-2" placeholder="Cari peserta..." style="font-size: 0.95rem;">
+                        </div>
+                    </div>
+                    <div class="card border-0 shadow-sm" style="max-height: 400px; overflow-y: auto;">
+                        <div class="list-group list-group-flush" id="participantList">
+                            <?php if (!empty($peserta_details)): ?>
+                                <?php foreach ($peserta_details as $index => $pd): ?>
+                                    <div class="list-group-item d-flex align-items-center py-3 px-3 border-bottom-0 border-top-0 border-end-0 border-start-0">
+                                        <span class="me-3 fw-bold text-secondary small" style="min-width: 25px;"><?= $index + 1 ?>.</span>
+                                        <?php if (!empty($pd['foto']) && file_exists('../file/' . $pd['foto'])): ?>
+                                            <img src="../file/<?= htmlspecialchars($pd['foto']) ?>" class="rounded-circle me-3 border" style="width: 38px; height: 38px; object-fit: cover; flex-shrink: 0;">
+                                        <?php else: ?>
+                                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3 border" style="width: 38px; height: 38px; flex-shrink: 0;">
+                                                <i class="bi bi-person-fill text-secondary fs-5"></i>
+                                            </div>
+                                        <?php endif; ?>
+                                        <div class="flex-grow-1">
+                                            <div class="fw-medium text-dark name-text"><?= htmlspecialchars($pd['nama']); ?></div>
+                                            <?php if (!empty($pd['email'])): ?>
+                                                <div class="text-muted small" style="font-size: 0.75rem;"><?= htmlspecialchars($pd['email']); ?></div>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div class="p-4 text-center text-muted small">Belum ada peserta yang tercatat.</div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <h6 class="fw-semibold mb-3">Lampiran:</h6>
@@ -458,6 +460,28 @@ if (trim($peserta_raw) !== '') {
         if (logoutBtnMobile) {
             logoutBtnMobile.addEventListener("click", confirmLogout);
         }
+
+        document.getElementById('searchPeserta').addEventListener('keyup', function() {
+            const searchText = this.value.toLowerCase();
+            const list = document.getElementById('participantList');
+            // Get direct children divs that act as items
+            const cols = list.children;
+
+            for (let i = 0; i < cols.length; i++) {
+                const item = cols[i];
+                if (item.classList.contains('list-group-item')) {
+                    const nameEl = item.querySelector('.name-text');
+                    if (nameEl) {
+                        const name = nameEl.textContent || nameEl.innerText;
+                        if (name.toLowerCase().indexOf(searchText) > -1) {
+                            item.style.removeProperty('display'); // Reset to CSS default (flex)
+                        } else {
+                            item.style.display = 'none'; // Hide
+                        }
+                    }
+                }
+            }
+        });
     </script>
 </body>
 </html>

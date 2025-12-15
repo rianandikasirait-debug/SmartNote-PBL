@@ -330,8 +330,8 @@ if ($q) {
                                 <table class="table table-hover mb-0 align-middle">
                                     <thead class="bg-light">
                                         <tr>
-                                            <th style="width: 50px;" class="px-4 py-3 text-secondary small fw-bold text-uppercase border-bottom-0">No</th>
-                                            <th class="px-4 py-3 text-secondary small fw-bold text-uppercase border-bottom-0">Nama Peserta</th>
+                                            <th style="width: 50px;" class="px-4 py-3 text-secondary small fw-bold text-uppercase border-bottom-0 text-center">No</th>
+                                            <th class="px-4 py-3 text-secondary small fw-bold text-uppercase border-bottom-0 text-start">Nama Peserta</th>
                                             <th style="width: 100px;" class="text-center px-4 py-3 text-secondary small fw-bold text-uppercase border-bottom-0">Aksi</th>
                                         </tr>
                                     </thead>
@@ -568,15 +568,15 @@ if (btnSimpanPeserta) {
                 const name = cb.dataset.name;
                 
                 const tr = document.createElement('tr');
-                tr.className = 'added-item align-middle';
+                tr.className = 'added-item align-middle border-bottom';
                 tr.dataset.id = id; // Keep data-id for form submission logic
                 tr.innerHTML = `
                     <td class="px-4 text-center text-muted small">${index + 1}</td>
-                    <td>
+                    <td class="px-4 text-start">
                         ${escapeHtml(name)}
                         <!-- Hidden input for form submission if needed, though existing submit logic uses dataset.id -->
                     </td>
-                    <td class="text-center">
+                    <td class="text-center px-4">
                         <button type="button" class="btn btn-sm btn-danger remove-btn text-white" data-id="${id}">
                             <i class="bi bi-trash"></i>
                         </button>

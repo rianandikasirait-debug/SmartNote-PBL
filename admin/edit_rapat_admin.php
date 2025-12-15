@@ -385,7 +385,8 @@ foreach ($current_participants as $pid) {
                 <table class="table table-hover mb-0 align-middle">
                   <thead class="bg-light">
                     <tr>
-                      <th class="px-4 py-3 text-secondary small fw-bold text-uppercase border-bottom-0">Nama Peserta</th>
+                      <th style="width: 50px;" class="px-4 py-3 text-secondary small fw-bold text-uppercase border-bottom-0 text-center">No</th>
+                      <th class="px-4 py-3 text-secondary small fw-bold text-uppercase border-bottom-0 text-start">Nama Peserta</th>
                       <th style="width: 100px;"
                         class="text-center px-4 py-3 text-secondary small fw-bold text-uppercase border-bottom-0">Aksi
                       </th>
@@ -394,7 +395,7 @@ foreach ($current_participants as $pid) {
                   <tbody id="addedContainer">
                     <?php if (empty($current_participant_items)): ?>
                     <tr id="emptyRow">
-                      <td colspan="2" class="text-center text-muted py-5">
+                      <td colspan="3" class="text-center text-muted py-5">
                         <div class="d-flex flex-column align-items-center">
                           <i class="bi bi-people text-secondary mb-2" style="font-size: 2rem; opacity: 0.5;"></i>
                           <small>Belum ada peserta yang ditambahkan</small>
@@ -402,9 +403,10 @@ foreach ($current_participants as $pid) {
                       </td>
                     </tr>
                     <?php else: ?>
-                    <?php foreach ($current_participant_items as $item): ?>
-                    <tr class="added-item align-middle" data-id="<?= htmlspecialchars($item['id']) ?>">
-                      <td class="px-4">
+                    <?php $no = 1; foreach ($current_participant_items as $item): ?>
+                    <tr class="added-item align-middle border-bottom" data-id="<?= htmlspecialchars($item['id']) ?>">
+                      <td class="px-4 text-center text-muted small"><?= $no++ ?></td>
+                      <td class="px-4 text-start">
                         <?= htmlspecialchars($item['nama']) ?>
                         <input type="hidden" name="peserta[]" value="<?= htmlspecialchars($item['id']) ?>">
                       </td>
@@ -678,17 +680,18 @@ foreach ($current_participants as $pid) {
                 addedContainer.innerHTML = '';
 
                 if (selected.length === 0) {
-                    addedContainer.innerHTML = '<tr id="emptyRow"><td colspan="2" class="text-center text-muted py-5"><div class="d-flex flex-column align-items-center"><i class="bi bi-people text-secondary mb-2" style="font-size: 2rem; opacity: 0.5;"></i><small>Belum ada peserta yang ditambahkan</small></div></td></tr>';
+                    addedContainer.innerHTML = '<tr id="emptyRow"><td colspan="3" class="text-center text-muted py-5"><div class="d-flex flex-column align-items-center"><i class="bi bi-people text-secondary mb-2" style="font-size: 2rem; opacity: 0.5;"></i><small>Belum ada peserta yang ditambahkan</small></div></td></tr>';
                 } else {
-                    selected.forEach(cb => {
+                    selected.forEach((cb, index) => {
                         const id = cb.value;
                         const name = cb.dataset.name;
                         
                         const tr = document.createElement('tr');
-                        tr.className = 'added-item align-middle';
+                        tr.className = 'added-item align-middle border-bottom';
                         tr.dataset.id = id;
                         tr.innerHTML = `
-                            <td class="px-4">
+                            <td class="px-4 text-center text-muted small">${index + 1}</td>
+                            <td class="px-4 text-start">
                                 ${escapeHtml(name)}
                                 <input type="hidden" name="peserta[]" value="${escapeHtml(id)}">
                             </td>
@@ -727,8 +730,14 @@ foreach ($current_participants as $pid) {
                     const item = btn.closest('.added-item');
                     if (item) item.remove();
                     
-                    if (addedContainer.querySelectorAll('.added-item').length === 0) {
-                        addedContainer.innerHTML = '<tr id="emptyRow"><td colspan="2" class="text-center text-muted py-5"><div class="d-flex flex-column align-items-center"><i class="bi bi-people text-secondary mb-2" style="font-size: 2rem; opacity: 0.5;"></i><small>Belum ada peserta yang ditambahkan</small></div></td></tr>';
+                    // Re-numbering
+                    const remainingItems = addedContainer.querySelectorAll('.added-item');
+                    remainingItems.forEach((row, index) => {
+                        row.querySelector('td').innerText = index + 1;
+                    });
+                    
+                    if (remainingItems.length === 0) {
+                        addedContainer.innerHTML = '<tr id="emptyRow"><td colspan="3" class="text-center text-muted py-5"><div class="d-flex flex-column align-items-center"><i class="bi bi-people text-secondary mb-2" style="font-size: 2rem; opacity: 0.5;"></i><small>Belum ada peserta yang ditambahkan</small></div></td></tr>';
                     }
                 }
             });

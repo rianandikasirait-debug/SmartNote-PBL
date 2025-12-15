@@ -311,6 +311,7 @@ if ($error_msg)
                                 <label class="form-label">Email</label>
                                 <input type="email" id="email" name="email" class="form-control"
                                     placeholder="Masukkan email pengguna baru" required>
+                                <div id="emailSuggestionContainer" class="mt-2" style="display: none;"></div>
                             </div>
 
                             <div class="mb-3">
@@ -392,6 +393,46 @@ if ($error_msg)
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="../js/admin.js"></script>
+    <script>
+        // Click-to-Fill Email Suggestion Logic
+        document.addEventListener('DOMContentLoaded', function() {
+            const namaInput = document.getElementById('nama');
+            const emailInput = document.getElementById('email');
+            const suggestionContainer = document.getElementById('emailSuggestionContainer');
+
+            namaInput.addEventListener('input', function() {
+                const name = this.value;
+                // Basic sanitization: lowercase, remove special chars, replace spaces with nothing
+                const cleanName = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+                
+                if (cleanName.length > 0) {
+                    const candidateEmail = cleanName + '@gmail.com';
+                    // Show clickable badge
+                    suggestionContainer.style.display = 'block';
+                    suggestionContainer.innerHTML = `
+                        <small class="text-muted d-block mb-1">Rekomendasi:</small>
+                        <span class="badge bg-success-subtle text-success border border-success cur-pointer" 
+                              style="cursor: pointer; font-size: 0.9rem;"
+                              onclick="fillEmail('${candidateEmail}')">
+                            <i class="bi bi-magic me-1"></i> ${candidateEmail}
+                        </span>
+                    `;
+                } else {
+                    suggestionContainer.style.display = 'none';
+                    suggestionContainer.innerHTML = '';
+                }
+            });
+            
+            // Function to handle the click (attached to window or defined here if simple span onclick)
+            // Ideally define it globally or inside the span onclick as inline JS wrapper access
+            window.fillEmail = function(email) {
+                emailInput.value = email;
+                // Optional: visual feedback
+                emailInput.classList.add('is-valid');
+                setTimeout(() => emailInput.classList.remove('is-valid'), 1000);
+            };
+        });
+    </script>
         <?php
         if (session_status() === PHP_SESSION_NONE)
             session_start();

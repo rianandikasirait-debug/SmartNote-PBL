@@ -610,8 +610,14 @@ addedContainer.addEventListener('click', function(e) {
         const item = btn.closest('.added-item');
         if (item) item.remove();
         
-        if (addedContainer.querySelectorAll('.added-item').length === 0) {
-            addedContainer.innerHTML = '<tr id="emptyRow"><td colspan="2" class="text-center text-muted py-3">Belum ada peserta yang ditambahkan</td></tr>';
+        // Re-numbering
+        const remainingItems = addedContainer.querySelectorAll('.added-item');
+        remainingItems.forEach((row, index) => {
+            row.querySelector('td').innerText = index + 1;
+        });
+
+        if (remainingItems.length === 0) {
+            addedContainer.innerHTML = '<tr id="emptyRow"><td colspan="3" class="text-center text-muted py-3">Belum ada peserta yang ditambahkan</td></tr>';
         }
     }
 });

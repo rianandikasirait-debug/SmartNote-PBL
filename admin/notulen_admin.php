@@ -357,10 +357,52 @@ if ($q) {
                 </div>
 
                 <!-- Upload file -->
-                <div class="mb-3">
-                    <label class="form-label">Upload File (Opsional)</label>
-                    <input type="file" class="form-control" name="file" id="fileInput">
+                <!-- Upload Lampiran -->
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Lampiran (Opsional)</label>
+                    <div id="lampiranContainer">
+                        <!-- Dynamic Rows will appear here -->
+                    </div>
+                    <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="addLampiranBtn">
+                        <i class="bi bi-paperclip me-1"></i> Tambah Lampiran
+                    </button>
+                    <small class="text-muted d-block mt-2">Anda dapat menambahkan lebih dari satu lampiran dengan judul masing-masing.</small>
                 </div>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const container = document.getElementById('lampiranContainer');
+                        const addBtn = document.getElementById('addLampiranBtn');
+
+                        function addRow() {
+                            const row = document.createElement('div');
+                            row.className = 'card mb-2 p-3 border-light bg-light shadow-sm lampiran-row';
+                            row.innerHTML = `
+                                <div class="row align-items-center g-2">
+                                    <div class="col-md-5">
+                                        <input type="text" name="judul_lampiran[]" class="form-control form-control-sm" placeholder="Judul Lampiran (mis. Undangan)" required>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input type="file" name="file_lampiran[]" class="form-control form-control-sm" required>
+                                    </div>
+                                    <div class="col-md-2 text-end">
+                                        <button type="button" class="btn btn-sm btn-soft-danger remove-lampiran">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                            container.appendChild(row);
+
+                            // Handle remove
+                            row.querySelector('.remove-lampiran').addEventListener('click', function() {
+                                row.remove();
+                            });
+                        }
+
+                        addBtn.addEventListener('click', addRow);
+                    });
+                </script>
 
                 <!-- PESERTA -->
                 <div class="mb-4">

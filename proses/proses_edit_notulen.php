@@ -47,69 +47,44 @@ if (strlen($peserta_str) > 255) {
     exit;
 }
 
-// --- 1. Ambil data lama untuk mendapatkan list file saat ini ---
-$sql_get = "SELECT tindak_lanjut FROM tambah_notulen WHERE id = ?";
-$stmt_get = $conn->prepare($sql_get);
-$stmt_get->bind_param("i", $id);
-$stmt_get->execute();
-$res_get = $stmt_get->get_result();
-$row_old = $res_get->fetch_assoc();
-$stmt_get->close();
+// --- 1. Proses Upload File Baru (Multiple ke tb_lampiran) ---
+// Note: File lama sudah ditangani oleh proses_hapus_lampiran.php secara terpisah via AJAX.
+// Di sini kita hanya menangani penambahan file baru.
 
-$current_files_str = $row_old['tindak_lanjut'] ?? '';
-$current_files = array_filter(array_map('trim', explode('|', $current_files_str)), function($v){ return $v !== ''; });
+$uploadErrors = [];
 
-// --- 2. Proses Penghapusan File ---
-$deleted_files = isset($_POST['deleted_files']) ? $_POST['deleted_files'] : [];
-if (!empty($deleted_files)) {
-    // Hapus dari array current_files
-    $current_files = array_diff($current_files, $deleted_files);
+if (isset($_FILES['file_lampiran']) && isset($_POST['judul_lampiran'])) {
+    $files = $_FILES['file_lampiran'];
+    $titles = $_POST['judul_lampiran'];
+    $count = count($files['name']);
     
-    // Opsional: Hapus fisik file jika diperlukan (hati-hati jika file dipakai di tempat lain)
-    // foreach ($deleted_files as $del) {
-    //    $path = __DIR__ . '/../file/' . $del;
-    //    if (file_exists($path)) unlink($path);
-    // }
-}
-
-// --- 3. Proses Upload File Baru (Multiple) ---
-$new_uploaded_files = [];
-if (!empty($_FILES['lampiran']['name'][0])) {
-    $total_files = count($_FILES['lampiran']['name']);
-    $allowed_types = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'];
-    $target_dir = __DIR__ . '/../file/';
-
-    for ($i = 0; $i < $total_files; $i++) {
-        $fileName = $_FILES['lampiran']['name'][$i];
-        $fileTmp = $_FILES['lampiran']['tmp_name'][$i];
-        $fileType = $_FILES['lampiran']['type'][$i];
-        $fileSize = $_FILES['lampiran']['size'][$i];
-        $fileError = $_FILES['lampiran']['error'][$i];
-
-        if ($fileError === UPLOAD_ERR_OK) {
-            if (in_array($fileType, $allowed_types)) {
-                if ($fileSize <= 5 * 1024 * 1024) { // 5MB limit
-                    $safeName = time() . "_" . $i . "_" . preg_replace("/[^a-zA-Z0-9.]/", "", basename($fileName));
-                    if (move_uploaded_file($fileTmp, $target_dir . $safeName)) {
-                        $new_uploaded_files[] = $safeName;
-                    }
-                }
+    // Prepare insert statement for lampiran
+    $stmtLampiran = $conn->prepare("INSERT INTO tb_lampiran (id_notulen, judul_lampiran, file_lampiran) VALUES (?, ?, ?)");
+    
+    for ($i = 0; $i < $count; $i++) {
+        if ($files['error'][$i] === UPLOAD_ERR_OK) {
+            $tmp = $files['tmp_name'][$i];
+            $originalName = basename($files['name'][$i]);
+            $title = trim($titles[$i]);
+            if (empty($title)) $title = $originalName; // Fallback title
+            
+            $safeName = time() . '_' . $i . '_' . preg_replace('/[^a-z0-9\-_.]/i', '_', $originalName);
+            $dest = __DIR__ . '/../file/' . $safeName;
+            
+            if (move_uploaded_file($tmp, $dest)) {
+                $stmtLampiran->bind_param('iss', $id, $title, $safeName);
+                $stmtLampiran->execute();
+            } else {
+                $uploadErrors[] = "Gagal upload: $originalName";
             }
         }
     }
 }
 
-// --- 4. Gabungkan File Lama (sisa) + File Baru ---
-$final_files = array_merge($current_files, $new_uploaded_files);
-// Hapus duplikat jika ada
-$final_files = array_unique($final_files);
-// Gabungkan jadi string
-$final_files_str = implode('|', $final_files);
-
-// --- 5. Update Database ---
-$sql = "UPDATE tambah_notulen SET judul=?, tanggal=?, hasil=?, peserta=?, tindak_lanjut=?, status=? WHERE id=?";
+// --- 2. Update Database Notulen (Data Utama) ---
+$sql = "UPDATE tambah_notulen SET judul=?, tanggal=?, hasil=?, peserta=?, status=? WHERE id=?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ssssssi", $judul, $tanggal, $isi, $peserta_str, $final_files_str, $status, $id);
+$stmt->bind_param("sssssi", $judul, $tanggal, $isi, $peserta_str, $status, $id);
 
 if ($stmt->execute()) {
     echo json_encode(['success' => true, 'message' => 'Notulen berhasil diperbarui!']);

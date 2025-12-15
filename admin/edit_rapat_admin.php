@@ -40,6 +40,17 @@ if (!$notulen) {
   exit;
 }
 
+// Fetch Attachments (tb_lampiran)
+$stmtLampiran = $conn->prepare("SELECT * FROM tb_lampiran WHERE id_notulen = ?");
+$stmtLampiran->bind_param("i", $id_notulen);
+$stmtLampiran->execute();
+$resultLampiran = $stmtLampiran->get_result();
+$lampiranList = [];
+while ($row = $resultLampiran->fetch_assoc()) {
+    $lampiranList[] = $row;
+}
+$hasLampiran = count($lampiranList) > 0;
+
 // Ambil daftar semua user untuk dropdown peserta (kecuali saya sendiri)
 $sql_users = "SELECT id, nama, email FROM users WHERE id != ? ORDER BY nama ASC";
 $stmt_users = $conn->prepare($sql_users);
@@ -387,33 +398,103 @@ foreach ($current_participants as $pid) {
           <?php endif; ?>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label">Tambah Lampiran (Opsional)</label>
-          <input type="file" class="form-control" name="lampiran" />
-          <?php if (!empty($notulen['Lampiran'])): ?>
-            <small class="text-muted d-block mt-2"><strong>File yang sudah terlampir:</strong></small>
-            <div class="mt-1">
-              <?php 
-                $files = array_filter(array_map('trim', explode('|', $notulen['Lampiran'])), function($v){ return $v !== ''; });
-                if (!empty($files)):
-                  foreach ($files as $file):
-              ?>
-                <div class="mb-1">
-                  <a href="../file/<?= htmlspecialchars($file) ?>" target="_blank" class="text-decoration-none">
-                    <i class="bi bi-file"></i> <?= htmlspecialchars($file) ?>
-                  </a>
-                </div>
-              <?php 
-                  endforeach;
-                else:
-              ?>
-                <small class="text-muted">Belum ada file terlampir.</small>
-              <?php endif; ?>
-            </div>
-          <?php else: ?>
-            <small class="text-muted d-block mt-1">Belum ada file terlampir.</small>
-          <?php endif; ?>
         </div>
+
+        <!-- LAMPIRAN SECTION -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Lampiran</label>
+          
+          <!-- Existing Attachments -->
+          <?php if ($hasLampiran): ?>
+            <div class="mb-3">
+              <label class="small text-muted mb-2">Lampiran Saat Ini:</label>
+              <div class="list-group">
+                <?php foreach ($lampiranList as $lamp): ?>
+                    <div class="list-group-item d-flex justify-content-between align-items-center" id="lampiran-<?= $lamp['id'] ?>">
+                        <div class="d-flex align-items-center">
+                             <a href="../file/<?= htmlspecialchars($lamp['file_lampiran']) ?>" target="_blank" class="text-decoration-none text-dark d-flex align-items-center">
+                                <i class="bi bi-file-earmark-text me-2 text-primary"></i>
+                                <span><?= htmlspecialchars($lamp['judul_lampiran']) ?></span>
+                             </a>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-soft-danger" onclick="deleteLampiran(<?= $lamp['id'] ?>)" title="Hapus Lampiran">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                <?php endforeach; ?>
+              </div>
+            </div>
+          <?php endif; ?>
+
+          <!-- Add New Attachments -->
+          <label class="small text-muted mb-2">Tambah Lampiran Baru:</label>
+          <div id="lampiranContainer"></div>
+          <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="addLampiranBtn">
+            <i class="bi bi-paperclip me-1"></i> Tambah Lampiran
+          </button>
+        </div>
+
+        <script>
+            // Add New Lampiran Logic
+            document.addEventListener('DOMContentLoaded', function() {
+                const container = document.getElementById('lampiranContainer');
+                const addBtn = document.getElementById('addLampiranBtn');
+
+                if (addBtn && container) {
+                    function addRow() {
+                        const row = document.createElement('div');
+                        row.className = 'card mb-2 p-3 border-light bg-light shadow-sm lampiran-row';
+                        row.innerHTML = `
+                            <div class="row align-items-center g-2">
+                                <div class="col-md-5">
+                                    <input type="text" name="judul_lampiran[]" class="form-control form-control-sm" placeholder="Judul Lampiran" required>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="file" name="file_lampiran[]" class="form-control form-control-sm" required>
+                                </div>
+                                <div class="col-md-2 text-end">
+                                    <button type="button" class="btn btn-sm btn-soft-danger remove-lampiran">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        container.appendChild(row);
+
+                        row.querySelector('.remove-lampiran').addEventListener('click', function() {
+                            row.remove();
+                        });
+                    }
+                    addBtn.addEventListener('click', addRow);
+                }
+            });
+
+            // Delete Existing Lampiran Logic
+            async function deleteLampiran(id) {
+                const confirmed = await showConfirm("Yakin ingin menghapus lampiran ini?");
+                if (!confirmed) return;
+
+                try {
+                    const response = await fetch('../proses/proses_hapus_lampiran.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: id })
+                    });
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        const item = document.getElementById('lampiran-' + id);
+                        if(item) item.remove();
+                        showToast('Lampiran berhasil dihapus', 'success');
+                    } else {
+                        showToast(result.message || 'Gagal menghapus lampiran', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showToast('Terjadi kesalahan sistem', 'error');
+                }
+            }
+        </script>
 
         <!-- Dropdown Peserta -->
         <!-- Dropdown Peserta REPLACED WITH MODAL TRIGGER -->

@@ -25,26 +25,7 @@ if ($judul === '' || $tanggal === '' || $isi === '') {
     exit;
 }
 
-// ---------- Handle file upload (optional) ----------
-// Variabel untuk menyimpan nama file (defaults to empty string because DB requires NOT NULL)
-$uploadedFileName = '';
-if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
-    // Ambil temporary file path dan nama file asli
-    $tmp = $_FILES['file']['tmp_name'];
-    $originalName = basename($_FILES['file']['name']);
-    // Sanitasi nama file: ganti karakter tidak diizinkan agar aman
-    $safeName = time() . '_' . preg_replace('/[^a-z0-9\-_.]/i', '_', $originalName);
-    // Tentukan path tujuan penyimpanan file (folder ../file/)
-    $dest = __DIR__ . '/../file/' . $safeName;
-    // Pindahkan file dari temp ke tujuan
-    if (move_uploaded_file($tmp, $dest)) {
-        $uploadedFileName = $safeName;
-    } else {
-        // Jika gagal memindahkan file, kembalikan error ke client
-        echo json_encode(['success' => false, 'message' => 'Gagal mengunggah file']);
-        exit;
-    }
-}
+// File upload handled after insertion into tb_lampiran
 
 // ---------- Prepare peserta CSV ----------
 // Jika peserta dikirim sebagai array, sanitasi menjadi list ID integer
@@ -86,20 +67,54 @@ if (strlen($peserta_csv) > 255) {
 $created_by = $_SESSION['user_name'] ?? 'Admin';
 
 // Siapkan statement INSERT
-// Sesuaikan dengan kolom database yang benar: judul, tanggal, hasil, tindak_lanjut, peserta, status, id_user
 $userId = (int) $_SESSION['user_id'];
-$status = $_POST['status'] ?? 'draft'; // Ambil status dari form (draft/final)
-$tempat = ''; // Tempat kosong jika tidak ada input
+$status = $_POST['status'] ?? 'draft'; 
+$tempat = ''; 
+// Legacy: 'tindak_lanjut' column was used for single file. We leave it empty now.
+$legacyFileCol = ''; 
 
 $stmt = $conn->prepare("INSERT INTO tambah_notulen (id_user, judul, tanggal, tempat, peserta, hasil, tindak_lanjut, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-$stmt->bind_param('isssssss', $userId, $judul, $tanggal, $tempat, $peserta_csv, $isi, $uploadedFileName, $status);
+$stmt->bind_param('isssssss', $userId, $judul, $tanggal, $tempat, $peserta_csv, $isi, $legacyFileCol, $status);
 
 // Eksekusi dan berikan respons JSON sesuai hasil
 if ($stmt->execute()) {
-    echo json_encode(['success' => true, 'message' => 'Notulen berhasil disimpan']);
+    $notulenId = $stmt->insert_id;
+    
+    // ---------- Handle Multiple Attachments (tb_lampiran) ----------
+    $uploadErrors = [];
+    
+    if (isset($_FILES['file_lampiran']) && isset($_POST['judul_lampiran'])) {
+        $files = $_FILES['file_lampiran'];
+        $titles = $_POST['judul_lampiran'];
+        $count = count($files['name']);
+        
+        // Prepare insert statement for lampiran
+        $stmtLampiran = $conn->prepare("INSERT INTO tb_lampiran (id_notulen, judul_lampiran, file_lampiran) VALUES (?, ?, ?)");
+        
+        for ($i = 0; $i < $count; $i++) {
+            if ($files['error'][$i] === UPLOAD_ERR_OK) {
+                $tmp = $files['tmp_name'][$i];
+                $originalName = basename($files['name'][$i]);
+                $title = trim($titles[$i]);
+                if (empty($title)) $title = $originalName; // Fallback title
+                
+                $safeName = time() . '_' . $i . '_' . preg_replace('/[^a-z0-9\-_.]/i', '_', $originalName);
+                $dest = __DIR__ . '/../file/' . $safeName;
+                
+                if (move_uploaded_file($tmp, $dest)) {
+                    $stmtLampiran->bind_param('iss', $notulenId, $title, $safeName);
+                    $stmtLampiran->execute();
+                } else {
+                    $uploadErrors[] = "Gagal upload: $originalName";
+                }
+            }
+        }
+    }
+
+    echo json_encode(['success' => true, 'message' => 'Notulen berhasil disimpan', 'upload_errors' => $uploadErrors]);
 } else {
     // Jika gagal, kembalikan pesan error (berisi $stmt->error)
-    echo json_encode(['success' => false, 'message' => 'DB Error: ' . $stmt->error]);
+    echo json_encode(['success' => false, 'message' => 'Gagal menyimpan notulen: ' . $stmt->error]);
 }
 exit;
 ?>

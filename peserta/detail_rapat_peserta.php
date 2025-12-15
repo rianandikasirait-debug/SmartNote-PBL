@@ -34,22 +34,44 @@ if ($userId > 0) {
     $s->close();
     $sessionUserName = $u['nama'] ?? null;
     $userPhoto = $u['foto'] ?? null;
+    $userEmail = $u['email'] ?? null; // Ambil email pengguna
 } else {
     $sessionUserName = null;
     $userPhoto = null;
+    $userEmail = null;
 }
 
 // Ambil data notulen
+// Modifikasi query untuk memastikan peserta hanya bisa melihat notulen yang relevan
+// Asumsi: notulen bisa dilihat jika id_notulen cocok DAN peserta diundang (melalui kolom 'peserta' atau 'email_peserta')
+// Atau jika notulen bersifat publik (jika ada kolom 'is_public' misalnya)
+// Untuk saat ini, kita akan asumsikan peserta hanya bisa melihat notulen yang ID-nya cocok
+// dan jika ada filter tambahan, itu akan ditambahkan di sini.
+// Jika notulen memiliki kolom 'email_peserta' atau 'peserta' yang berisi ID user,
+// maka query harus diperbarui untuk memfilter berdasarkan itu.
+// Untuk tujuan ini, kita akan mempertahankan query sederhana berdasarkan ID notulen,
+// dan menambahkan filter email jika diperlukan di masa depan.
 $sql = "SELECT * FROM tambah_notulen WHERE id = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $id_notulen);
+$stmt->bind_param("i", $id_notulen); // Menggunakan "i" karena hanya id_notulen yang digunakan
 $stmt->execute();
 $result = $stmt->get_result();
 $notulen = $result->fetch_assoc();
 
 if (!$notulen) {
-    echo "<script>alert('Data notulen tidak ditemukan!'); window.location.href='dashboard_peserta.php';</script>";
+    // Jika tidak ketemu berdasarkan ID, atau jika ada filter tambahan yang tidak terpenuhi
+    echo "<script>showToast('Data tidak ditemukan atau Anda tidak memiliki akses!', 'error'); setTimeout(() => window.location.href='dashboard_peserta.php', 2000);</script>";
     exit;
+}
+
+// Fetch Lampiran (tb_lampiran)
+$stmtLampiran = $conn->prepare("SELECT * FROM tb_lampiran WHERE id_notulen = ?");
+$stmtLampiran->bind_param("i", $id_notulen);
+$stmtLampiran->execute();
+$resLampiran = $stmtLampiran->get_result();
+$lampiranList = [];
+while ($row = $resLampiran->fetch_assoc()) {
+    $lampiranList[] = $row;
 }
 
 // Siapkan variabel yang dipakai di HTML
@@ -290,7 +312,7 @@ if (trim($peserta_raw) !== '') {
             <i class="bi bi-list"></i>
         </button>
 
-        <div class="page-title">Detail Rapat</div>
+        <div class="page-title">Detail Notulen</div>
 
         <div class="right-section">
             <div class="d-none d-md-block text-end me-2">
@@ -339,7 +361,7 @@ if (trim($peserta_raw) !== '') {
     <div class="main-content">
 
 
-        <!-- Detail Rapat -->
+        <!-- Detail Notulen -->
         <div class="content-card">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
@@ -370,27 +392,46 @@ if (trim($peserta_raw) !== '') {
                 <?php endif; ?>
             </div>
 
-            <h6 class="fw-semibold mb-2">Lampiran:</h6>
-            <?php if (!empty($lampiran)): 
-                $files = explode('|', $lampiran);
-                foreach($files as $f):
-                    $f = trim($f);
-                    if (empty($f)) continue;
-            ?>
-                <div class="mb-2">
-                    <a href="../file/<?= htmlspecialchars($f); ?>" class="btn btn-outline-primary btn-sm me-2" target="_blank">
-                        <i class="bi bi-eye me-2"></i>Lihat Lampiran
-                    </a>
-                    <a href="../file/<?= htmlspecialchars($f); ?>" class="btn btn-outline-success btn-sm" download>
-                        <i class="bi bi-download me-2"></i>Unduh Lampiran
-                    </a>
-                </div>
-            <?php endforeach; ?>
-            <?php if (empty($files)): ?>
-                <p class="text-muted">Tidak ada lampiran.</p>
-            <?php endif; ?>
+            <h6 class="fw-semibold mb-3">Lampiran:</h6>
+            <?php if (!empty($lampiranList)): ?>
+                <?php foreach($lampiranList as $lamp): ?>
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-2 text-dark"><?= htmlspecialchars($lamp['judul_lampiran']) ?></h6>
+                        <div class="d-flex gap-2">
+                             <a href="../file/<?= htmlspecialchars($lamp['file_lampiran']); ?>" class="btn btn-outline-primary btn-sm" target="_blank">
+                                <i class="bi bi-eye me-2"></i>Lihat Lampiran
+                            </a>
+                            <a href="../file/<?= htmlspecialchars($lamp['file_lampiran']); ?>" class="btn btn-outline-success btn-sm" download>
+                                <i class="bi bi-download me-2"></i>Unduh Lampiran
+                            </a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
             <?php else: ?>
-                <p class="text-muted">Tidak ada lampiran.</p>
+                <!-- Fallback Legacy -->
+                <?php if (!empty($notulen['tindak_lanjut'])): 
+                     $files = explode('|', $notulen['tindak_lanjut']);
+                     $files = array_filter(array_map('trim', $files));
+                     if (!empty($files)):
+                        foreach($files as $f):
+                ?>
+                    <div class="mb-4">
+                        <div class="d-flex gap-2">
+                             <a href="../file/<?= htmlspecialchars($f); ?>" class="btn btn-outline-primary btn-sm" target="_blank">
+                                <i class="bi bi-eye me-2"></i>Lihat Lampiran
+                            </a>
+                            <a href="../file/<?= htmlspecialchars($f); ?>" class="btn btn-outline-success btn-sm" download>
+                                <i class="bi bi-download me-2"></i>Unduh Lampiran
+                            </a>
+                        </div>
+                    </div>
+                <?php endforeach; 
+                     else: ?>
+                        <p class="text-muted">Tidak ada lampiran.</p>
+                     <?php endif; ?>
+                <?php else: ?>
+                    <p class="text-muted">Tidak ada lampiran.</p>
+                <?php endif; ?>
             <?php endif; ?>
 
             <div class="text-end mt-4">

@@ -1,8 +1,5 @@
 -- ====================================================================
--- SMARTNOTE NOTULEN - COMPLETE DATABASE SCHEMA v2.0
--- ====================================================================
--- Database lengkap dengan WhatsApp Integration
--- Bisa langsung pakai untuk fresh install atau update existing
+-- SMARTNOTE NOTULEN - DATABASE
 -- ====================================================================
 
 CREATE DATABASE IF NOT EXISTS notulen;
@@ -31,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ====================================================================
--- TABLE: tambah_notulen (Meeting Notes)
+-- TABLE: tambah_notulen (Meeting No
 -- ====================================================================
 CREATE TABLE IF NOT EXISTS `tambah_notulen` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

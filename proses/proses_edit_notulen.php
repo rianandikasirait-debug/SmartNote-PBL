@@ -22,7 +22,9 @@ $tanggal = $_POST['tanggal'] ?? '';
 $isi = $_POST['isi'] ?? '';
 $status = $_POST['status'] ?? 'draft'; // Ambil status
 $peserta_arr = isset($_POST['peserta']) ? $_POST['peserta'] : [];
-// Sanitasi peserta (ensure int)
+$currentUserId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
+
+// Sanitasi peserta
 $clean_peserta = [];
 if (is_array($peserta_arr)) {
     foreach ($peserta_arr as $p) {
@@ -30,7 +32,8 @@ if (is_array($peserta_arr)) {
         if ($val > 0) $clean_peserta[] = $val;
     }
 }
-$peserta_str = implode(',', $clean_peserta);
+
+$peserta_str = implode(',', array_unique($clean_peserta));
 
 // Validasi sederhana: cek field wajib
 if ($id <= 0 || empty($judul) || empty($tanggal) || empty($isi)) {

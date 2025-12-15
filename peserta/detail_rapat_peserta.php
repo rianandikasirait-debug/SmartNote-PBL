@@ -77,7 +77,7 @@ while ($row = $resLampiran->fetch_assoc()) {
 // Siapkan variabel yang dipakai di HTML
 $tanggal = !empty($notulen['tanggal']) ? date('d/m/Y', strtotime($notulen['tanggal'])) : '-';
 $lampiran = $notulen['tindak_lanjut'] ?? '';
-$created_by = $notulen['tempat'] ?? 'Admin'; // Menggunakan tempat sebagai created_by
+$created_by = $notulen['created_by'] ?? 'Admin';
 
 // Uraikan peserta SEBELUM menutup koneksi
 $peserta_raw = $notulen['peserta'] ?? '';
@@ -341,8 +341,8 @@ if (trim($peserta_raw) !== '') {
         <div class="content-card">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <h4><?= htmlspecialchars($notulen['judul']); ?></h4>
-                    <p class="text-muted">Dibuat oleh: <?= htmlspecialchars($created_by); ?></p>
+                    <h4 class="fw-bold mb-1"><?= htmlspecialchars($notulen['judul']); ?></h4>
+                    <p class="text-muted mb-2">Dibuat oleh: <?= htmlspecialchars($created_by); ?></p>
                 </div>
                 <div class="text-end">
                     <p class="fw-semibold mb-0">Tanggal Rapat:</p>
@@ -352,6 +352,7 @@ if (trim($peserta_raw) !== '') {
 
             <hr>
 
+            <h6 class="fw-semibold mb-3">Isi Notulen:</h6>
             <div class="mb-4">
                 <?= $notulen['hasil'] ?? ''; // Isi rapat ?>
             </div>
@@ -461,7 +462,7 @@ if (trim($peserta_raw) !== '') {
             logoutBtnMobile.addEventListener("click", confirmLogout);
         }
 
-        document.getElementById('searchPeserta').addEventListener('keyup', function() {
+        document.getElementById('searchPeserta').addEventListener('input', function() {
             const searchText = this.value.toLowerCase();
             const list = document.getElementById('participantList');
             // Get direct children divs that act as items
@@ -470,14 +471,11 @@ if (trim($peserta_raw) !== '') {
             for (let i = 0; i < cols.length; i++) {
                 const item = cols[i];
                 if (item.classList.contains('list-group-item')) {
-                    const nameEl = item.querySelector('.name-text');
-                    if (nameEl) {
-                        const name = nameEl.textContent || nameEl.innerText;
-                        if (name.toLowerCase().indexOf(searchText) > -1) {
-                            item.style.removeProperty('display'); // Reset to CSS default (flex)
-                        } else {
-                            item.style.display = 'none'; // Hide
-                        }
+                    const text = item.textContent || item.innerText;
+                    if (text.toLowerCase().indexOf(searchText) > -1) {
+                        item.style.removeProperty('display'); // Reset to CSS default (flex)
+                    } else {
+                        item.style.display = 'none'; // Hide
                     }
                 }
             }

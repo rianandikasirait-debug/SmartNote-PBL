@@ -19,11 +19,10 @@ $stmt->close();
 $userName = $userData['nama'] ?? 'Admin';
 $userPhoto = $userData['foto'] ?? null;
 
-// Ambil daftar peserta
+// Ambil daftar peserta (Admin + Peserta)
 $users = [];
-$q = $conn->prepare("SELECT id, nama, email FROM users WHERE role = 'peserta' AND id != ? ORDER BY nama ASC");
+$q = $conn->prepare("SELECT id, nama, email FROM users WHERE role IN ('admin', 'peserta') ORDER BY nama ASC");
 if ($q) {
-    $q->bind_param("i", $userId);
     $q->execute();
     $res = $q->get_result();
     while ($r = $res->fetch_assoc()) {

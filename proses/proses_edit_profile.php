@@ -21,12 +21,41 @@ $konfirmasi = $_POST['password_konfirmasi'] ?? ''; // Ambil konfirmasi password
 $foto_baru = null; // Placeholder untuk nama file foto baru
 
 // Validasi password baru: jika diisi, harus cocok dengan konfirmasi
+// Validasi password baru: jika diisi, harus cocok dengan konfirmasi
 if (!empty($password_baru)) {
     if ($password_baru !== $konfirmasi) {
         $_SESSION['error_message'] = "Konfirmasi password tidak cocok.";
         header("Location: $redirect_edit");
         exit;
     }
+}
+
+// Hapus Foto (Jika diminta)
+if (isset($_POST['delete_photo']) && $_POST['delete_photo'] == '1') {
+    // Ambil foto lama
+    $stmt_old = $conn->prepare("SELECT foto FROM users WHERE id=?");
+    $stmt_old->bind_param("i", $id);
+    $stmt_old->execute();
+    $res_old = $stmt_old->get_result();
+    if ($row_old = $res_old->fetch_assoc()) {
+        $old_photo = $row_old['foto'];
+        if ($old_photo && file_exists(__DIR__ . '/../file/' . $old_photo)) {
+            unlink(__DIR__ . '/../file/' . $old_photo);
+        }
+    }
+    $stmt_old->close();
+
+    // Update DB
+    $stmt = $conn->prepare("UPDATE users SET foto=NULL WHERE id=?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    
+    $_SESSION['user_foto'] = null; // Update session
+    
+    // Redirect langsung biar refresh
+    $_SESSION['success_message'] = "Foto profil berhasil dihapus.";
+    header("Location: $redirect_edit");
+    exit;
 }
 
 // Upload Foto (jika ada file di input 'foto')

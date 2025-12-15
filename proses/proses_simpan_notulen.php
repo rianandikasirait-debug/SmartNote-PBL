@@ -28,27 +28,26 @@ if ($judul === '' || $tanggal === '' || $isi === '') {
 // File upload handled after insertion into tb_lampiran
 
 // ---------- Prepare peserta CSV ----------
-// Jika peserta dikirim sebagai array, sanitasi menjadi list ID integer
-$peserta_csv = '';
+// ---------- Prepare peserta CSV ----------
+$currentUserId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
+$clean = [];
+
 if (is_array($peserta_ids) && count($peserta_ids) > 0) {
-    // Konversi setiap value ke integer untuk mencegah injeksi
+    // Input Provided: Sanitize
     $clean = array_map('intval', $peserta_ids);
-    // Buang nilai yang bukan positif
-    $clean = array_filter($clean, function($v) { return $v > 0; });
-    // Gabungkan menjadi string CSV (mis. "1,2,3")
-    $peserta_csv = implode(',', $clean);
 } else {
-    // Jika tidak ada peserta yang dipilih, fallback ambil semua user dengan role 'peserta'
+    // No Input: Fallback fetch all 'peserta'
     $stmtAll = $conn->prepare("SELECT id FROM users WHERE role = 'peserta'");
     $stmtAll->execute();
     $resAll = $stmtAll->get_result();
-    $allIds = [];
     while ($row = $resAll->fetch_assoc()) {
-        $allIds[] = $row['id'];
+        $clean[] = (int)$row['id'];
     }
-    // Gabungkan semua ID peserta menjadi CSV
-    $peserta_csv = implode(',', $allIds);
 }
+
+// FinalSanitization
+$clean = array_unique(array_filter($clean, function($v) { return $v > 0; }));
+$peserta_csv = implode(',', $clean);
 
 // Ensure data limits match database schema to prevent errors
 // title varchar(50), peserta varchar(255)

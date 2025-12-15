@@ -345,6 +345,7 @@ if (trim($peserta_raw) !== '') {
 
             <hr>
 
+            <h6 class="fw-semibold mb-3">Isi Notulen:</h6>
             <div class="mb-4">
                 <?= $notulen['hasil']; // Isi rapat biasanya HTML dari TinyMCE, jadi tidak di-escape ?>
             </div>

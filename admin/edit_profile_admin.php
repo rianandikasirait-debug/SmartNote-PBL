@@ -240,22 +240,31 @@ $foto_profile = (!empty($foto_path) && file_exists($foto_path)) ? $foto_path : '
                     vertical-align: -4px;">
                     person_edit
                 </span>
-                Edit Profile Pengguna
+                Edit Profile Admin
             </h5>
 
             <form action="../proses/proses_edit_profile.php" method="POST" enctype="multipart/form-data">
-                <div class="text-center mb-4">
+                <div class="d-flex flex-column align-items-center mb-4">
                     <?php if (!empty($foto_profile)): ?>
-                        <img src="<?= htmlspecialchars($foto_profile); ?>" width="100" height="100"
-                            class="rounded-circle mb-2" style="object-fit: cover; border: 2px solid #ddd;"
-                            alt="Foto Profil">
+                        <div class="position-relative d-inline-block" id="photoWrapper">
+                            <img src="<?= htmlspecialchars($foto_profile); ?>" width="100" height="100"
+                                class="rounded-circle mb-2" style="object-fit: cover; border: 2px solid #ddd;"
+                                alt="Foto Profil" id="previewImage">
+                            <button type="button" 
+                                class="btn btn-danger position-absolute bottom-0 end-0 rounded-circle d-flex align-items-center justify-content-center shadow-sm" 
+                                style="width: 32px; height: 32px; bottom: 8px !important;" 
+                                title="Hapus Foto" onclick="confirmDeletePhoto()">
+                                <i class="bi bi-trash-fill" style="font-size: 14px;"></i>
+                            </button>
+                        </div>
                     <?php else: ?>
-                         <div class="mb-2 d-inline-block bg-light rounded-circle border d-flex align-items-center justify-content-center" style="width:100px; height:100px;">
+                         <div id="defaultIcon" class="mb-2 d-inline-block bg-light rounded-circle border d-flex align-items-center justify-content-center" style="width:100px; height:100px;">
                            <i class="bi bi-person-fill text-secondary" style="font-size: 50px;"></i>
                         </div>
+                        <img id="previewImage" src="#" width="100" height="100" class="rounded-circle mb-2 d-none" style="object-fit: cover; border: 2px solid #ddd;" alt="Preview Foto">
                     <?php endif; ?>
                     <div>
-                        <input type="file" name="foto" class="form-control w-auto mx-auto" accept=".jpg,.png,.jpeg">
+                        <input type="file" name="foto" id="fotoInput" class="form-control w-auto mx-auto" accept=".jpg,.png,.jpeg">
                         <small class="text-muted d-block mt-1">Kosongkan jika tidak ingin mengubah foto (Maks.
                             2MB)</small>
                     </div>
@@ -299,6 +308,42 @@ $foto_profile = (!empty($foto_path) && file_exists($foto_path)) ? $foto_path : '
     </div>
 
     <script>
+        // Preview Image Logic
+        const fotoInput = document.getElementById('fotoInput');
+        const previewImage = document.getElementById('previewImage');
+        const defaultIcon = document.getElementById('defaultIcon');
+
+        if(fotoInput) {
+            fotoInput.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        if(previewImage) {
+                            previewImage.src = e.target.result;
+                            previewImage.classList.remove('d-none');
+                        }
+                        if(defaultIcon) defaultIcon.classList.add('d-none');
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Fungsi Hapus Foto dengan Konfirmasi
+        async function confirmDeletePhoto() {
+            const confirmed = await showConfirm("Hapus foto profil ini?");
+            if (confirmed) {
+                const form = document.querySelector('form');
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'delete_photo';
+                input.value = '1';
+                form.appendChild(input);
+                form.submit();
+            }
+        }
+
         // Fungsi Logout
         async function confirmLogout(e) {
             e.preventDefault();

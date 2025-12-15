@@ -51,13 +51,12 @@ while ($row = $resultLampiran->fetch_assoc()) {
 }
 $hasLampiran = count($lampiranList) > 0;
 
-// Ambil daftar semua user untuk dropdown peserta (kecuali saya sendiri)
-$sql_users = "SELECT id, nama, email FROM users WHERE id != ? ORDER BY nama ASC";
+// Ambil daftar semua user untuk modal peserta (Admin + Peserta)
+$sql_users = "SELECT id, nama, email FROM users WHERE role IN ('admin', 'peserta') ORDER BY nama ASC";
 $stmt_users = $conn->prepare($sql_users);
-$stmt_users->bind_param("i", $userId);
 $stmt_users->execute();
 $res_users = $stmt_users->get_result();
-$all_users = []; // array of arrays: [ ['id'=>..,'nama'=>..], ... ]
+$all_users = [];
 while ($row = $res_users->fetch_assoc()) {
   $all_users[] = $row;
 }

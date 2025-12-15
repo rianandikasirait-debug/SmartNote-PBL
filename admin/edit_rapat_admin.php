@@ -507,6 +507,7 @@ foreach ($current_participants as $pid) {
         </div>
 
         <!-- List peserta (Table View) -->
+        <!-- List peserta (Table View) -->
         <div class="mb-4">
           <label class="form-label fw-semibold mb-2">Daftar Peserta:</label>
           <div class="card border-0 shadow-sm mobile-table-fix">
@@ -538,7 +539,6 @@ foreach ($current_participants as $pid) {
                       <td class="px-2 px-md-4 text-center text-muted small"><?= $no++ ?></td>
                       <td class="px-2 px-md-4 text-start">
                         <?= htmlspecialchars($item['nama']) ?>
-                        <input type="hidden" name="peserta[]" value="<?= htmlspecialchars($item['id']) ?>">
                       </td>
                       <td class="text-center px-2 px-md-4">
                         <button type="button" class="btn btn-sm btn-danger remove-btn text-white"
@@ -554,6 +554,13 @@ foreach ($current_participants as $pid) {
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- HIDDEN INPUTS CONTAINER -->
+        <div id="hiddenPesertaContainer" class="d-none">
+            <?php foreach ($current_participant_items as $item): ?>
+                <input type="hidden" name="peserta[]" value="<?= htmlspecialchars($item['id']) ?>" id="input-peserta-<?= htmlspecialchars($item['id']) ?>">
+            <?php endforeach; ?>
         </div>
 
         <div class="d-flex justify-content-between align-items-center mt-4">
@@ -673,7 +680,23 @@ foreach ($current_participants as $pid) {
                 }
 
                 const fd = new FormData(this);
-                // Peserta input type hidden already in form, formData picks them up automatically
+                
+                // CRITICAL FIX: Manually append participant IDs
+                // Get all participant rows from the table
+                const participantRows = document.querySelectorAll('#addedContainer .added-item');
+                participantRows.forEach(row => {
+                    const participantId = row.dataset.id;
+                    if (participantId) {
+                        fd.append('peserta[]', participantId);
+                    }
+                });
+                
+                // DEBUG: Log FormData contents
+                console.log('=== FORM DATA DEBUG ===');
+                for (let [key, value] of fd.entries()) {
+                    console.log(key, value);
+                }
+                console.log('=== END DEBUG ===');
 
                 const res = await fetch("../proses/proses_edit_notulen.php", {
                     method: "POST",
@@ -801,13 +824,16 @@ foreach ($current_participants as $pid) {
             });
         }
 
+        const hiddenPesertaContainer = document.getElementById('hiddenPesertaContainer');
+
         // Tombol Simpan Pilihan (Dari Modal)
         if (btnSimpanPeserta) {
             btnSimpanPeserta.addEventListener('click', function () {
                 const selected = document.querySelectorAll('.notulen-checkbox:checked');
                 
-                // Clear container
+                // Clear containers
                 addedContainer.innerHTML = '';
+                if(hiddenPesertaContainer) hiddenPesertaContainer.innerHTML = '';
 
                 if (selected.length === 0) {
                     addedContainer.innerHTML = '<tr id="emptyRow" style="border-bottom: 1px solid #dee2e6 !important;"><td colspan="3" class="text-center text-muted py-5"><div class="d-flex flex-column align-items-center"><i class="bi bi-people text-secondary mb-2" style="font-size: 2rem; opacity: 0.5;"></i><small>Belum ada peserta yang ditambahkan</small></div></td></tr>';
@@ -816,6 +842,7 @@ foreach ($current_participants as $pid) {
                         const id = cb.value;
                         const name = cb.dataset.name;
                         
+                        // Visual Row
                         const tr = document.createElement('tr');
                         tr.className = 'added-item align-middle border-bottom'; 
                         tr.dataset.id = id;
@@ -823,7 +850,6 @@ foreach ($current_participants as $pid) {
                             <td class="px-2 px-md-4 text-center text-muted small">${index + 1}</td>
                             <td class="px-2 px-md-4 text-start">
                                 ${escapeHtml(name)}
-                                <input type="hidden" name="peserta[]" value="${escapeHtml(id)}">
                             </td>
                             <td class="text-center px-2 px-md-4">
                                 <button type="button" class="btn btn-sm btn-danger remove-btn text-white" data-id="${id}">
@@ -832,6 +858,16 @@ foreach ($current_participants as $pid) {
                             </td>
                         `;
                         addedContainer.appendChild(tr);
+
+                        // Hidden Input
+                        if(hiddenPesertaContainer) {
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = 'peserta[]';
+                            input.value = id;
+                            input.id = 'input-peserta-' + id;
+                            hiddenPesertaContainer.appendChild(input);
+                        }
                     });
                 }
 
@@ -857,9 +893,14 @@ foreach ($current_participants as $pid) {
                     const modalCb = document.querySelector(`.notulen-checkbox[value="${id}"]`);
                     if (modalCb) modalCb.checked = false;
                     
+                    // Remove Visual Row
                     const item = btn.closest('.added-item');
                     if (item) item.remove();
                     
+                    // Remove Hidden Input
+                    const hiddenInput = document.getElementById('input-peserta-' + id);
+                    if(hiddenInput) hiddenInput.remove();
+
                     // Re-numbering
                     const remainingItems = addedContainer.querySelectorAll('.added-item');
                     remainingItems.forEach((row, index) => {

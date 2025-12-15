@@ -21,10 +21,11 @@ $judul = trim($_POST['judul'] ?? '');
 $tanggal = $_POST['tanggal'] ?? '';
 $isi = $_POST['isi'] ?? '';
 $status = $_POST['status'] ?? 'draft'; // Ambil status
-$peserta_arr = isset($_POST['peserta']) ? $_POST['peserta'] : [];
-$currentUserId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
-
 // Sanitasi peserta
+$peserta_arr = isset($_POST['peserta']) ? $_POST['peserta'] : [];
+
+
+
 $clean_peserta = [];
 if (is_array($peserta_arr)) {
     foreach ($peserta_arr as $p) {
@@ -45,10 +46,11 @@ if ($id <= 0 || empty($judul) || empty($tanggal) || empty($isi)) {
 if (strlen($judul) > 50) {
     $judul = substr($judul, 0, 50);
 }
-if (strlen($peserta_str) > 255) {
-    echo json_encode(['success' => false, 'message' => 'Terlalu banyak peserta (max 255 chars).']);
-    exit;
+// Limit validation for title
+if (strlen($judul) > 255) {
+    $judul = substr($judul, 0, 255);
 }
+// Peserta limit removed (LONGTEXT supported)
 
 // --- 1. Proses Upload File Baru (Multiple ke tb_lampiran) ---
 // Note: File lama sudah ditangani oleh proses_hapus_lampiran.php secara terpisah via AJAX.

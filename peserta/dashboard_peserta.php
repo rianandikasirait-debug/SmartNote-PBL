@@ -59,7 +59,7 @@ $sql = "SELECT id, judul, tanggal, tempat, peserta, tindak_lanjut as Lampiran, c
                 COALESCE(status, 'draft') as status
         FROM tambah_notulen 
         WHERE FIND_IN_SET(?, peserta) > 0
-        ORDER BY tanggal DESC";
+        ORDER BY created_at DESC";
 
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $currentUserId);

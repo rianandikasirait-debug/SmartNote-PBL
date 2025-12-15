@@ -442,7 +442,8 @@ if (trim($peserta_raw) !== '') {
         }
 
         // Data Peserta dari PHP
-        const participants = <?= json_encode($peserta_details ?? [], JSON_UNESCAPED_UNICODE); ?>;
+        // Data Peserta dari PHP
+        const participants = <?= json_encode($peserta_details ?? [], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_IGNORE); ?> || [];
         const participantList = document.getElementById('participantList');
         const searchInput = document.getElementById('searchPeserta');
 

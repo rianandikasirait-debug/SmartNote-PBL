@@ -51,15 +51,11 @@ $peserta_csv = implode(',', $clean);
 
 // Ensure data limits match database schema to prevent errors
 // title varchar(50), peserta varchar(255)
+// Limit validation for title
 if (strlen($judul) > 50) {
     $judul = substr($judul, 0, 50);
 }
-if (strlen($peserta_csv) > 255) {
-    // If we have too many participants, we cannot save properly with current schema.
-    // Return error instead of crashing or truncating corrupt data.
-    echo json_encode(['success' => false, 'message' => 'Terlalu banyak peserta (max karakter 255). Hubungi admin untuk upgrade sistem.']);
-    exit;
-}
+// Peserta limit removed (LONGTEXT supported)
 
 // ---------- Insert notulen ----------
 // Siapa yang membuat notulen — ambil dari session (jika tersedia), fallback 'Admin'

@@ -261,15 +261,6 @@ if ($q) {
 
     <!-- CONTENT -->
     <div class="main-content">
-
-
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="dashboard_admin.php">Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Tambah Notulen</li>
-            </ol>
-        </nav>
-
         <div class="form-section">
             <h5 class="fw-semibold mb-4">Tambah Notulen</h5>
 

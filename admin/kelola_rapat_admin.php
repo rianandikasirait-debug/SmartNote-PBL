@@ -346,10 +346,11 @@ if ($wa_message) {
                     }
                 </style>
                 <select id="rowsPerPage" class="form-select form-select-green-outline">
-                    <option value="5">5 data</option>
-                    <option value="10" selected>10 data</option>
-                    <option value="25">25 data</option>
-                    <option value="50">50 data</option>
+                    <option value="5">5 pengguna</option>
+                    <option value="10" selected>10 pengguna</option>
+                    <option value="25">25 pengguna</option>
+                    <option value="50">50 pengguna</option>
+                    <option value="all">Semua Data</option>
                 </select>
 
                 <a href="tambah_peserta_admin.php" class="btn btn-success d-flex align-items-center gap-2">
@@ -425,7 +426,11 @@ if ($wa_message) {
 
         // Update itemsPerPage dynamically
         rowsPerPageSelect.addEventListener('change', function() {
-            itemsPerPage = parseInt(this.value);
+            if (this.value === 'all') {
+                itemsPerPage = 1000000; // Show all data
+            } else {
+                itemsPerPage = parseInt(this.value);
+            }
             currentPage = 1; // Reset to page 1
             renderTable(filteredUsers);
         });

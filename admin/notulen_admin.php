@@ -252,8 +252,8 @@ if ($q) {
     $pageTitle = "Tambah Notulen";
     // sidebar
     include '../Nav_Side_Bar/sidebar.php';
-    // navbar
-    include '../Nav_Side_Bar/navbar.php'; 
+    // header
+    include '../Nav_Side_Bar/header.php'; 
 ?>
 
     <!-- CONTENT -->

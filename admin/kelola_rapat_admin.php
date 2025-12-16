@@ -65,6 +65,7 @@ if ($wa_message) {
     <link rel="stylesheet" href="../css/sidebar.css">
 
 </head>
+
 <body>
     <!-- CSS Header & Sidebar -->
     <style>
@@ -273,7 +274,7 @@ if ($wa_message) {
 
     <div class="main-content">
         <div class="table-wrapper">
-            <div class="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap">
+            <div class="toolbar-admin mb-3">
                 <div class="d-flex align-items-center gap-2 flex-grow-1">
                     <span class="material-symbols-rounded" style="font-size:28px;">
                         person_search
@@ -298,8 +299,27 @@ if ($wa_message) {
                         box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
                         border-color: #198754;
                     }
-                    #rowsPerPage {
-                        color: #495057;
+
+                    .toolbar-admin {
+                        display: flex;
+                        gap: 10px;
+                        flex-wrap: wrap;
+                    }
+
+                    /* SEARCH FULL */
+                    .toolbar-admin .search-box {
+                        flex: 1 1 100%;
+                    }
+
+                    /* DATA + BUTTON */
+                    @media (max-width: 576px) {
+                        #rowsPerPage {
+                            width: 120px;
+                        }
+
+                        .toolbar-admin .btn-success {
+                            flex: 1;
+                        }
                     }
                 </style>
                 <select id="rowsPerPage" class="form-select form-select-green-outline">
@@ -341,23 +361,23 @@ if ($wa_message) {
     </div>
     </div>
     <!-- Toast Notification -->
-<div class="toast-container position-fixed top-0 end-0 p-3">
-    <div id="successToast"
-        class="toast align-items-center text-bg-success border-0"
-        role="alert"
-        aria-live="assertive"
-        aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body">
-                <i class="bi bi-check-circle-fill me-2"></i>
-                Pesan
-            </div>
-            <button type="button"
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="successToast"
+            class="toast align-items-center text-bg-success border-0"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    Pesan
+                </div>
+                <button type="button"
                     class="btn-close btn-close-white me-2 m-auto"
                     data-bs-dismiss="toast"></button>
+            </div>
         </div>
     </div>
-</div>
     <!-- DEBUG: tampilkan data JSON di source page (HTML comment) supaya bisa dicek lewat View Source -->
     <?php
     echo '<!-- DEBUG: $all_users = ' . htmlspecialchars(json_encode($all_users, JSON_UNESCAPED_UNICODE), ENT_QUOTES, 'UTF-8') . ' -->';
@@ -593,19 +613,21 @@ if ($wa_message) {
         }
 
         // Fungsi tampilkan notifikasi
-    function showToast(message, type = 'success') {
-    const toastEl = document.getElementById('successToast');
-    if (!toastEl) return;
+        function showToast(message, type = 'success') {
+            const toastEl = document.getElementById('successToast');
+            if (!toastEl) return;
 
-    toastEl.className = `toast align-items-center text-bg-${type} border-0`;
+            toastEl.className = `toast align-items-center text-bg-${type} border-0`;
 
-    toastEl.querySelector('.toast-body').innerHTML = `
+            toastEl.querySelector('.toast-body').innerHTML = `
         <i class="bi bi-check-circle-fill me-2"></i> ${message}
     `;
 
-    const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
-    toast.show();
-}
+            const toast = new bootstrap.Toast(toastEl, {
+                delay: 3000
+            });
+            toast.show();
+        }
 
 
         // Global function to handle image errors
@@ -648,10 +670,11 @@ if ($wa_message) {
         // Render awal
         renderTable(filteredUsers);
         <?php if (isset($_SESSION['success_message'])): ?>
-    window.addEventListener('DOMContentLoaded', function () {
-        showToast(<?= json_encode($_SESSION['success_message']) ?>, 'success');
-    });
-<?php unset($_SESSION['success_message']); endif; ?>
+            window.addEventListener('DOMContentLoaded', function() {
+                showToast(<?= json_encode($_SESSION['success_message']) ?>, 'success');
+            });
+        <?php unset($_SESSION['success_message']);
+        endif; ?>
 
 
         // Pendengar perubahan ukuran layar

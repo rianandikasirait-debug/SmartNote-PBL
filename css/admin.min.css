@@ -408,6 +408,15 @@ body {
   }
 }
 
+@media (max-width: 1024px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+  .table-responsive table {
+    min-width: 800px; /* ensure table is wider than viewport */
+  }
+}
+
 .sidebar-content {
   min-width: 250px;
   background: #fff;

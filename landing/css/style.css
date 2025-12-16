@@ -1244,3 +1244,17 @@ section {
         height: 40px;
     }
 }
+/* ===== Button Hero Mobile ===== */
+@media (max-width: 576px) {
+
+    .hero-buttons {
+        display: flex;
+        justify-content: center;
+    }
+
+    .hero-buttons .btn {
+        width: 50%;          /* ⬅️ INI yang bikin jadi separo */
+        font-size: 15px;
+        padding: 12px 0;
+    }
+}

@@ -178,25 +178,16 @@ include '../config_admin/db_profile.php';
         </div>
     </div>
 
-    <!-- Logout Confirm -->
+    <!-- Global Variables for JS -->
     <script>
-        async function confirmLogout(e) {
-            e.preventDefault();
-            const confirmed = await showConfirm("Yakin mau keluar?");
-            if (confirmed) window.location.href = "../proses/proses_logout.php";
-        }
-
-        document.getElementById("logoutBtn").addEventListener("click", confirmLogout);
-        document.getElementById("logoutBtnMobile").addEventListener("click", confirmLogout);
+        <?php if (isset($_SESSION['success_message'])): ?>
+            window.sessionSuccessMessage = <?= json_encode($_SESSION['success_message']) ?>;
+        <?php unset($_SESSION['success_message']); endif; ?>
     </script>
+    
+    <!-- Scripts -->
     <script src="../js/admin.js"></script>
-    <?php if (isset($_SESSION['success_message'])): ?>
-        <script>
-            window.addEventListener('DOMContentLoaded', function () {
-                showToast(<?= json_encode($_SESSION['success_message']) ?>, 'success');
-            });
-        </script>
-<?php unset($_SESSION['success_message']); endif; ?>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/profile.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

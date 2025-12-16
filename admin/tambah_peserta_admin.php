@@ -38,11 +38,11 @@ include '../config_admin/db_tambah_peserta.php';
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Tambah Peserta - SmartNote</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/admin.min.css">
-    <link rel="stylesheet" href="../css/sidebar.css">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+        <link rel="stylesheet" href="../css/admin.min.css">
+        <link rel="stylesheet" href="../css/sidebar.css">
         <style>
             .btn.btn-secondary{
                 background-color: #00C853 !important; 
@@ -274,97 +274,17 @@ include '../config_admin/db_tambah_peserta.php';
                 </div>
             </div>
         </div>
-        <script>
-            // cek URL apakah ada ?added=1
-            const params = new URLSearchParams(window.location.search);
-
-            if (params.get("added") === "1") {
-                showToast("Pengguna berhasil ditambahkan!", 'success');
-                // hapus parameter agar tidak muncul lagi saat muat ulang
-                params.delete("added");
-                window.history.replaceState({}, "", window.location.pathname);
-            }
-
-            if (params.get("added") === "0") {
-                showToast("Gagal menambahkan pengguna!", 'error');
-                params.delete("added");
-                window.history.replaceState({}, "", window.location.pathname);
-            }
-        </script>
-        <script>
-            // Fungsi Logout
-            document.getElementById("logoutBtn").addEventListener("click", async function (e) {
-                e.preventDefault();
-                const confirmed = await showConfirm("Yakin mau keluar?");
-                if (confirmed) {
-                    localStorage.removeItem("adminData");
-                    window.location.href = "../proses/proses_logout.php";
-                }
-            });
-
-            const logoutBtnMobile = document.getElementById("logoutBtnMobile");
-            if (logoutBtnMobile) {
-                logoutBtnMobile.addEventListener("click", async function (e) {
-                    e.preventDefault();
-                    const confirmed = await showConfirm("Yakin mau keluar?");
-                    if (confirmed) {
-                        localStorage.removeItem("adminData");
-                        window.location.href = "../proses/proses_logout.php";
-                    }
-                });
-            }
-        </script>
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="../js/admin.js"></script>
-    <script>
-        // Click-to-Fill Email Suggestion Logic
-        document.addEventListener('DOMContentLoaded', function() {
-            const namaInput = document.getElementById('nama');
-            const emailInput = document.getElementById('email');
-            const suggestionContainer = document.getElementById('emailSuggestionContainer');
-
-            namaInput.addEventListener('input', function() {
-                const name = this.value;
-                // Basic sanitization: lowercase, remove special chars, replace spaces with nothing
-                const cleanName = name.toLowerCase().replace(/[^a-z0-9]/g, '');
-                
-                if (cleanName.length > 0) {
-                    const candidateEmail = cleanName + '@gmail.com';
-                    // Show clickable badge
-                    suggestionContainer.style.display = 'block';
-                    suggestionContainer.innerHTML = `
-                        <small class="text-muted d-block mb-1">Rekomendasi:</small>
-                        <span class="badge bg-success-subtle text-success border border-success cur-pointer" 
-                              style="cursor: pointer; font-size: 0.9rem;"
-                              onclick="fillEmail('${candidateEmail}')">
-                            <i class="bi bi-magic me-1"></i> ${candidateEmail}
-                        </span>
-                    `;
-                } else {
-                    suggestionContainer.style.display = 'none';
-                    suggestionContainer.innerHTML = '';
-                }
-            });
-            
-            // Function to handle the click (attached to window or defined here if simple span onclick)
-            // Ideally define it globally or inside the span onclick as inline JS wrapper access
-            window.fillEmail = function(email) {
-                emailInput.value = email;
-                // Optional: visual feedback
-                emailInput.classList.add('is-valid');
-                setTimeout(() => emailInput.classList.remove('is-valid'), 1000);
-            };
-        });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/admin.js"></script>
+    <script src="../js/tambah_peserta.js"></script>
         <?php
         if (session_status() === PHP_SESSION_NONE)
             session_start();
 
         if (!empty($_SESSION['success_message'])) {
-            $msg = $_SESSION['success_message'];
-            unset($_SESSION['success_message']); // supaya tidak muncul lagi jika dimuat ulang
-            echo "<script>showToast('$msg', 'success');</script>";
+            // Pass PHP session message to JS variable
+            echo '<script>window.sessionSuccessMessage = ' . json_encode($_SESSION['success_message']) . ';</script>';
+            unset($_SESSION['success_message']);
         }
         ?>
     </body>

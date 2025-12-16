@@ -209,63 +209,10 @@ include '../config_admin/db_edit_profile_admin.php';
             </form>
         </div>
     </div>
-
-    <script>
-        // Preview Image Logic
-        const fotoInput = document.getElementById('fotoInput');
-        const previewImage = document.getElementById('previewImage');
-        const defaultIcon = document.getElementById('defaultIcon');
-
-        if(fotoInput) {
-            fotoInput.addEventListener('change', function() {
-                const file = this.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        if(previewImage) {
-                            previewImage.src = e.target.result;
-                            previewImage.classList.remove('d-none');
-                        }
-                        if(defaultIcon) defaultIcon.classList.add('d-none');
-                    }
-                    reader.readAsDataURL(file);
-                }
-            });
-        }
-
-        // Fungsi Hapus Foto dengan Konfirmasi
-        async function confirmDeletePhoto() {
-            const confirmed = await showConfirm("Hapus foto profil ini?");
-            if (confirmed) {
-                const form = document.querySelector('form');
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'delete_photo';
-                input.value = '1';
-                form.appendChild(input);
-                form.submit();
-            }
-        }
-
-        // Fungsi Logout
-        async function confirmLogout(e) {
-            e.preventDefault();
-            const confirmed = await showConfirm("Yakin mau keluar?");
-            if (confirmed) {
-                window.location.href = "../proses/proses_logout.php";
-            }
-        }
-
-        document.getElementById("logoutBtn").addEventListener("click", confirmLogout);
-
-        const logoutBtnMobile = document.getElementById("logoutBtnMobile");
-        if (logoutBtnMobile) {
-            logoutBtnMobile.addEventListener("click", confirmLogout);
-        }
-    </script>
-
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/admin.js"></script>
+    <script src="../js/edit_profile.js"></script>
 </body>
 
 </html>

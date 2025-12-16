@@ -299,7 +299,7 @@ if ($wa_message) {
                         border-color: #198754;
                     }
                     #rowsPerPage {
-                         color: #495057;
+                        color: #495057;
                     }
                 </style>
                 <select id="rowsPerPage" class="form-select form-select-green-outline">

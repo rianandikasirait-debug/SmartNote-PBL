@@ -81,6 +81,24 @@ if ($q) {
           background-color: #02913f !important; 
           border-color: #02913f !important;
         }
+        .btn.btn-outline-success.w-100.py-2.border-dashed {
+            background-color: #00C853 !important; 
+            border-color: #00C853 !important;
+            color: #ffffff !important;
+        }
+        .btn.btn-outline-success.w-100.py-2.border-dashed:hover, .btn.btn-outline-success.w-100.py-2.border-dashed:focus {
+            background-color: #02913f !important; 
+            border-color: #02913f !important;
+        }
+        .btn.btn-secondary {
+            background-color: #00C853 !important; 
+            border-color: #00C853 !important;
+            color: #ffffff !important
+        }
+        .btn.btn-secondary:hover, .btn.btn-secondary:focus {
+            background-color: #02913f !important; 
+            border-color: #02913f !important;
+        }
     </style>
 </head>
 

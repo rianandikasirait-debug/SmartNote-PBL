@@ -108,6 +108,26 @@ include '../config_admin/db_kelola_rapat_admin.php';
             color: #b91c1c;
         }
 
+        /* Soft Edit Button Style */
+        .btn-soft-success {
+            background-color: #e8f5e9;
+            color: #198754;
+            border-radius: 8px;
+            width: 45px;
+            height: 45px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            border: none;
+            font-size: 1.1rem;
+        }
+
+        .btn-soft-success:hover {
+            background-color: #c8e6c9;
+            color: #1b5e20;
+        }
+
         .main-content {
             margin-left: 250px;
             padding: 90px 20px 20px 20px;
@@ -286,6 +306,66 @@ include '../config_admin/db_kelola_rapat_admin.php';
         </div>
     </div>
     </div>
+    <!-- Edit User Modal -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header border-0 pb-0 pe-4 pt-4">
+                    <h5 class="modal-title fw-bold text-dark fs-4">Edit Info Pengguna</h5>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 pt-3">
+                    <form id="editUserForm">
+                        <input type="hidden" id="edit_id" name="id">
+                        
+                        <div class="mb-3">
+                            <label for="edit_nama" class="form-label fw-medium text-dark">Nama Lengkap</label>
+                            <input type="text" class="form-control form-control-lg rounded-3 fs-6" id="edit_nama" name="nama" required placeholder="Masukkan nama lengkap">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="edit_email" class="form-label fw-medium text-dark">Email</label>
+                            <input type="email" class="form-control form-control-lg rounded-3 fs-6" id="edit_email" name="email" required placeholder="nama@email.com">
+                        </div>
+                        
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="edit_nik" class="form-label fw-medium text-dark">NIK</label>
+                                <input type="text" class="form-control form-control-lg rounded-3 fs-6" id="edit_nik" name="nik" required placeholder="Nomor Induk">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit_whatsapp" class="form-label fw-medium text-dark">WhatsApp</label>
+                                <input type="text" class="form-control form-control-lg rounded-3 fs-6" id="edit_whatsapp" name="nomor_whatsapp" placeholder="08xxxxxxxxxx">
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-light rounded-3 border border-light-subtle mb-4">
+                            <div class="d-flex gap-3">
+                                <div class="form-check pt-1">
+                                    <input class="form-check-input" type="checkbox" id="reset_password" name="reset_password" value="1" style="width: 1.25em; height: 1.25em; cursor: pointer;">
+                                </div>
+                                <div>
+                                    <label class="form-check-label fw-semibold text-dark mb-1" for="reset_password" style="cursor: pointer;">
+                                        Reset Password
+                                    </label>
+                                    <div class="text-secondary small">Password akan diatur ulang sama dengan NIK pengguna.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 pt-1">
+                            <button type="button" class="btn btn-light border bg-white px-4 fw-medium rounded-3 py-2" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-success px-4 fw-medium rounded-3 py-2" id="btnSaveEdit">
+                                <span class="spinner-border spinner-border-sm d-none me-2" role="status" aria-hidden="true"></span>
+                                Simpan Data
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div class="toast-container position-fixed top-0 end-0 p-3">
         <div id="successToast"

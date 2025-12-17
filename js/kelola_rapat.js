@@ -72,9 +72,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td class="align-middle">${email}</td>
                     <td class="align-middle text-center"><span class="badge-role-custom">${role}</span></td>
                     <td class="align-middle text-center">
-                        <button class="btn btn-sm btn-soft-danger btn-delete" onclick="deleteUser(${Number(u.id)}, this)" title="Hapus">
-                            <i class="bi bi-trash"></i>
-                        </button>
+                        <div class="d-flex justify-content-center gap-2">
+                            <button onclick="openEditModal(${u.id})" class="btn btn-sm btn-soft-success" title="Edit">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            <button class="btn btn-sm btn-soft-danger btn-delete text-center" onclick="deleteUser(${Number(u.id)}, this)" title="Hapus">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             `;
@@ -276,5 +281,75 @@ document.addEventListener("DOMContentLoaded", function () {
     const logoutBtnMobile = document.getElementById("logoutBtnMobile");
     if (logoutBtnMobile) {
         logoutBtnMobile.addEventListener("click", confirmLogout);
+    }
+});
+
+// Edit User Modal Logic (Outside DOMContentLoaded to be accessible if needed, or inside with window assign)
+// Defined globally or attached to window
+window.openEditModal = function (id) {
+    // Find user data
+    const user = window.kelolaRapatUsers.find(u => u.id == id);
+    if (!user) return;
+
+    // Populate form
+    document.getElementById('edit_id').value = user.id;
+    document.getElementById('edit_nama').value = user.nama || '';
+    document.getElementById('edit_email').value = user.email || '';
+    document.getElementById('edit_nik').value = user.nik || '';
+    document.getElementById('edit_whatsapp').value = user.nomor_whatsapp || '';
+    document.getElementById('reset_password').checked = false;
+
+    // Show Modal
+    const modalEl = document.getElementById('editUserModal');
+    const modal = new bootstrap.Modal(modalEl);
+    modal.show();
+};
+
+// Handle Edit Form Submission
+document.addEventListener('DOMContentLoaded', () => {
+    const editForm = document.getElementById('editUserForm');
+    if (editForm) {
+        editForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const btnSave = document.getElementById('btnSaveEdit');
+            const spinner = btnSave.querySelector('.spinner-border');
+
+            // Lock UI
+            btnSave.disabled = true;
+            spinner.classList.remove('d-none');
+
+            const formData = new FormData(this);
+
+            try {
+                const response = await fetch('../proses/proses_edit_peserta.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    // Close modal
+                    const modalEl = document.getElementById('editUserModal');
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    modal.hide();
+
+                    showToast(result.message, 'success');
+
+                    // Reload page to reflect changes (simplest way to sync data)
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    showToast(result.message, 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Terjadi kesalahan koneksi.', 'error');
+            } finally {
+                btnSave.disabled = false;
+                spinner.classList.add('d-none');
+            }
+        });
     }
 });

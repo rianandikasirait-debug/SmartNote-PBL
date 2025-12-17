@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
             selector: '#isi',
             height: 350,
             menubar: false,
-            api_key: 'cl3yw8j9ej8nes9mctfudi2r0jysibdrbn3y932667p04jg5',
+            api_key: 'mnqdvqiep8rrq6ozk4hrfn9d8734oxaqe4cyps522sfrd8y3',
             plugins: "lists link table code",
             toolbar: "undo redo | bold italic underline | bullist numlist | link",
         });

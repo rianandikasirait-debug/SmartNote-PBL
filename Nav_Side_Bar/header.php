@@ -1,7 +1,7 @@
 <?php
 // Ensure variables are set
 $pageTitle = isset($pageTitle) ? $pageTitle : 'SmartNote';
-$userName = isset($userName) ? $userName : (isset($user['nama']) ? $user['nama'] : 'Admin');
+$userName = isset($userName) ? $userName : (isset($user['nama']) ? $user['nama'] : 'Notulis');
 
 // Handle photo logic
 // Priority: $userPhoto (global/session) -> $userData['foto'] (fetched user) -> $foto (profile page) -> $user['foto'] (edit profile)

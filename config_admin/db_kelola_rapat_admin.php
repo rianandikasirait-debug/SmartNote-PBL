@@ -23,7 +23,7 @@ $userPhoto = $userData['foto'] ?? null;
 
 // 1. AMBIL DATA PENGGUNA (HANYA PESERTA)
 $all_users = [];
-$sql = "SELECT id, foto, nama, nik, email, role FROM users WHERE LOWER(role) = 'peserta' ORDER BY nama ASC";
+$sql = "SELECT id, foto, nama, nik, email, role, nomor_whatsapp FROM users WHERE LOWER(role) = 'peserta' ORDER BY nama ASC";
 $result = $conn->query($sql);
 
 if ($result && $result->num_rows > 0) {

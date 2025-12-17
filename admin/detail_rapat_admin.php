@@ -261,6 +261,7 @@ include '../config_admin/db_detail_rapat_admin.php';
         // Data Peserta dari PHP
         window.detailRapatParticipants = <?= json_encode($peserta_details ?? [], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_IGNORE); ?> || [];
     </script>
+    
     <!-- Bootstrap JS bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/admin.js"></script>

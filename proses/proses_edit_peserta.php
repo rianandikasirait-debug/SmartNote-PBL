@@ -2,6 +2,8 @@
 // proses_edit_peserta.php
 session_start();
 require_once __DIR__ . '/../koneksi.php';
+require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../includes/whatsapp.php';
 
 header('Content-Type: application/json');
 
@@ -27,6 +29,20 @@ $reset_password = isset($_POST['reset_password']) && $_POST['reset_password'] ==
 
 if ($id <= 0 || empty($nama) || empty($email) || empty($nik)) {
     echo json_encode(['success' => false, 'message' => 'Data tidak lengkap']);
+    exit;
+}
+
+// Ambil data lama untuk perbandingan
+$sqlOld = "SELECT nama, email, nik, nomor_whatsapp FROM users WHERE id = ?";
+$stmtOld = $conn->prepare($sqlOld);
+$stmtOld->bind_param("i", $id);
+$stmtOld->execute();
+$resOld = $stmtOld->get_result();
+$oldData = $resOld->fetch_assoc();
+$stmtOld->close();
+
+if (!$oldData) {
+    echo json_encode(['success' => false, 'message' => 'User tidak ditemukan']);
     exit;
 }
 
@@ -60,7 +76,80 @@ try {
     }
 
     if ($stmt->execute()) {
-        echo json_encode(['success' => true, 'message' => 'Data pengguna berhasil diperbarui.']);
+        $waErrors = [];
+        $waSent = [];
+        
+        // Tentukan nomor WA tujuan (prioritaskan nomor baru jika ada)
+        $targetWa = !empty($whatsapp) ? $whatsapp : $oldData['nomor_whatsapp'];
+        
+        // Cek apakah ada perubahan NIK atau Email
+        $nikChanged = ($oldData['nik'] !== $nik);
+        $emailChanged = ($oldData['email'] !== $email);
+        $waChanged = ($oldData['nomor_whatsapp'] !== $whatsapp && !empty($whatsapp));
+        
+        // Kirim notifikasi WA jika ada nomor dan ada perubahan
+        if (!empty($targetWa)) {
+            $waManager = new WhatsAppManager($conn);
+            
+            // 1. Jika ada perubahan NIK atau Email
+            if ($nikChanged || $emailChanged) {
+                $pesan = "\xE2\x9C\x8F\xEF\xB8\x8F *Akun SmartNote Diperbarui* \xE2\x9C\x8F\xEF\xB8\x8F\n\n";
+                $pesan .= "Halo {$nama}, akun Anda telah diperbarui oleh Admin.\n\n";
+                $pesan .= "Data akun terbaru:\n";
+                $pesan .= "\xF0\x9F\x93\xA7 Email: {$email}\n";
+                $pesan .= "\xF0\x9F\x94\x91 NIK: {$nik}\n\n";
+                $pesan .= "_Admin SmartNote_ \xF0\x9F\x93\x9D";
+                
+                $result = $waManager->sendMessage($id, $targetWa, $pesan);
+                if ($result['success']) {
+                    $waSent[] = 'Data akun diperbarui';
+                } else {
+                    $waErrors[] = 'Gagal kirim notifikasi perubahan data';
+                }
+            }
+            
+            // 2. Jika reset password
+            if ($reset_password) {
+                $pesan = "\xF0\x9F\x94\x92 *Password Direset* \xF0\x9F\x94\x92\n\n";
+                $pesan .= "Halo {$nama}, password akun SmartNote Anda telah direset oleh Admin.\n\n";
+                $pesan .= "Password baru Anda adalah NIK:\n";
+                $pesan .= "\xF0\x9F\x94\x91 Password: {$nik}\n\n";
+                $pesan .= "\xE2\x9A\xA0\xEF\xB8\x8F *Segera ganti password setelah login!*\n\n";
+                $pesan .= "_Admin SmartNote_ \xF0\x9F\x93\x9D";
+                
+                $result = $waManager->sendMessage($id, $targetWa, $pesan);
+                if ($result['success']) {
+                    $waSent[] = 'Password reset';
+                } else {
+                    $waErrors[] = 'Gagal kirim notifikasi reset password';
+                }
+            }
+            
+            // 3. Jika nomor WA berubah, kirim ke nomor baru
+            if ($waChanged) {
+                $pesan = "\xE2\x9C\x85 *Nomor WhatsApp Terdaftar* \xE2\x9C\x85\n\n";
+                $pesan .= "Halo {$nama}, nomor WhatsApp Anda berhasil diperbarui di SmartNote.\n\n";
+                $pesan .= "Data akun Anda:\n";
+                $pesan .= "\xF0\x9F\x93\xA7 Email: {$email}\n";
+                $pesan .= "\xF0\x9F\x94\x91 NIK: {$nik}\n\n";
+                $pesan .= "Anda akan menerima notifikasi di nomor ini.\n\n";
+                $pesan .= "_Admin SmartNote_ \xF0\x9F\x93\x9D";
+                
+                $result = $waManager->sendMessage($id, $whatsapp, $pesan);
+                if ($result['success']) {
+                    $waSent[] = 'Nomor WA baru terdaftar';
+                } else {
+                    $waErrors[] = 'Gagal kirim ke nomor WA baru';
+                }
+            }
+        }
+        
+        echo json_encode([
+            'success' => true, 
+            'message' => 'Data pengguna berhasil diperbarui.',
+            'wa_sent' => $waSent,
+            'wa_errors' => $waErrors
+        ]);
     } else {
         echo json_encode(['success' => false, 'message' => 'Gagal memperbarui database.']);
     }
@@ -72,3 +161,4 @@ try {
 }
 
 $conn->close();
+

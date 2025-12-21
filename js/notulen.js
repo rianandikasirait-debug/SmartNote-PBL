@@ -60,6 +60,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     tinymce.triggerSave();
                 }
 
+                // Validasi: Judul, Tanggal, dan Isi wajib diisi
+                const judul = document.getElementById('judul').value.trim();
+                const tanggal = document.getElementById('tanggal').value.trim();
+                const isi = document.getElementById('isi').value.trim();
+
+                if (!judul || !tanggal || !isi) {
+                    showToast('Judul, tanggal, dan isi wajib diisi', 'error');
+                    return;
+                }
+
                 const fd = new FormData(this);
 
                 // Ambil data peserta yang dipilih dari tabel visual
@@ -248,14 +258,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const btnSimpanPengguna = document.getElementById('btnSimpanPengguna');
     const formTambahPengguna = document.getElementById('formTambahPengguna');
     const modalTambahPengguna = document.getElementById('modalTambahPengguna');
-    
+
     // Email Suggestion Logic for Modal
     const newNamaInput = document.getElementById('newNama');
     const newEmailInput = document.getElementById('newEmail');
     const emailSuggestionModal = document.getElementById('emailSuggestionModal');
 
     if (newNamaInput && newEmailInput && emailSuggestionModal) {
-        newNamaInput.addEventListener('input', function() {
+        newNamaInput.addEventListener('input', function () {
             const name = this.value;
             // Basic sanitization: lowercase, remove special chars, replace spaces with nothing
             const cleanName = name.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -279,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // Function to fill email (exposed globally for onclick)
-        window.fillModalEmail = function(email) {
+        window.fillModalEmail = function (email) {
             newEmailInput.value = email;
             // Visual feedback
             newEmailInput.classList.add('is-valid');
@@ -288,7 +298,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (btnSimpanPengguna && formTambahPengguna) {
-        btnSimpanPengguna.addEventListener('click', async function() {
+        btnSimpanPengguna.addEventListener('click', async function () {
             // Get form values
             const nama = document.getElementById('newNama').value.trim();
             const email = document.getElementById('newEmail').value.trim();
@@ -405,8 +415,23 @@ function showToast(message, type = 'success') {
     const toastEl = document.getElementById('successToast');
     if (!toastEl) return;
 
-    toastEl.className = `toast align-items-center text-bg-${type} border-0`;
-    toastEl.querySelector('.toast-body').innerHTML = `<i class="bi bi-check-circle-fill me-2"></i> ${message}`;
+    // Determine icon and class based on type
+    let icon = 'bi-check-circle-fill';
+    let bgClass = 'text-bg-success';
+
+    if (type === 'error' || type === 'danger') {
+        icon = 'bi-x-circle-fill';
+        bgClass = 'text-bg-danger';
+    } else if (type === 'warning') {
+        icon = 'bi-exclamation-circle-fill';
+        bgClass = 'text-bg-warning';
+    } else if (type === 'info') {
+        icon = 'bi-info-circle-fill';
+        bgClass = 'text-bg-info';
+    }
+
+    toastEl.className = `toast align-items-center ${bgClass} border-0`;
+    toastEl.querySelector('.toast-body').innerHTML = `<i class="bi ${icon} me-2"></i> ${message}`;
     const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
     toast.show();
 }

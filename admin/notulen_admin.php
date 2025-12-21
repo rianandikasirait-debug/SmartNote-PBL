@@ -245,7 +245,7 @@ include '../config_admin/db_notulen.admin.php';
                 </div>
             </div>
 
-            <form id="notulenForm" method="POST" enctype="multipart/form-data">
+            <form id="notulenForm" method="POST" enctype="multipart/form-data" novalidate>
                 
                 <!-- Judul -->
                 <div class="mb-3">

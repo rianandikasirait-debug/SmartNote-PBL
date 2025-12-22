@@ -313,7 +313,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (hiddenPesertaContainer) hiddenPesertaContainer.innerHTML = '';
 
             if (selected.length === 0) {
-                addedContainer.innerHTML = '<tr id="emptyRow" style="border-bottom: 1px solid #dee2e6 !important;"><td colspan="3" class="text-center text-muted py-5"><div class="d-flex flex-column align-items-center"><i class="bi bi-people text-secondary mb-2" style="font-size: 2rem; opacity: 0.5;"></i><small>Belum ada peserta yang ditambahkan</small></div></td></tr>';
+                addedContainer.innerHTML = '<tr id="emptyRow"><td colspan="3" class="text-center text-muted py-4 border-0"><div class="d-flex flex-column align-items-center"><i class="bi bi-people text-secondary mb-2" style="font-size: 1.5rem; opacity: 0.5;"></i><small>Belum ada peserta</small></div></td></tr>';
             } else {
                 selected.forEach((cb, index) => {
                     const id = cb.value;
@@ -321,15 +321,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // Visual Row
                     const tr = document.createElement('tr');
-                    tr.className = 'added-item align-middle border-bottom';
+                    tr.className = 'added-item';
                     tr.dataset.id = id;
                     tr.innerHTML = `
-                        <td class="px-2 px-md-4 text-center text-muted small">${index + 1}</td>
-                        <td class="px-2 px-md-4 text-start">
-                            ${escapeHtml(name)}
-                        </td>
-                        <td class="text-center px-2 px-md-4">
-                            <button type="button" class="btn btn-sm btn-danger remove-btn text-white" data-id="${id}">
+                        <td class="ps-3 text-center text-muted small border-0">${index + 1}</td>
+                        <td class="border-0 text-start text-truncate" style="max-width: 0;">${escapeHtml(name)}</td>
+                        <td class="pe-3 text-center border-0">
+                            <button type="button" class="btn btn-sm btn-danger remove-btn" data-id="${id}">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </td>
@@ -385,7 +383,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
                 if (remainingItems.length === 0) {
-                    addedContainer.innerHTML = '<tr id="emptyRow" style="border-bottom: 1px solid #dee2e6 !important;"><td colspan="3" class="text-center text-muted py-5"><div class="d-flex flex-column align-items-center"><i class="bi bi-people text-secondary mb-2" style="font-size: 2rem; opacity: 0.5;"></i><small>Belum ada peserta yang ditambahkan</small></div></td></tr>';
+                    addedContainer.innerHTML = '<tr id="emptyRow"><td colspan="3" class="text-center text-muted py-4 border-0"><div class="d-flex flex-column align-items-center"><i class="bi bi-people text-secondary mb-2" style="font-size: 1.5rem; opacity: 0.5;"></i><small>Belum ada peserta</small></div></td></tr>';
                 }
             }
         });
@@ -508,13 +506,13 @@ document.addEventListener('DOMContentLoaded', function () {
                         const newIndex = currentItems.length + 1;
 
                         const tr = document.createElement('tr');
-                        tr.className = 'added-item align-middle border-bottom';
+                        tr.className = 'added-item';
                         tr.dataset.id = result.data.id;
                         tr.innerHTML = `
-                            <td class="px-2 px-md-4 text-center text-muted small">${newIndex}</td>
-                            <td class="px-2 px-md-4 text-start">${escapeHtml(result.data.nama)}</td>
-                            <td class="text-center px-2 px-md-4">
-                                <button type="button" class="btn btn-sm btn-danger remove-btn text-white" data-id="${result.data.id}">
+                            <td class="ps-3 text-center text-muted small border-0">${newIndex}</td>
+                            <td class="border-0 text-start text-truncate" style="max-width: 0;">${escapeHtml(result.data.nama)}</td>
+                            <td class="pe-3 text-center border-0">
+                                <button type="button" class="btn btn-sm btn-danger remove-btn" data-id="${result.data.id}">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </td>

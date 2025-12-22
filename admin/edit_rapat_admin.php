@@ -37,6 +37,71 @@ include '../config_admin/db_edit_rapat_admin.php';
         background-color: #02913f !important; 
         border-color: #02913f !important;
     }
+    
+    /* Override admin.min.css untuk tabel peserta di mobile */
+    .peserta-table-wrapper {
+        overflow: visible !important;
+    }
+    .peserta-table-wrapper .card-body {
+        max-height: 350px; /* Sekitar 10 row */
+        overflow-y: auto;
+    }
+    .peserta-table-wrapper table {
+        table-layout: fixed !important;
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+    .peserta-table-wrapper table thead {
+        display: table-header-group !important;
+        position: sticky;
+        top: 0;
+        background: #f8f9fa;
+        z-index: 1;
+    }
+    .peserta-table-wrapper table tbody {
+        display: table-row-group !important;
+    }
+    .peserta-table-wrapper table tr {
+        display: table-row !important;
+    }
+    .peserta-table-wrapper table th,
+    .peserta-table-wrapper table td {
+        display: table-cell !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+    .peserta-table-wrapper table th:nth-child(1),
+    .peserta-table-wrapper table td:nth-child(1) {
+        width: 35px !important;
+        min-width: 35px !important;
+    }
+    .peserta-table-wrapper table th:nth-child(3),
+    .peserta-table-wrapper table td:nth-child(3) {
+        width: 60px !important;
+        min-width: 60px !important;
+        overflow: visible !important;
+    }
+    /* Tombol Hapus - pastikan tampil merah dengan icon */
+    .peserta-table-wrapper .remove-btn {
+        background-color: #dc3545 !important;
+        border-color: #dc3545 !important;
+        color: #fff !important;
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.875rem !important;
+        border-radius: 0.25rem !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    .peserta-table-wrapper .remove-btn:hover {
+        background-color: #bb2d3b !important;
+        border-color: #b02a37 !important;
+    }
+    .peserta-table-wrapper .remove-btn i {
+        font-size: 0.875rem !important;
+        color: #fff !important;
+    }
     </style>
 </head>
 <?php 
@@ -166,33 +231,33 @@ include '../config_admin/db_edit_rapat_admin.php';
         <!-- Dropdown Peserta REPLACED WITH MODAL TRIGGER + TAMBAH PENGGUNA -->
         <div class="mb-4">
           <label class="form-label fw-semibold">Peserta Notulen</label>
-          <div class="row g-3">
+          <div class="row g-2 g-md-3">
               <!-- Pilih Peserta (Kiri) -->
-              <div class="col-md-6">
+              <div class="col-6">
                   <div class="card h-100 border-0 shadow-sm">
-                      <div class="card-body text-center py-4">
-                          <div class="mb-3">
-                              <i class="bi bi-people-fill text-success" style="font-size: 2.5rem;"></i>
+                      <div class="card-body text-center py-3 py-md-4 px-2 px-md-3">
+                          <div class="mb-2 mb-md-3">
+                              <i class="bi bi-people-fill text-success" style="font-size: 1.8rem;"></i>
                           </div>
-                          <h6 class="fw-semibold mb-2">Pilih Peserta</h6>
-                          <p class="text-muted small mb-3">Pilih dari daftar pengguna yang sudah ada</p>
-                          <button type="button" class="btn btn-outline-success w-100" data-bs-toggle="modal" data-bs-target="#modalPeserta">
-                              <i class="bi bi-list-ul me-2"></i>Pilih Peserta
+                          <h6 class="fw-semibold mb-1 mb-md-2" style="font-size: 0.85rem;">Pilih Peserta</h6>
+                          <p class="text-muted small mb-2 mb-md-3 d-none d-md-block">Pilih dari daftar pengguna yang sudah ada</p>
+                          <button type="button" class="btn btn-outline-success btn-sm w-100" data-bs-toggle="modal" data-bs-target="#modalPeserta">
+                              <i class="bi bi-list-ul me-1"></i><span class="d-none d-sm-inline">Pilih</span> Peserta
                           </button>
                       </div>
                   </div>
               </div>
               <!-- Tambah Pengguna Baru (Kanan) -->
-              <div class="col-md-6">
+              <div class="col-6">
                   <div class="card h-100 border-0 shadow-sm">
-                      <div class="card-body text-center py-4">
-                          <div class="mb-3">
-                              <i class="bi bi-person-plus-fill text-success" style="font-size: 2.5rem;"></i>
+                      <div class="card-body text-center py-3 py-md-4 px-2 px-md-3">
+                          <div class="mb-2 mb-md-3">
+                              <i class="bi bi-person-plus-fill text-success" style="font-size: 1.8rem;"></i>
                           </div>
-                          <h6 class="fw-semibold mb-2">Tambah Pengguna Baru</h6>
-                          <p class="text-muted small mb-3">Buat akun peserta baru langsung dari sini</p>
-                          <button type="button" class="btn btn-outline-success w-100" data-bs-toggle="modal" data-bs-target="#modalTambahPengguna">
-                              <i class="bi bi-person-plus me-2"></i>Tambah Pengguna
+                          <h6 class="fw-semibold mb-1 mb-md-2" style="font-size: 0.85rem;">Tambah Pengguna</h6>
+                          <p class="text-muted small mb-2 mb-md-3 d-none d-md-block">Buat akun peserta baru langsung dari sini</p>
+                          <button type="button" class="btn btn-outline-success btn-sm w-100" data-bs-toggle="modal" data-bs-target="#modalTambahPengguna">
+                              <i class="bi bi-person-plus me-1"></i><span class="d-none d-sm-inline">Tambah</span> Pengguna
                           </button>
                       </div>
                   </div>
@@ -201,51 +266,43 @@ include '../config_admin/db_edit_rapat_admin.php';
         </div>
 
         <!-- List peserta (Table View) -->
-        <!-- List peserta (Table View) -->
         <div class="mb-4">
           <label class="form-label fw-semibold mb-2">Daftar Peserta:</label>
-          <div class="card border-0 shadow-sm mobile-table-fix">
+          <div class="card border-0 shadow-sm peserta-table-wrapper">
             <div class="card-body p-0">
-              <div class="table-responsive">
-                <table class="table table-hover table-sm mb-0 align-middle" style="white-space: nowrap;">
-                  <thead class="bg-light">
-                    <tr style="border-bottom: 1px solid #dee2e6;">
-                      <th style="width: 50px;" class="px-2 px-md-4 py-3 text-secondary small fw-bold text-uppercase border-bottom-0 text-center">No</th>
-                      <th class="px-2 px-md-4 py-3 text-secondary small fw-bold text-uppercase border-bottom-0 text-start">Nama Peserta</th>
-                      <th style="width: 100px;"
-                        class="text-center px-2 px-md-4 py-3 text-secondary small fw-bold text-uppercase border-bottom-0">Aksi
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody id="addedContainer">
-                    <?php if (empty($current_participant_items)): ?>
-                    <tr id="emptyRow" style="border-bottom: 1px solid #dee2e6;">
-                      <td colspan="3" class="text-center text-muted py-5">
-                        <div class="d-flex flex-column align-items-center">
-                          <i class="bi bi-people text-secondary mb-2" style="font-size: 2rem; opacity: 0.5;"></i>
-                          <small>Belum ada peserta yang ditambahkan</small>
-                        </div>
-                      </td>
-                    </tr>
-                    <?php else: ?>
-                    <?php $no = 1; foreach ($current_participant_items as $item): ?>
-                    <tr class="added-item align-middle border-bottom" data-id="<?= htmlspecialchars($item['id']) ?>">
-                      <td class="px-2 px-md-4 text-center text-muted small"><?= $no++ ?></td>
-                      <td class="px-2 px-md-4 text-start">
-                        <?= htmlspecialchars($item['nama']) ?>
-                      </td>
-                      <td class="text-center px-2 px-md-4">
-                        <button type="button" class="btn btn-sm btn-danger remove-btn text-white"
-                          data-id="<?= htmlspecialchars($item['id']) ?>">
-                          <i class="bi bi-trash"></i>
-                        </button>
-                      </td>
-                    </tr>
-                    <?php endforeach; ?>
-                    <?php endif; ?>
-                  </tbody>
-                </table>
-              </div>
+              <table class="table table-hover table-sm mb-0 align-middle" style="table-layout: fixed; width: 100%;">
+                <thead class="bg-light">
+                  <tr>
+                    <th style="width: 35px;" class="ps-3 py-2 text-secondary small fw-semibold border-0 text-center">No</th>
+                    <th class="py-2 text-secondary small fw-semibold border-0 text-start">Nama</th>
+                    <th style="width: 60px;" class="pe-3 py-2 text-secondary small fw-semibold border-0 text-center">Hapus</th>
+                  </tr>
+                </thead>
+                <tbody id="addedContainer">
+                  <?php if (empty($current_participant_items)): ?>
+                  <tr id="emptyRow">
+                    <td colspan="3" class="text-center text-muted py-4 border-0">
+                      <div class="d-flex flex-column align-items-center">
+                        <i class="bi bi-people text-secondary mb-2" style="font-size: 1.5rem; opacity: 0.5;"></i>
+                        <small>Belum ada peserta</small>
+                      </div>
+                    </td>
+                  </tr>
+                  <?php else: ?>
+                  <?php $no = 1; foreach ($current_participant_items as $item): ?>
+                  <tr class="added-item" data-id="<?= htmlspecialchars($item['id']) ?>">
+                    <td class="ps-3 text-center text-muted small border-0"><?= $no++ ?></td>
+                    <td class="border-0 text-start text-truncate" style="max-width: 0;"><?= htmlspecialchars($item['nama']) ?></td>
+                    <td class="pe-3 text-center border-0">
+                      <button type="button" class="btn btn-sm btn-danger remove-btn" data-id="<?= htmlspecialchars($item['id']) ?>">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <?php endforeach; ?>
+                  <?php endif; ?>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

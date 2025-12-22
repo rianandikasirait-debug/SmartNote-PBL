@@ -31,19 +31,15 @@ require_once __DIR__ . '/../config_peserta/db_profile_peserta.php';
     include __DIR__ . '/../Nav_Side_Bar/header_peserta.php'; 
     ?>
 
+    <!-- Global Variables for JS -->
+    <script>
+        <?php if (isset($_SESSION['success_message'])): ?>
+            window.sessionSuccessMessage = <?= json_encode($_SESSION['success_message']) ?>;
+        <?php unset($_SESSION['success_message']); endif; ?>
+    </script>
+
     <!-- Main -->
     <div class="main-content">
-
-        <!-- Pesan Peringatan (struktur dipertahankan) -->
-         <?php if (isset($_SESSION['success_message'])): ?>
-            <div class="mb-3">
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <?= $_SESSION['success_message']; ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </div>
-            <?php unset($_SESSION['success_message']); ?>
-        <?php endif; ?>
 
         <div class="profile-container">
             <div class="profile-card-modern">

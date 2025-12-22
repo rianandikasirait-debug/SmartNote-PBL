@@ -46,10 +46,10 @@ $sqlFinal = "SELECT COUNT(*) as total FROM tambah_notulen WHERE status = 'final'
 $resFinal = $conn->query($sqlFinal);
 $totalFinal = $resFinal ? $resFinal->fetch_assoc()['total'] : 0;
 
-// Ambil 10 notulen terbaru untuk tabel (dengan status)
+// Ambil SEMUA notulen untuk pagination di JavaScript
 $sql = "SELECT id, judul, tanggal, tempat, peserta, status, created_at
          FROM tambah_notulen 
-         ORDER BY created_at DESC LIMIT 10";
+         ORDER BY created_at DESC";
 $result = $conn->query($sql);
 // Konversi ke format array dan tambahkan status is_viewed
 $dataNotulen = [];

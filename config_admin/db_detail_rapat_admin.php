@@ -36,8 +36,11 @@ if (!in_array($id_notulen, $_SESSION['viewed_notulen'])) {
     $_SESSION['viewed_notulen'][] = $id_notulen;
 }
 
-// Ambil data notulen
-$sql = "SELECT * FROM tambah_notulen WHERE id = ?";
+// Ambil data notulen dengan nama notulis yang membuat
+$sql = "SELECT n.*, u.nama AS created_by 
+        FROM tambah_notulen n 
+        LEFT JOIN users u ON n.id_user = u.id 
+        WHERE n.id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id_notulen);
 $stmt->execute();

@@ -181,7 +181,7 @@ require_once __DIR__ . '/../config_peserta/db_dashboard_peserta.php';
                                     </div>
                                     <div class="d-flex align-items-center gap-2">
                                         <i class="bi bi-person"></i>
-                                        <span class="text-truncate" style="max-width: 200px;">PIC: ${pembuat}</span>
+                                        <span class="text-truncate" style="max-width: 200px;">Notulis: ${pembuat}</span>
                                     </div>
                                     <div class="d-flex align-items-center gap-2">
                                         <i class="bi bi-people"></i>

@@ -54,12 +54,14 @@ $userPhoto = $userData['foto'] ?? null;
 $stmt->close();
 
 // Query untuk mengambil notulen yang peserta ini terdaftar di dalamnya
+// JOIN dengan tabel users untuk mendapatkan nama notulis yang membuat notulen
 $currentUserId = $_SESSION['user_id'];
-$sql = "SELECT id, judul, tanggal, tempat, peserta, tindak_lanjut as Lampiran, created_at,
-                COALESCE(status, 'draft') as status
-        FROM tambah_notulen 
-        WHERE FIND_IN_SET(?, peserta) > 0
-        ORDER BY created_at DESC";
+$sql = "SELECT n.id, n.judul, n.tanggal, n.tempat, n.peserta, n.tindak_lanjut as Lampiran, n.created_at,
+                COALESCE(n.status, 'draft') as status, u.nama AS nama_notulis
+        FROM tambah_notulen n
+        LEFT JOIN users u ON n.id_user = u.id
+        WHERE FIND_IN_SET(?, n.peserta) > 0
+        ORDER BY n.created_at DESC";
 
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $currentUserId);
@@ -75,7 +77,7 @@ if ($result) {
         // Tambahkan alias untuk kompatibilitas dengan JavaScript
         $row['judul_rapat'] = $row['judul'];
         $row['tanggal_rapat'] = $row['tanggal'];
-        $row['created_by'] = $row['tempat'];
+        $row['created_by'] = $row['nama_notulis'];
         $dataNotulen[] = $row;
     }
 }

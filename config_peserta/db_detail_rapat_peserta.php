@@ -43,10 +43,13 @@ if ($userId > 0) {
 }
 
 
-// Ambil data notulen
-$sql = "SELECT * FROM tambah_notulen WHERE id = ?";
+// Ambil data notulen dengan nama notulis yang membuat
+$sql = "SELECT n.*, u.nama AS created_by 
+        FROM tambah_notulen n 
+        LEFT JOIN users u ON n.id_user = u.id 
+        WHERE n.id = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $id_notulen); // Menggunakan "i" karena hanya id_notulen yang digunakan
+$stmt->bind_param("i", $id_notulen);
 $stmt->execute();
 $result = $stmt->get_result();
 $notulen = $result->fetch_assoc();

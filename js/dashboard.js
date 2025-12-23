@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const nomorUrut = startIndex + index + 1;
             const judul = escapeHtml(item.judul || '');
             const tanggal = escapeHtml(item.tanggal || '');
-            const pembuat = escapeHtml(item.tempat || 'Admin');
+            const pembuat = escapeHtml(item.nama_notulis || 'Admin');
             const pesertaCount = item.peserta ? item.peserta.split(',').length : 0;
             const status = escapeHtml(item.status || 'draft');
 
@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             </div>
                             <div class="d-flex align-items-center gap-2">
                                 <i class="bi bi-person"></i>
-                                <span class="text-truncate" style="max-width: 200px;">PIC: ${pembuat}</span>
+                                <span class="text-truncate" style="max-width: 200px;">Notulis: ${pembuat}</span>
                             </div>
                             <div class="d-flex align-items-center gap-2">
                                 <i class="bi bi-people"></i>
@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Handle case where notulenData is empty/undefined
         if (!notulenData || !Array.isArray(notulenData)) return;
 
-        const pembuatUnik = [...new Set(notulenData.map(d => d.tempat || 'Admin'))];
+        const pembuatUnik = [...new Set(notulenData.map(d => d.nama_notulis || 'Admin'))];
         pembuatUnik.forEach(nama => {
             const opt = document.createElement("option");
             opt.value = nama;
@@ -114,10 +114,10 @@ document.addEventListener("DOMContentLoaded", function () {
         return notulenData.filter(item => {
             const judul = (item.judul || '').toLowerCase();
             const tanggal = (item.tanggal || '').toLowerCase();
-            const pembuat = (item.tempat || 'Admin').toLowerCase();
+            const pembuat = (item.nama_notulis || 'Admin').toLowerCase();
 
             const cocokKeyword = judul.includes(keyword) || tanggal.includes(keyword) || pembuat.includes(keyword);
-            const cocokPembuat = selectedPembuat === "" || (item.tempat || 'Admin') === selectedPembuat;
+            const cocokPembuat = selectedPembuat === "" || (item.nama_notulis || 'Admin') === selectedPembuat;
             return cocokKeyword && cocokPembuat;
         });
     }

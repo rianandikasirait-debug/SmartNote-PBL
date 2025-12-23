@@ -47,9 +47,11 @@ $resFinal = $conn->query($sqlFinal);
 $totalFinal = $resFinal ? $resFinal->fetch_assoc()['total'] : 0;
 
 // Ambil SEMUA notulen untuk pagination di JavaScript
-$sql = "SELECT id, judul, tanggal, tempat, peserta, status, created_at
-         FROM tambah_notulen 
-         ORDER BY created_at DESC";
+// JOIN dengan tabel users untuk mendapatkan nama notulis yang membuat notulen
+$sql = "SELECT n.id, n.judul, n.tanggal, n.tempat, n.peserta, n.status, n.created_at, u.nama AS nama_notulis
+         FROM tambah_notulen n
+         LEFT JOIN users u ON n.id_user = u.id
+         ORDER BY n.created_at DESC";
 $result = $conn->query($sql);
 // Konversi ke format array dan tambahkan status is_viewed
 $dataNotulen = [];
